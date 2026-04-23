@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CV — André Aguiar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#f4efe6;--surface:#ece6d8;--surface2:#e2dace;
+      --border:#d6cfc2;--border2:#c5bdb0;
+      --text:#1c2238;--muted:#5c6070;--hint:#9ca2b2;--gold:#b8912a;
+    }
+    [data-theme="dark"] {
+      --bg:#131210;--surface:#1b1916;--surface2:#23211d;
+      --border:#2c2924;--border2:#3b3730;
+      --text:#f0e9d8;--muted:#98908a;--hint:#585450;--gold:#d4a83a;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;-webkit-font-smoothing:antialiased;min-height:100vh}
+
+    header{border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;transition:background .3s}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:17px 32px;max-width:960px;margin:0 auto}
+    .logo{font-family:'Instrument Serif',serif;font-size:19px;text-decoration:none;color:var(--text);letter-spacing:-.015em}
+    .logo em{font-style:italic;color:var(--gold)}
+    .topbar-r{display:flex;align-items:center;gap:10px}
+    .lang-toggle{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+    .lang-btn{font-size:12px;font-weight:500;padding:7px 14px;background:transparent;border:none;cursor:pointer;color:var(--muted);font-family:'Instrument Sans',sans-serif;transition:background .2s,color .2s;letter-spacing:.04em}
+    .lang-btn.on{background:var(--text);color:var(--bg)}
+    .theme-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:border-color .2s,color .2s}
+    .theme-btn:hover{border-color:var(--border2);color:var(--text)}
+    .theme-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5}
+    .i-sun,.i-moon{display:none}
+    [data-theme="light"] .i-sun{display:block}
+    [data-theme="dark"]  .i-moon{display:block}
+
+    /* CV */
+    .cv{max-width:720px;margin:0 auto;padding:64px 32px 88px}
+
+    .cv-hdr{padding-bottom:40px;border-bottom:1px solid var(--border);margin-bottom:52px}
+    .cv-name{font-family:'Instrument Serif',serif;font-size:clamp(36px,5vw,52px);font-weight:400;line-height:1.05;letter-spacing:-.025em;color:var(--text);margin-bottom:10px}
+    .cv-name em{font-style:italic;color:var(--gold)}
+    .cv-role{font-size:16px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+    .cv-contacts{display:flex;flex-wrap:wrap;gap:5px 20px}
+    .cv-ct{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:7px}
+    .cv-ct::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);flex-shrink:0}
+    .cv-ct:hover{color:var(--gold)}
+
+    /* SECTIONS */
+    .cv-sec{margin-bottom:52px}
+    .cv-sec:last-of-type{margin-bottom:0}
+    .cv-sec-title{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--hint);padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:28px}
+
+    /* ITEMS */
+    .cv-item{margin-bottom:36px}
+    .cv-item:last-child{margin-bottom:0}
+    .cv-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:5px}
+    .cv-item-name{font-family:'Instrument Serif',serif;font-size:20px;font-weight:400;color:var(--text);letter-spacing:-.01em;line-height:1.15}
+    .cv-item-period{font-size:12px;color:var(--hint);white-space:nowrap;padding-top:4px;flex-shrink:0}
+    .cv-item-org{font-size:13px;color:var(--gold);font-weight:500;margin-bottom:12px}
+    .cv-bullets{list-style:none;display:flex;flex-direction:column;gap:7px}
+    .cv-bullets li{font-size:14px;color:var(--muted);line-height:1.65;padding-left:16px;position:relative}
+    .cv-bullets li::before{content:'–';position:absolute;left:0;color:var(--hint)}
+
+    /* EDU */
+    .cv-edu-item{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 0;border-bottom:1px solid var(--border)}
+    .cv-edu-item:first-child{padding-top:0}
+    .cv-edu-item:last-child{border-bottom:none;padding-bottom:0}
+    .cv-edu-name{font-family:'Instrument Serif',serif;font-size:18px;font-weight:400;color:var(--text);letter-spacing:-.01em;margin-bottom:3px}
+    .cv-edu-sub{font-size:13px;color:var(--muted)}
+    .cv-edu-period{font-size:12px;color:var(--hint);white-space:nowrap;padding-top:3px;flex-shrink:0}
+
+    /* TAGS */
+    .cv-tags{display:flex;flex-wrap:wrap;gap:8px}
+    .cv-tag{font-size:12px;font-weight:500;padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);letter-spacing:.03em}
+
+    /* FOOTER */
+    .cv-ftr{padding-top:52px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .back{font-size:13px;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+    .back:hover{color:var(--text)}
+    .cv-ftr p{font-size:12px;color:var(--hint)}
+    .cv-ftr a{color:var(--hint);text-decoration:none;transition:color .2s}
+    .cv-ftr a:hover{color:var(--muted)}
+
+    /* LANG */
+    [data-lang="en"] .pt{display:none}
+    [data-lang="pt"] .en{display:none}
+
+    @media(max-width:580px){
+      .cv{padding:40px 20px 60px}
+      .topbar{padding:17px 20px}
+      .cv-item-top,.cv-edu-item{flex-direction:column;gap:4px}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="topbar">
+    <a class="logo" href="index.html">André <em>Aguiar</em></a>
+    <div class="topbar-r">
+      <div class="lang-toggle">
+        <button class="lang-btn on" id="bPT" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn"    id="bEN" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="Alternar tema">
+        <svg class="i-sun" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3"/><line x1="8" y1="1" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15"/><line x1="1" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15" y2="8"/><line x1="3.05" y1="3.05" x2="4.1" y2="4.1"/><line x1="11.9" y1="11.9" x2="12.95" y2="12.95"/><line x1="12.95" y1="3.05" x2="11.9" y2="4.1"/><line x1="4.1" y1="11.9" x2="3.05" y2="12.95"/></svg>
+        <svg class="i-moon" viewBox="0 0 16 16"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7z"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="cv" id="cvDoc" data-lang="pt">
+
+  <!-- HEADER -->
+  <div class="cv-hdr">
+    <h1 class="cv-name">André <em>Aguiar</em></h1>
+    <p class="cv-role pt">Gestor de Projeto FTTH · Design &amp; Ferramentas Digitais</p>
+    <p class="cv-role en">FTTH Project Manager · Design &amp; Digital Tools</p>
+    <div class="cv-contacts">
+      <a class="cv-ct" href="mailto:me@andreaguiar.net">me@andreaguiar.net</a>
+      <a class="cv-ct" href="https://andreaguiar.net" target="_blank">andreaguiar.net</a>
+      <a class="cv-ct" href="tel:+351965290721">(+351) 965 290 721</a>
+      <span class="cv-ct" style="cursor:default">
+        <span class="pt">Ilha da Madeira, Portugal</span>
+        <span class="en">Madeira Island, Portugal</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="cv-sec">
+    <h2 class="cv-sec-title pt">Experiência profissional</h2>
+    <h2 class="cv-sec-title en">Experience</h2>
+
+    <!-- Viatel -->
+    <div class="cv-item">
+      <div class="cv-item-top">
+        <div>
+          <div class="cv-item-name pt">Gestor de Projeto FTTH</div>
+          <div class="cv-item-name en">FTTH Project Manager</div>
+          <div class="cv-item-org">Viatel — Tecnologia de Comunicações (Grupo Visabeira)</div>
+        </div>
+        <span class="cv-item-period pt">Jan. 2020 — Presente</span>
+        <span class="cv-item-period en">Jan. 2020 — Present</span>
+      </div>
+      <ul class="cv-bullets">
+        <li class="pt">Supervisão e coordenação de uma equipa de 12 elementos em projetos de redes FTTH em França (centro, sul e Caraíbas).</li>
+        <li class="en">Supervision and coordination of a 12-person team on FTTH network projects across France (central, southern regions and the Caribbean).</li>
+        <li class="pt">Desenvolvimento e validação de projetos de fibra ótica, incluindo avaliação de esforços de postes e retificação de projetos de campo.</li>
+        <li class="en">Development and validation of fibre optic projects, including pole load assessment and correction of field-designed plans.</li>
+        <li class="pt">Gestão do ciclo completo de projeto — desde o levantamento técnico até à entrega final ao cliente.</li>
+        <li class="en">Full project lifecycle management — from technical survey through to final client delivery.</li>
+      </ul>
+    </div>
+
+    <!-- Leroy Merlin -->
+    <div class="cv-item">
+      <div class="cv-item-top">
+        <div>
+          <div class="cv-item-name pt">Assessor de Relação com o Cliente</div>
+          <div class="cv-item-name en">Customer Relations Associate</div>
+          <div class="cv-item-org">Leroy Merlin</div>
+        </div>
+        <span class="cv-item-period">Set. 2019 — Fev. 2020</span>
+      </div>
+      <ul class="cv-bullets">
+        <li class="pt">Atendimento e apoio ao cliente em contexto de loja, operação de caixa e gestão de devoluções e reclamações.</li>
+        <li class="en">Customer service and support in a retail environment, including checkout operations and handling returns and complaints.</li>
+      </ul>
+    </div>
+
+    <!-- Weaver eSports -->
+    <div class="cv-item">
+      <div class="cv-item-top">
+        <div>
+          <div class="cv-item-name pt">Fundador &amp; Coordenador de Eventos</div>
+          <div class="cv-item-name en">Founder &amp; Events Coordinator</div>
+          <div class="cv-item-org">Weaver eSports · Câmara Municipal do Funchal</div>
+        </div>
+        <span class="cv-item-period">Set. 2019 — Ago. 2021</span>
+      </div>
+      <ul class="cv-bullets">
+        <li class="pt">Planeamento, organização e gestão de eventos de desportos eletrónicos em parceria com a Câmara Municipal do Funchal.</li>
+        <li class="en">Planning, organisation and management of esports events in partnership with the Funchal City Council.</li>
+        <li class="pt">Coordenação com os departamentos municipais de juventude e desporto.</li>
+        <li class="en">Coordination with municipal youth and sports departments.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="cv-sec">
+    <h2 class="cv-sec-title pt">Formação</h2>
+    <h2 class="cv-sec-title en">Education</h2>
+
+    <div class="cv-edu-item">
+      <div>
+        <div class="cv-edu-name pt">Formação Pedagógica de Formadores</div>
+        <div class="cv-edu-name en">Certified Trainer Programme</div>
+        <div class="cv-edu-sub pt">CMC — Conta Mais Certa · Nota final: 5/5</div>
+        <div class="cv-edu-sub en">CMC — Conta Mais Certa · Final grade: 5/5</div>
+      </div>
+      <span class="cv-edu-period">Dez. 2019</span>
+    </div>
+
+    <div class="cv-edu-item">
+      <div>
+        <div class="cv-edu-name pt">Curso Profissional Técnico de Multimédia</div>
+        <div class="cv-edu-name en">Professional Course in Multimedia Technology</div>
+        <div class="cv-edu-sub pt">Escola Secundária Francisco Franco · Média 18 valores · Nível 4 QEQ</div>
+        <div class="cv-edu-sub en">Francisco Franco Secondary School · Average 18/20 · EQF Level 4</div>
+      </div>
+      <span class="cv-edu-period">Jul. 2017</span>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="cv-sec">
+    <h2 class="cv-sec-title pt">Competências</h2>
+    <h2 class="cv-sec-title en">Skills</h2>
+    <div class="cv-tags">
+      <span class="cv-tag">Gestão de projeto</span>
+      <span class="cv-tag">FTTH / Fibra ótica</span>
+      <span class="cv-tag">Design</span>
+      <span class="cv-tag">Webdesign</span>
+      <span class="cv-tag">Notion</span>
+      <span class="cv-tag">HTML / CSS</span>
+      <span class="cv-tag pt">Português (nativo)</span>
+      <span class="cv-tag en">Portuguese (native)</span>
+      <span class="cv-tag pt">Inglês B1</span>
+      <span class="cv-tag en">English B1</span>
+      <span class="cv-tag pt">Carta B / B1</span>
+      <span class="cv-tag en">Driving licence B / B1</span>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <div class="cv-sec">
+    <h2 class="cv-sec-title pt">Destaques</h2>
+    <h2 class="cv-sec-title en">Highlights</h2>
+    <div class="cv-tags">
+      <span class="cv-tag">Notion Essentials Badge — Notion HQ</span>
+      <span class="cv-tag pt">Melhor aluno do curso — Francisco Franco 2014/15</span>
+      <span class="cv-tag en">Best student award — Francisco Franco 2014/15</span>
+      <span class="cv-tag pt">Encontro de Jovens Ativistas — Amnistia Internacional</span>
+      <span class="cv-tag en">Youth Activists Meeting — Amnesty International</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="cv-ftr">
+    <a class="back" href="index.html">← <span class="pt">Voltar ao início</span><span class="en">Back to home</span></a>
+    <p><a href="mailto:me@andreaguiar.net">me@andreaguiar.net</a></p>
+  </div>
+
+</div>
+
+<script>
+  const html=document.documentElement,tb=document.getElementById('themeBtn');
+  const st=localStorage.getItem('aa-theme');
+  if(st)html.setAttribute('data-theme',st);
+  tb.addEventListener('click',()=>{
+    const n=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',n);
+    localStorage.setItem('aa-theme',n);
+  });
+
+  const cv=document.getElementById('cvDoc');
+  function setLang(l){
+    cv.setAttribute('data-lang',l);
+    html.setAttribute('lang',l);
+    document.getElementById('bPT').classList.toggle('on',l==='pt');
+    document.getElementById('bEN').classList.toggle('on',l==='en');
+  }
+</script>
+</body>
+</html>

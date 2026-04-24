@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* ── Tokens ── */
     :root {
       --bg:      #f4efe6;
       --surface: #ece6d8;
@@ -32,12 +31,8 @@
       --hint:    #585450;
       --gold:    #d4a83a;
     }
-
-    /* ── Lang switch ── */
     [data-lang="pt"] [lang="en"] { display: none; }
     [data-lang="en"] [lang="pt"] { display: none; }
-
-    /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -49,8 +44,6 @@
     }
     a { color: inherit; }
     .wrap { max-width: 960px; margin: 0 auto; padding: 0 32px; }
-
-    /* ── Header ── */
     header {
       border-bottom: 1px solid var(--border);
       position: sticky; top: 0; z-index: 100;
@@ -62,33 +55,23 @@
     .nav { display: flex; align-items: center; gap: 20px; }
     .nav a { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; letter-spacing: .02em; transition: color .2s; }
     .nav a:hover { color: var(--text); }
-
-    /* ── Lang toggle ── */
     .lang-toggle { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); }
     .lang-btn { font-size: 12px; font-weight: 500; padding: 7px 13px; background: transparent; border: none; cursor: pointer; color: var(--muted); font-family: 'Instrument Sans', sans-serif; letter-spacing: .04em; transition: background .15s, color .15s; }
     .lang-btn.active { background: var(--text); color: var(--bg); }
     .lang-btn:not(.active):hover { color: var(--text); }
-
-    /* ── Theme btn ── */
     .theme-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: border-color .2s, color .2s; }
     .theme-btn:hover { border-color: var(--border2); color: var(--text); }
     .theme-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
     .i-sun, .i-moon { display: none; }
     [data-theme="light"] .i-sun  { display: block; }
     [data-theme="dark"]  .i-moon { display: block; }
-
-    /* ── Sections ── */
     .sec { padding: 64px 0; border-bottom: 1px solid var(--border); }
     .sec:last-of-type { border-bottom: none; }
     .sec-label { font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--hint); margin-bottom: 32px; }
-
-    /* ── Buttons ── */
     .btn-outline { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border2); background: transparent; color: var(--muted); text-decoration: none; font-family: inherit; transition: border-color .2s, color .2s; }
     .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
     .btn-solid { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 8px; border: 1px solid var(--text); background: var(--text); color: var(--bg); text-decoration: none; transition: opacity .2s; }
     .btn-solid:hover { opacity: .82; }
-
-    /* ── Hero ── */
     .hero {
       padding: 100px 0 88px;
       border-bottom: 1px solid var(--border);
@@ -140,8 +123,6 @@
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
-    /* ── About ── */
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
     .about-left h2 { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -.015em; color: var(--text); line-height: 1.15; margin-bottom: 18px; }
     .about-left h2 em { font-style: italic; color: var(--gold); }
@@ -155,8 +136,6 @@
     .lc-sub   { font-size: 12px; color: var(--hint); margin-top: 2px; }
     .lc-arrow { font-size: 14px; color: var(--hint); transition: transform .2s, color .2s; }
     .link-card:hover .lc-arrow { transform: translate(2px,-2px); color: var(--gold); }
-
-    /* ── Notion ── */
     .notion-feature { display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; border: 1px solid var(--border); border-radius: 16px; padding: 40px; background: var(--surface); }
     .notion-text h2 { font-family: 'Instrument Serif', serif; font-size: 26px; font-weight: 400; letter-spacing: -.015em; color: var(--text); line-height: 1.15; margin-bottom: 14px; }
     .notion-text h2 em { font-style: italic; color: var(--gold); }
@@ -167,8 +146,6 @@
     .notion-badge { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 14px; padding: 28px 32px; background: var(--bg); min-width: 148px; text-align: center; }
     .notion-badge-num { font-family: 'Instrument Serif', serif; font-size: 52px; font-weight: 400; color: var(--gold); line-height: 1; letter-spacing: -.02em; }
     .notion-badge-lbl { font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--hint); margin-top: 8px; }
-
-    /* ── Design grid ── */
     .design-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
     .design-card { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow: hidden; text-decoration: none; display: block; transition: border-color .2s, transform .2s; }
     .design-card:hover { border-color: var(--gold); transform: translateY(-2px); }
@@ -184,8 +161,6 @@
     .design-card:hover .design-arrow { transform: translate(2px,-2px); color: var(--gold); }
     .behance-link { display: flex; align-items: center; gap: 8px; margin-top: 24px; font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; }
     .behance-link:hover { color: var(--gold); }
-
-    /* ── Tool cards ── */
     .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 12px; }
     .t-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; text-decoration: none; transition: border-color .2s, background .2s, transform .2s; }
     .t-card:hover { border-color: var(--gold); background: var(--surface2); transform: translateY(-3px); }
@@ -199,16 +174,12 @@
     .t-tag { font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 20px; background: var(--bg); color: var(--hint); text-transform: uppercase; letter-spacing: .07em; border: 1px solid var(--border); }
     .t-arrow { font-size: 16px; color: var(--hint); transition: transform .2s, color .2s; }
     .t-card:hover .t-arrow { transform: translate(3px,-3px); color: var(--gold); }
-
-    /* ── Footer ── */
     footer { border-top: 1px solid var(--border); padding: 30px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     .f-left { display: flex; align-items: center; gap: 8px; }
     .dot { width: 7px; height: 7px; border-radius: 50%; background: #4caf7d; }
     footer p { font-size: 12px; color: var(--hint); }
     footer a { color: var(--hint); text-decoration: none; transition: color .2s; }
     footer a:hover { color: var(--muted); }
-
-    /* ── Responsive ── */
     @media (max-width: 720px) {
       .wrap { padding: 0 20px; }
       .hero { padding: 64px 0 52px; }
@@ -224,8 +195,6 @@
   </style>
 </head>
 <body>
-
-<!-- HEADER -->
 <header>
   <div class="wrap">
     <nav class="topbar">
@@ -253,8 +222,6 @@
 
 <main>
 <div class="wrap">
-
-  <!-- HERO -->
   <section class="hero">
     <svg class="hero-bg" viewBox="0 0 960 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true" fill="none">
       <g opacity=".13" stroke="var(--gold)" stroke-width=".8">
@@ -298,7 +265,7 @@
       </g>
     </svg>
     <div class="hero-content">
-      <p class="hero-kicker">andreaguiar.net</p>
+      <p class="hero-kicker">andreaguiar.org</p>
       <h1>
         <span lang="pt">Projetista FTTH.<br><em>Criador</em> de coisas úteis.</span>
         <span lang="en">FTTH Designer.<br><em>Builder</em> of useful things.</span>
@@ -312,8 +279,6 @@
       </div>
     </div>
   </section>
-
-  <!-- SOBRE -->
   <section class="sec" id="sobre">
     <p class="sec-label" lang="pt">sobre mim</p>
     <p class="sec-label" lang="en">about</p>
@@ -348,8 +313,6 @@
       </div>
     </div>
   </section>
-
-  <!-- NOTION -->
   <section class="sec" id="notion">
     <p class="sec-label" lang="pt">templates notion</p>
     <p class="sec-label" lang="en">notion templates</p>
@@ -370,8 +333,6 @@
       </div>
     </div>
   </section>
-
-  <!-- DESIGN -->
   <section class="sec" id="design">
     <p class="sec-label">design &amp; webdesign</p>
     <div class="design-grid">
@@ -406,8 +367,6 @@
       <span lang="en">View full portfolio on Behance ↗</span>
     </a>
   </section>
-
-  <!-- FERRAMENTAS -->
   <section class="sec" id="ferramentas">
     <p class="sec-label" lang="pt">ferramentas &amp; calculadoras</p>
     <p class="sec-label" lang="en">tools &amp; calculators</p>
@@ -482,8 +441,7 @@
 
 <script>
   const root = document.documentElement;
-  const savedTheme = localStorage.getItem('aa-theme');
-  if (savedTheme) root.setAttribute('data-theme', savedTheme);
+  root.setAttribute('data-theme', localStorage.getItem('aa-theme') || 'dark');
   document.getElementById('themeBtn').addEventListener('click', () => {
     const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', next);

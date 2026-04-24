@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" data-theme="dark" data-lang="pt">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@
   --r:10px; --r-sm:6px; --r-lg:14px;
   --shadow: 0 1px 3px rgba(28,34,56,.06), 0 1px 2px rgba(28,34,56,.04);
 }
-html.dark{
+html[data-theme="dark"]{
   --c-bg:#131210; --c-surface:#1b1916; --c-surface2:#23211d;
   --c-border:#2c2924; --c-border2:#3b3730;
   --c-text:#f0e9d8; --c-text2:#98908a; --c-text3:#585450;
@@ -34,6 +34,8 @@ html.dark{
   --c-orange:#e8830a;
   --shadow: 0 1px 3px rgba(0,0,0,.3);
 }
+[data-lang="pt"] [lang="en"] { display: none; }
+[data-lang="en"] [lang="pt"] { display: none; }
 
 /* ── BASE ── */
 html{scroll-behavior:smooth;font-size:15px}
@@ -51,18 +53,18 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
   padding:1.1rem 0;
   border-bottom:1px solid var(--c-border);
 }
-.hero-wordmark{font-family:'Instrument Serif',serif;font-size:17px;color:var(--c-text);letter-spacing:-.01em}
+.hero-wordmark{font-family:'Instrument Serif',serif;font-size:17px;color:var(--c-text);letter-spacing:-.01em;text-decoration:none}
 .hero-wordmark em{font-style:italic;color:var(--c-accent)}
 .nav-actions{display:flex;gap:6px;align-items:center}
 .nav-btn{
-  padding:5px 13px;border-radius:8px;
-  border:1px solid var(--c-border);
-  background:var(--c-surface);
+  padding:5px 13px;border-radius:0;
+  border:none;
+  background:transparent;
   font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;
   color:var(--c-text2);cursor:pointer;transition:background .15s,color .15s;
   letter-spacing:.04em;
 }
-.nav-btn.active{background:var(--c-text);border-color:var(--c-text);color:var(--c-bg)}
+.nav-btn.active{background:var(--c-text);color:var(--c-bg)}
 .nav-btn:hover:not(.active){color:var(--c-text)}
 .nav-icon-btn{
   width:30px;height:30px;border-radius:50%;
@@ -72,23 +74,10 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
   color:var(--c-text2);transition:border-color .2s,color .2s;
 }
 .nav-icon-btn:hover{border-color:var(--c-border2);color:var(--c-text)}
-.dark-wrap{position:relative;display:flex;align-items:center}
-.dark-tip{
-  position:absolute;top:calc(100% + 8px);right:0;
-  font-size:10px;font-weight:500;color:var(--c-text2);
-  white-space:nowrap;border:1px solid var(--c-border);
-  border-radius:8px;padding:5px 10px;background:var(--c-surface);
-  box-shadow:var(--shadow);
-  opacity:0;pointer-events:none;transform:translateY(-4px);
-  transition:opacity .2s,transform .2s;z-index:10;
-}
-.dark-tip::before{
-  content:'';position:absolute;top:-4px;right:12px;
-  width:8px;height:8px;background:var(--c-surface);
-  border-top:1px solid var(--c-border);border-left:1px solid var(--c-border);
-  transform:rotate(45deg);
-}
-.dark-tip.show{opacity:1;transform:translateY(0)}
+.i-sun, .i-moon { display: none; }
+[data-theme="light"] .i-sun  { display: block; }
+[data-theme="dark"]  .i-moon { display: block; }
+.dark-wrap{display:none}
 .hero-body{
   max-width:840px;margin:0 auto;
   padding:3.5rem 0 4rem;
@@ -318,7 +307,14 @@ input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.15);box-shadow:0
 /* ── DIVIDER ── */
 hr{border:none;border-top:1px solid var(--c-border);margin:.9rem 0}
 
-/* ── ANIMATIONS ── */
+/* ── BACK LINK ── */
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:500;color:var(--c-text2);
+  text-decoration:none;letter-spacing:.01em;
+  transition:color .2s;
+}
+.back-link:hover{color:var(--c-accent)}
 @keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .card{animation:up .35s ease both}
 .card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}
@@ -331,25 +327,35 @@ hr{border:none;border-top:1px solid var(--c-border);margin:.9rem 0}
 <!-- ── HERO ── -->
 <header class="hero">
   <nav class="hero-nav">
-    <div class="hero-wordmark" id="hero-wordmark">Solar <em>RAM</em></div>
+    <a class="back-link" href="index.html#ferramentas">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 2.5L3.5 7l5 4.5"/></svg>
+      <span lang="pt">Voltar ao início</span>
+      <span lang="en">Back to home</span>
+    </a>
     <div class="nav-actions">
-      <button class="nav-btn active" onclick="setLang('pt')">PT</button>
-      <button class="nav-btn" onclick="setLang('en')">EN</button>
-      <div class="dark-wrap">
-        <button class="nav-icon-btn" id="dark-btn" onclick="toggleDark()" aria-label="Dark mode">
-          <svg id="dark-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 1.5v1M7 11.5v1M1.5 7h1M11.5 7h1M3.1 3.1l.7.7M10.2 10.2l.7.7M3.1 10.9l.7-.7M10.2 3.8l.7-.7M9.5 7a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
-          </svg>
-        </button>
-        <div class="dark-tip" id="dark-tip"></div>
+      <div style="display:flex;border:1px solid var(--c-border);border-radius:8px;overflow:hidden;background:var(--c-surface)">
+        <button class="nav-btn active" id="btnPT">PT</button>
+        <button class="nav-btn" id="btnEN">EN</button>
       </div>
+      <button class="nav-icon-btn" id="themeBtn" aria-label="Alternar tema">
+        <svg class="i-sun" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><line x1="8" y1="1" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15"/><line x1="1" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15" y2="8"/><line x1="3.05" y1="3.05" x2="4.1" y2="4.1"/><line x1="11.9" y1="11.9" x2="12.95" y2="12.95"/><line x1="12.95" y1="3.05" x2="11.9" y2="4.1"/><line x1="4.1" y1="11.9" x2="3.05" y2="12.95"/></svg>
+        <svg class="i-moon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7z"/></svg>
+      </button>
     </div>
   </nav>
   <div class="hero-body">
-    <div class="hero-kicker" id="kicker-text">Madeira · EEM 2026 · Gratuito</div>
-    <h1 id="hero-h1">Simulador de energia solar <em>RAM</em></h1>
-    <p class="hero-sub" id="hero-p">Dimensiona o teu sistema fotovoltaico com as tarifas reais da EEM. Sem registos, sem dados pessoais.</p>
-
+    <div class="hero-kicker">
+      <span lang="pt">Madeira · Gratuito · Sem registos</span>
+      <span lang="en">Madeira · Free · No sign-up</span>
+    </div>
+    <h1>
+      <span lang="pt">Simulador de energia solar <em>RAM</em></span>
+      <span lang="en">Madeira solar energy <em>calculator</em></span>
+    </h1>
+    <p class="hero-sub">
+      <span lang="pt">Calcula painéis, bateria e poupança real com as tarifas da EEM 2026. Rápido, gratuito, sem registo.</span>
+      <span lang="en">Calculate panels, battery and real savings using official EEM 2026 tariffs. Free, no account needed.</span>
+    </p>
   </div>
 </header>
 
@@ -494,79 +500,43 @@ hr{border:none;border-top:1px solid var(--c-border);margin:.9rem 0}
 </main>
 
 <script>
-// ── CONSTANTES EEM 2026 (Diretiva 10/2025, 15/12/2025) ───────────────────────
-const HSP    = 4.8;    // horas sol pico/dia, média anual Madeira (PVGIS)
-const EFF    = 0.78;   // eficiência sistema: perdas inversor (~4%), cabos (~2%),
-                       // temperatura (~8%), sujidade (~3%), outros (~5%) = ~22%
-                       // Referência: performance ratio 0.75–0.85, valor central 0.78
-const KWH_S  = 0.1659; // simples BTN ≤20.7 e >2.3 kVA (EEM 2026)
-const KWH_FV = 0.1980; // bi-horária fora de vazio (EEM 2026)
-const KWH_V  = 0.1075; // bi-horária vazio (EEM 2026)
-// IVA Madeira 2026 (confirmado fatura EEM real, Lei n.º 38/2024):
-const IVA_RED  = 0.04;  // 4% — primeiros 200 kWh/30 dias (potências ≤ 6,9 kVA)
-const IVA_NORM = 0.22;  // 22% — consumo acima do limiar e potência contratada
-const KVA_LIMIAR = 6.9; // potências > 6,9 kVA não têm taxa reduzida
-const KWH_LIMIAR = 200; // kWh/30 dias com taxa reduzida
-const CAV        = 2.85; // Contribuição Audiovisual (Lei 30/2003) — valor fixo mensal
-const CAV_IVA    = 0.04; // IVA 4% sobre CAV na Madeira
+const HSP=4.8,EFF=0.78,KWH_S=0.1659,KWH_FV=0.1980,KWH_V=0.1075;
+const IVA_RED=0.04,IVA_NORM=0.22,KVA_LIMIAR=6.9,KWH_LIMIAR=200,CAV=2.85,CAV_IVA=0.04;
+let lang='pt',orientFactor=1.0,tarifaTipo='simples';
 
-// ── ESTADO ───────────────────────────────────────────────────────────────────
-let lang         = 'pt';
-let orientFactor = 1.0;
-let tarifaTipo   = 'simples';
-let darkMode     = false;
-
-// ── TRADUÇÕES ─────────────────────────────────────────────────────────────────
-const T = {
-  pt: {
-    kicker:'Madeira · Gratuito · Sem registos',
-    h1:'Simulador de energia solar <em>RAM</em>',
-    heroP:'Calcula painéis, bateria e poupança real com as tarifas da EEM 2026. Rápido, gratuito, sem registo.',
-    s1:'O teu contrato', lblPotencia:'Potência contratada', lblConsumo:'Consumo mensal',
-    lblTarifa:'Tarifa', pillS:'Simples', pillB:'Bi-horária',
-    lblFV:'% fora de vazio', lblRFV:'Fora de vazio', lblRV:'Vazio',
-    bhNote:'Horas de vazio (EEM): 22h–8h dias úteis · 22h–10h30 fins de semana e feriados.',
-    fatLbl:'Fatura atual estimada',
-    s2:'Sistema solar', lblNP:'Painéis', lblWP:'Potência por painel',
-    lblBat:'Bateria', lblOrient:'Orientação do telhado', batNone:'sem bateria',
-    s3:'Resultados',
-    mProd:'Produção mensal', mProdSub:'kWh gerados',
-    mCob:'Cobertura solar', mCobBat:'c/ bateria', mCobNoBat:'sem bateria',
-    mDia:'Produção diária', mDiaSub:'kWh/dia (média)',
-    mAut:'Autonomia', mAutNoBat:'sem bateria', mAutBat:b=>b+' kWh úteis',
-    barDir:'Autoconsumo direto', barBat:'Via bateria',
-    barRede:'Da rede EEM', barExc:'Excedente',
+const T={
+  pt:{
+    batNone:'sem bateria',fatLbl:'Fatura atual estimada',
+    mProd:'Produção mensal',mProdSub:'kWh gerados',
+    mCob:'Cobertura solar',mCobBat:'c/ bateria',mCobNoBat:'sem bateria',
+    mDia:'Produção diária',mDiaSub:'kWh/dia (média)',
+    mAut:'Autonomia',mAutNoBat:'sem bateria',mAutBat:b=>b+' kWh úteis',
+    barDir:'Autoconsumo direto',barBat:'Via bateria',barRede:'Da rede EEM',barExc:'Excedente',
     resOk:(c,b,a)=>`Sistema bem dimensionado — cobre ${c}% do consumo.${b>0?' Com bateria tens ~'+a+' dias de autonomia.':''}`,
     resWarn:(p,s)=>`Boa redução de fatura. Para cobrir ≥90% precisas de ${s} painéis (hoje ${p}% ainda vem da rede).`,
     resDanger:(s)=>`Já há poupança, mas para cobrir ≥80% precisas de ${s} painéis.`,
-    s4:'Poupança na fatura', siAtual:'Fatura atual', siNova:'Nova fatura',
-    siMes:'Poupas/mês', siAno:'Poupas/ano', siIva:'c/ IVA 4%/22%',
-    siFat:'na fatura EEM', siEst:'estimativa',
+    siAtual:'Fatura atual',siNova:'Nova fatura',siMes:'Poupas/mês',siAno:'Poupas/ano',
+    siIva:'c/ IVA 4%/22%',siFat:'na fatura EEM',siEst:'estimativa',
     bdTitle:'Detalhe da nova fatura',
-    bdE:(kwh)=>`Energia (${kwh} kWh × 0,1659 €)`,
-    bdFV:(kwh)=>`Fora de vazio (${kwh} kWh × 0,1980 €)`,
-    bdV:(kwh)=>`Vazio (${kwh} kWh × 0,1075 €)`,
-    bdP:(d)=>`Potência contratada (30 dias × ${d} €)`,
-    bdSub:'Subtotal s/ IVA',
-    bdIva4:(kwh)=>`IVA 4% (primeiros ${kwh} kWh)`, bdIva22:(kwh)=>`IVA 22% (acima de 200 kWh — ${kwh} kWh + potência)`, bdIva22all:'IVA 22%', bdIva22pot:'IVA 22% (potência contratada)',
-    bdCav:'Contribuição Audiovisual (2,85 € + IVA 4%)',
-    bdTot:'Total c/ IVA',
-    accLabel:'Como funciona o cálculo',
+    bdE:k=>`Energia (${k} kWh × 0,1659 €)`,bdFV:k=>`Fora de vazio (${k} kWh × 0,1980 €)`,
+    bdV:k=>`Vazio (${k} kWh × 0,1075 €)`,bdP:d=>`Potência contratada (30 dias × ${d} €)`,
+    bdSub:'Subtotal s/ IVA',bdIva4:k=>`IVA 4% (primeiros ${k} kWh)`,
+    bdIva22:k=>`IVA 22% (acima de 200 kWh — ${k} kWh + potência)`,
+    bdIva22pot:'IVA 22% (potência contratada)',
+    bdCav:'Contribuição Audiovisual (2,85 € + IVA 4%)',bdTot:'Total c/ IVA',
     accTitle:'Como funciona',
     accItems:(nW,nD)=>[
       `<strong>Autoconsumo direto:</strong> ~55% da produção solar coincide com o uso diurno da casa.`,
       `<strong>Com bateria:</strong> o excedente diurno é armazenado para usar à noite — autoconsumo sobe para ~65–75%.`,
-      `<strong>Dias nublados:</strong> produção estimada ~${nW} W (~${nD} kWh/dia). Normalmente suficiente para o consumo base sem tocar na bateria.`,
-      `<strong>Eficiência do sistema:</strong> 78% — inversor ~4%, cabos ~2%, temperatura ~8%, sujidade ~3%, outros ~5%. Valor de referência: performance ratio 0,75–0,85 (IEA/PVGIS). O simulador usa 0,78 como valor central conservador.`,
+      `<strong>Dias nublados:</strong> produção estimada ~${nW} W (~${nD} kWh/dia). Normalmente suficiente para o consumo base.`,
+      `<strong>Eficiência do sistema:</strong> 78% — inversor ~4%, cabos ~2%, temperatura ~8%, sujidade ~3%, outros ~5%.`,
       `<strong>Potência contratada:</strong> custo fixo que se mantém mesmo com solar instalado.`,
-      `<strong>IVA Madeira:</strong> 4% nos primeiros 200 kWh/mês (potências ≤ 6,9 kVA) e 22% no restante. Confirmado pela Diretiva EEM 10/2025 e Lei n.º 38/2024.`,
+      `<strong>IVA Madeira:</strong> 4% nos primeiros 200 kWh/mês (potências ≤ 6,9 kVA) e 22% no restante.`,
     ],
-    accExc:(kwh)=>`<strong>Excedente de ${kwh} kWh/mês:</strong> pode ser injetado na rede. É normal — mesmo com bateria grande, nos dias de muito sol produz-se mais do que se consegue armazenar.`,
-    s5:'Investimento estimado', ctPaineis:(n,w)=>`${n} painéis ${w} Wp + estrutura`,
-    ctInv:'Inversor híbrido', ctBat:b=>`Bateria ${b} kWh (LiFePO4)`,
-    ctInst:'Instalação, cablagem e projeto',
-    ctTot:'Total estimado', ctApoio:'Apoio Fundo Ambiental (bateria)',
-    ctLiq:'Total após apoio',
+    accExc:k=>`<strong>Excedente de ${k} kWh/mês:</strong> pode ser injetado na rede.`,
+    ctPaineis:(n,w)=>`${n} painéis ${w} Wp + estrutura`,ctInv:'Inversor híbrido',
+    ctBat:b=>`Bateria ${b} kWh (LiFePO4)`,ctInst:'Instalação, cablagem e projeto',
+    ctTot:'Total estimado',ctApoio:'Apoio Fundo Ambiental (bateria)',ctLiq:'Total após apoio',
     retorno:(r,p)=>`Retorno em ~<strong>${r} anos</strong> · Vida útil: 25+ anos · Poupança estimada em 25 anos: <strong>${p}</strong>`,
     fcells:[
       {l:'Tarifas EEM 2026',v:'Simples: 0,1659 €/kWh<br>Bi-horária: 0,1980 / 0,1075 €/kWh<br>IVA: 4% (≤200kWh) · 22% (resto) · <a href="https://www.eem.pt" target="_blank">eem.pt</a>'},
@@ -575,56 +545,39 @@ const T = {
     ],
     fNote:'Tarifas EEM: Diretiva 10/2025 de 15/12/2025 · Irradiação: PVGIS/JRC · IVA 4%/22% (Madeira, Lei 38/2024)<br>Ferramenta independente, não afiliada com a EEM. Pede sempre orçamentos a instaladores certificados na Madeira.',
   },
-  en: {
-    kicker:'Madeira · Free · No sign-up',
-    h1:'Madeira solar energy <em>calculator</em>',
-    heroP:'Calculate panels, battery and real savings using official EEM 2026 tariffs. Free, no account needed.',
-    s1:'Your contract', lblPotencia:'Contracted power', lblConsumo:'Monthly consumption',
-    lblTarifa:'Tariff', pillS:'Flat rate', pillB:'Time-of-use',
-    lblFV:'Off-peak %', lblRFV:'Off-peak', lblRV:'Night',
-    bhNote:'Night hours (EEM): 10pm–8am weekdays · 10pm–10:30am weekends & holidays.',
-    fatLbl:'Estimated current bill',
-    s2:'Solar system', lblNP:'Panels', lblWP:'Power per panel',
-    lblBat:'Battery', lblOrient:'Roof orientation', batNone:'no battery',
-    s3:'Results',
-    mProd:'Monthly output', mProdSub:'kWh generated',
-    mCob:'Solar coverage', mCobBat:'with battery', mCobNoBat:'no battery',
-    mDia:'Daily output', mDiaSub:'kWh/day (avg)',
-    mAut:'Autonomy', mAutNoBat:'no battery', mAutBat:b=>b+' usable kWh',
-    barDir:'Direct use', barBat:'Via battery',
-    barRede:'From grid', barExc:'Surplus',
+  en:{
+    batNone:'no battery',fatLbl:'Estimated current bill',
+    mProd:'Monthly output',mProdSub:'kWh generated',
+    mCob:'Solar coverage',mCobBat:'with battery',mCobNoBat:'no battery',
+    mDia:'Daily output',mDiaSub:'kWh/day (avg)',
+    mAut:'Autonomy',mAutNoBat:'no battery',mAutBat:b=>b+' usable kWh',
+    barDir:'Direct use',barBat:'Via battery',barRede:'From grid',barExc:'Surplus',
     resOk:(c,b,a)=>`Well-sized system — covers ${c}% of consumption.${b>0?' Battery gives ~'+a+' days of autonomy.':''}`,
     resWarn:(p,s)=>`Good bill reduction. For ≥90% coverage you need ${s} panels (currently ${p}% still from grid).`,
     resDanger:(s)=>`Savings are real, but for ≥80% coverage you need ${s} panels.`,
-    s4:'Bill savings', siAtual:'Current bill', siNova:'New bill',
-    siMes:'Saving/month', siAno:'Saving/year', siIva:'incl. VAT 4%/22%',
-    siFat:'on EEM bill', siEst:'estimate',
+    siAtual:'Current bill',siNova:'New bill',siMes:'Saving/month',siAno:'Saving/year',
+    siIva:'incl. VAT 4%/22%',siFat:'on EEM bill',siEst:'estimate',
     bdTitle:'New bill breakdown',
-    bdE:(kwh)=>`Energy (${kwh} kWh × €0.1659)`,
-    bdFV:(kwh)=>`Off-peak (${kwh} kWh × €0.1980)`,
-    bdV:(kwh)=>`Night (${kwh} kWh × €0.1075)`,
-    bdP:(d)=>`Capacity charge (30 days × €${d})`,
-    bdSub:'Subtotal excl. VAT',
-    bdIva4:(kwh)=>`4% VAT (first ${kwh} kWh)`, bdIva22:(kwh)=>`22% VAT (above 200 kWh — ${kwh} kWh + capacity)`, bdIva22all:'22% VAT', bdIva22pot:'22% VAT (capacity charge only)',
-    bdCav:'Audiovisual Fee (€2.85 + 4% VAT)',
-    bdTot:'Total incl. VAT',
-    accLabel:'How the calculation works',
+    bdE:k=>`Energy (${k} kWh × €0.1659)`,bdFV:k=>`Off-peak (${k} kWh × €0.1980)`,
+    bdV:k=>`Night (${k} kWh × €0.1075)`,bdP:d=>`Capacity charge (30 days × €${d})`,
+    bdSub:'Subtotal excl. VAT',bdIva4:k=>`4% VAT (first ${k} kWh)`,
+    bdIva22:k=>`22% VAT (above 200 kWh — ${k} kWh + capacity)`,
+    bdIva22pot:'22% VAT (capacity charge only)',
+    bdCav:'Audiovisual Fee (€2.85 + 4% VAT)',bdTot:'Total incl. VAT',
     accTitle:'How it works',
     accItems:(nW,nD)=>[
-      `<strong>Direct self-consumption:</strong> ~55% of solar output is used directly in the home during daylight hours.`,
+      `<strong>Direct self-consumption:</strong> ~55% of solar output is used directly during daylight hours.`,
       `<strong>With a battery:</strong> daytime surplus is stored for night use — self-consumption rises to ~65–75%.`,
-      `<strong>Cloudy days:</strong> estimated output ~${nW} W (~${nD} kWh/day). Usually enough for base load without touching the battery.`,
-      `<strong>System efficiency:</strong> 78% — inverter ~4%, cables ~2%, temperature ~8%, soiling ~3%, other ~5%. Based on IEA/PVGIS performance ratio of 0.75–0.85; 0.78 used as conservative central value.`,
+      `<strong>Cloudy days:</strong> estimated output ~${nW} W (~${nD} kWh/day). Usually enough for base load.`,
+      `<strong>System efficiency:</strong> 78% — inverter ~4%, cables ~2%, temperature ~8%, soiling ~3%, other ~5%.`,
       `<strong>Capacity charge:</strong> fixed cost that remains even with solar installed.`,
-      `<strong>VAT in Madeira:</strong> 4% on the first 200 kWh/month (contracts ≤ 6.9 kVA) and 22% on the rest. Confirmed by EEM Directive 10/2025 and Law 38/2024.`,
+      `<strong>VAT in Madeira:</strong> 4% on the first 200 kWh/month (contracts ≤ 6.9 kVA) and 22% on the rest.`,
     ],
-    accExc:(kwh)=>`<strong>Surplus of ${kwh} kWh/month:</strong> can be fed back into the grid. This is normal — on very sunny days production exceeds what the battery can store.`,
-    s5:'Estimated investment', ctPaineis:(n,w)=>`${n} panels ${w} Wp + mounting`,
-    ctInv:'Hybrid inverter', ctBat:b=>`Battery ${b} kWh (LiFePO4)`,
-    ctInst:'Installation, wiring and project',
-    ctTot:'Gross total', ctApoio:'Environmental Fund subsidy (battery)',
-    ctLiq:'Total after subsidy',
-    retorno:(r,p)=>`Payback in ~<strong>${r} years</strong> · System lifetime: 25+ years · Estimated total savings over 25 years: <strong>${p}</strong>`,
+    accExc:k=>`<strong>Surplus of ${k} kWh/month:</strong> can be fed back into the grid.`,
+    ctPaineis:(n,w)=>`${n} panels ${w} Wp + mounting`,ctInv:'Hybrid inverter',
+    ctBat:b=>`Battery ${b} kWh (LiFePO4)`,ctInst:'Installation, wiring and project',
+    ctTot:'Gross total',ctApoio:'Environmental Fund subsidy (battery)',ctLiq:'Total after subsidy',
+    retorno:(r,p)=>`Payback in ~<strong>${r} years</strong> · System lifetime: 25+ years · Estimated savings over 25 years: <strong>${p}</strong>`,
     fcells:[
       {l:'EEM Tariffs 2026',v:'Flat: €0.1659/kWh<br>TOU: €0.1980 / €0.1075/kWh<br>VAT: 4% (≤200kWh) · 22% (rest) · <a href="https://www.eem.pt" target="_blank">eem.pt</a>'},
       {l:'Model',v:'Irradiation ~4.8 peak h/day (PVGIS)<br>Efficiency 78% · Self-cons. 55–75%'},
@@ -632,319 +585,187 @@ const T = {
     ],
     fNote:'EEM tariffs: Directive 10/2025, 15/12/2025 · Irradiation: PVGIS/JRC · VAT 4%/22% (Madeira, Law 38/2024)<br>Independent tool, not affiliated with EEM. Always get quotes from certified installers in Madeira.',
   }
+};
+
+const $=id=>document.getElementById(id);
+function eur(n){return n.toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
+
+function calcIvaEnergia(kwh,precoUnit,td,kvaVal){
+  const temR=kvaVal<=KVA_LIMIAR,lim=temR?KWH_LIMIAR:0;
+  const kR=temR?Math.min(kwh,lim):0,kN=Math.max(0,kwh-kR);
+  const eR=kR*precoUnit,eN=kN*precoUnit,p=td*30;
+  const iR=eR*IVA_RED,iN=(eN+p)*IVA_NORM;
+  const sub=eR+eN+p,cav=CAV*(1+CAV_IVA),tot=sub+iR+iN+cav;
+  return{e:kwh*precoUnit,eRed:eR,eNorm:eN,kwhRed:kR,kwhNorm:kN,p,
+    ivaRed:iR,ivaNorm:iN,sub,tot,cav,eFV:0,eV:0,kFV:0,kV:0};
+}
+function calcSimples(kwh,td,kvaVal){return calcIvaEnergia(kwh,KWH_S,td,kvaVal);}
+function calcBihorario(kFV,kV,td,kvaVal){
+  const kT=kFV+kV,temR=kvaVal<=KVA_LIMIAR,lim=temR?KWH_LIMIAR:0;
+  const rFV=kT>0?kFV/kT:0.6;
+  const kRFV=temR?Math.min(kFV,lim*rFV):0,kRV=temR?Math.min(kV,lim*(1-rFV)):0;
+  const kNFV=kFV-kRFV,kNV=kV-kRV;
+  const eFV=kFV*KWH_FV,eV=kV*KWH_V,p=td*30;
+  const sR=(kRFV*KWH_FV+kRV*KWH_V),sN=(kNFV*KWH_FV+kNV*KWH_V+p);
+  const iR=sR*IVA_RED,iN=sN*IVA_NORM;
+  const sub=eFV+eV+p,cav=CAV*(1+CAV_IVA),tot=sub+iR+iN+cav;
+  return{e:eFV+eV,eFV,eV,kFV,kV,p,ivaRed:iR,ivaNorm:iN,sub,tot,cav,
+    eRed:sR,eNorm:kNFV*KWH_FV+kNV*KWH_V,kwhRed:kRFV+kRV,kwhNorm:kNFV+kNV};
 }
 
-// ── UTILS ─────────────────────────────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-function eur(n){ return n.toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' }
+function toggleAcc(){$('acc-body').classList.toggle('open');$('acc-btn').classList.toggle('open');}
 
-// Calcula IVA sobre energia com escalão reduzido (4% até 200kWh, 22% acima)
-// td = termo diário de potência (€/dia); kvaContratada para determinar limiar
-function calcIvaEnergia(kwh, precoUnit, td, kvaVal) {
-  const temReduzida = kvaVal <= KVA_LIMIAR;
-  const limiar = temReduzida ? KWH_LIMIAR : 0;
-  const kwhRed  = temReduzida ? Math.min(kwh, limiar) : 0;
-  const kwhNorm = Math.max(0, kwh - kwhRed);
-  const eRed  = kwhRed  * precoUnit;
-  const eNorm = kwhNorm * precoUnit;
-  const p     = td * 30; // potência sempre a 22%
-  const subRed  = eRed;
-  const subNorm = eNorm + p;
-  const ivaRed  = subRed  * IVA_RED;
-  const ivaNorm = subNorm * IVA_NORM;
-  const sub = eRed + eNorm + p;
-  const cav    = CAV * (1 + CAV_IVA); // 2,85 × 1,04 = 2,96 €
-  const tot = sub + ivaRed + ivaNorm + cav;
-  return {e:kwh*precoUnit, eRed, eNorm, kwhRed, kwhNorm, p,
-          subRed, subNorm, ivaRed, ivaNorm, sub, tot, cav,
-          eFV:0, eV:0, kFV:0, kV:0};
-}
-
-function calcSimples(kwh, td, kvaVal){
-  return calcIvaEnergia(kwh, KWH_S, td, kvaVal);
-}
-
-function calcBihorario(kFV, kV, td, kvaVal) {
-  // Na bi-horária o limiar é repartido proporcionalmente pelos períodos
-  // (conforme ERSE — não se perde o limiar, redistribui-se)
-  const kwhTotal = kFV + kV;
-  const temReduzida = kvaVal <= KVA_LIMIAR;
-  const limiar = temReduzida ? KWH_LIMIAR : 0;
-  // proporção de cada período
-  const ratioFV = kwhTotal > 0 ? kFV / kwhTotal : 0.6;
-  const kwhRedFV  = temReduzida ? Math.min(kFV,  limiar * ratioFV)        : 0;
-  const kwhRedV   = temReduzida ? Math.min(kV,   limiar * (1 - ratioFV))  : 0;
-  const kwhNormFV = kFV - kwhRedFV;
-  const kwhNormV  = kV  - kwhRedV;
-  const eRedFV  = kwhRedFV  * KWH_FV;
-  const eRedV   = kwhRedV   * KWH_V;
-  const eNormFV = kwhNormFV * KWH_FV;
-  const eNormV  = kwhNormV  * KWH_V;
-  const eFV = kFV * KWH_FV, eV = kV * KWH_V;
-  const p   = td * 30;
-  const subRed  = eRedFV + eRedV;
-  const subNorm = eNormFV + eNormV + p;
-  const ivaRed  = subRed  * IVA_RED;
-  const ivaNorm = subNorm * IVA_NORM;
-  const sub = eFV + eV + p;
-  const cav = CAV * (1 + CAV_IVA);
-  const tot = sub + ivaRed + ivaNorm + cav;
-  return {e:eFV+eV, eFV, eV, kFV, kV, p,
-          subRed, subNorm, ivaRed, ivaNorm, sub, tot, cav,
-          eRed:subRed, eNorm:eNormFV+eNormV,
-          kwhRed:kwhRedFV+kwhRedV, kwhNorm:kwhNormFV+kwhNormV};
-}
-
-// ── DARK MODE ─────────────────────────────────────────────────────────────────
-function toggleDark(){
-  darkMode=!darkMode;
-  document.documentElement.classList.toggle('dark',darkMode);
-  const icon=$('dark-icon');
-  icon.innerHTML = darkMode
-    ? '<path d="M11 7.8A4.5 4.5 0 015.2 2a5 5 0 100 10A4.5 4.5 0 0111 7.8z" fill="currentColor"/>'
-    : '<path d="M7 1.5v1M7 11.5v1M1.5 7h1M11.5 7h1M3.1 3.1l.7.7M10.2 10.2l.7.7M3.1 10.9l.7-.7M10.2 3.8l.7-.7M9.5 7a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>';
-  // poupança estimada: ~8W × 6h/dia × 30 dias = 1.44 kWh/mês
-  const tip=$('dark-tip');
-  if(darkMode){
-    const kwh=(8*6*30/1000).toFixed(2);
-    const euros=(kwh*KWH_S*(1+IVA_RED)).toFixed(2); // 4% sobre energia poupada
-    const prefix = lang==='pt' ? 'Poupas' : 'Saves';
-    const unit   = lang==='pt' ? '/mês' : '/month';
-    tip.textContent = prefix+' ~'+kwh+' kWh'+unit+' (≈ '+euros+' €)';
-    tip.classList.add('show');
-    clearTimeout(window._darkTipTimer);
-    window._darkTipTimer = setTimeout(()=>tip.classList.remove('show'), 4500);
-  } else {
-    tip.classList.remove('show');
-    clearTimeout(window._darkTipTimer);
-  }
-}
-
-// ── ACCORDION ─────────────────────────────────────────────────────────────────
-function toggleAcc(){
-  $('acc-body').classList.toggle('open');
-  $('acc-btn').classList.toggle('open');
-}
-
-// ── SET LANG ──────────────────────────────────────────────────────────────────
-function setLang(l){
-  lang=l;
-  document.documentElement.lang=l;
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()));
-  const t=T[l];
-  $('kicker-text').textContent=t.kicker;
-  $('hero-wordmark').innerHTML='Solar <em>RAM</em>';
-  $('hero-h1').innerHTML=t.h1;
-  $('hero-p').textContent=t.heroP;
-
-  $('lbl-s1').textContent=t.s1;
-  $('lbl-potencia').textContent=t.lblPotencia;
-  $('lbl-consumo').textContent=t.lblConsumo;
-  $('lbl-tarifa').textContent=t.lblTarifa;
-  $('pill-s').textContent=t.pillS;
-  $('pill-b').textContent=t.pillB;
-  $('lbl-fv').textContent=t.lblFV;
-  $('lbl-rfv').textContent=t.lblRFV;
-  $('lbl-rv').textContent=t.lblRV;
-  $('lbl-bh-note').textContent=t.bhNote;
-  $('lbl-s2').textContent=t.s2;
-  $('lbl-np').textContent=t.lblNP;
-  $('lbl-wp').textContent=t.lblWP;
-  $('lbl-bat').textContent=t.lblBat;
-  $('lbl-orient').textContent=t.lblOrient;
-  $('lbl-s3').textContent=t.s3;
-  $('lbl-s4').textContent=t.s4;
-  $('lbl-s5').textContent=t.s5;
-  $('acc-label').textContent=t.accLabel;
-  document.querySelectorAll('#orient-group .pill').forEach(b=>{b.textContent=l==='pt'?b.dataset.pt:b.dataset.en});
-  document.querySelectorAll('#potencia option').forEach(o=>{o.textContent=l==='pt'?o.dataset.pt:o.dataset.en});
-  $('footer-grid').innerHTML=t.fcells.map(c=>`<div class="fcell"><div class="fcell-lbl">${c.l}</div><div class="fcell-val">${c.v}</div></div>`).join('');
-  $('footer-note').innerHTML=t.fNote;
-  calc();
-}
-
-// ── CALC ──────────────────────────────────────────────────────────────────────
 function calc(){
-  const t       = T[lang];
-  const consumo = Math.max(1, parseInt($('consumo-num').value) || 250);
-  const np      = +$('npaineis').value;
-  const wp      = +$('wp').value;
-  const bat     = +$('bat').value;
-  const td      = +$('potencia').value;
-  const kvaVal  = parseFloat($('potencia').selectedOptions[0].dataset.kva);
-  const pctFV   = tarifaTipo==='bihorario' ? (+$('fora-vazio').value/100) : 1;
+  const t=T[lang];
+  const consumo=Math.max(1,parseInt($('consumo-num').value)||250);
+  const np=+$('npaineis').value,wp=+$('wp').value,bat=+$('bat').value;
+  const td=+$('potencia').value;
+  const kvaVal=parseFloat($('potencia').selectedOptions[0].dataset.kva);
+  const pctFV=tarifaTipo==='bihorario'?(+$('fora-vazio').value/100):1;
 
-  // labels
-  $('consumo-num').value = consumo;
-  $('np-v').textContent       = np;
-  $('wp-v').textContent       = wp+' Wp';
-  $('bat-v').textContent      = bat>0?bat+' kWh':t.batNone;
-  if(tarifaTipo==='bihorario') $('fv-v').textContent = +$('fora-vazio').value+'%';
+  $('consumo-num').value=consumo;
+  $('np-v').textContent=np;
+  $('wp-v').textContent=wp+' Wp';
+  $('bat-v').textContent=bat>0?bat+' kWh':t.batNone;
+  if(tarifaTipo==='bihorario')$('fv-v').textContent=+$('fora-vazio').value+'%';
 
-  // fatura atual
-  const fatA = tarifaTipo==='bihorario'
-    ? calcBihorario(consumo*pctFV, consumo*(1-pctFV), td, kvaVal)
-    : calcSimples(consumo, td, kvaVal);
-
+  const fatA=tarifaTipo==='bihorario'?calcBihorario(consumo*pctFV,consumo*(1-pctFV),td,kvaVal):calcSimples(consumo,td,kvaVal);
   $('fatura-badge').innerHTML=`<div class="fatura-badge"><span class="fatura-badge-lbl">${t.fatLbl}</span><span class="fatura-badge-val">${eur(fatA.tot)}/mês</span></div>`;
 
-  // produção
-  const prodMes = (np*wp/1000)*HSP*EFF*orientFactor*30;
-  const consDia = consumo/30;
-  const potKw   = (np*wp/1000).toFixed(2);
+  const prodMes=(np*wp/1000)*HSP*EFF*orientFactor*30;
+  const consDia=consumo/30;
+  const batUtil=bat*0.85,dias=bat>0?batUtil/consDia:0;
+  const acDir=bat>0?Math.min(0.75,0.55+0.04*Math.min(dias,5)):0.55;
+  const pDireta=Math.min(prodMes*acDir,consumo);
+  const eBat=bat>0?Math.min((prodMes-pDireta)/30,batUtil)*30:0;
+  const eAprov=Math.min(pDireta+eBat,consumo);
+  const cobert=Math.min(100,Math.round(eAprov/consumo*100));
+  const deficit=Math.max(0,consumo-eAprov);
+  const excess=Math.max(0,prodMes-eAprov);
+  const autDias=bat>0?(batUtil/consDia).toFixed(1):0;
+  const nubW=Math.round(np*wp*0.12),nubD=((np*wp/1000)*0.12*8).toFixed(1);
+  const prodDiaVal=((np*wp/1000)*HSP*EFF*orientFactor).toFixed(1);
 
-  // autoconsumo
-  const batUtil = bat*0.85;
-  const dias    = bat>0?batUtil/consDia:0;
-  const acDir   = bat>0?Math.min(0.75,0.55+0.04*Math.min(dias,5)):0.55;
-  const pDireta = Math.min(prodMes*acDir, consumo);
-  const excDiu  = prodMes-pDireta;
-  const eBat    = bat>0?Math.min(excDiu/30,batUtil)*30:0;
-  const eAprov  = Math.min(pDireta+eBat, consumo);
-  const cobert  = Math.min(100,Math.round(eAprov/consumo*100));
-  const deficit = Math.max(0,consumo-eAprov);
-  const excess  = Math.max(0,prodMes-eAprov);
-  const autDias = bat>0?(batUtil/consDia).toFixed(1):0;
-  // dia nublado: usado apenas no accordion como referência
-  const nubW = Math.round(np*wp*0.12);
-  const nubD = ((np*wp/1000)*0.12*8).toFixed(1);
-  // produção média diária real
-  const prodDiaVal = ((np*wp/1000)*HSP*EFF*orientFactor).toFixed(1);
-
-  // métricas
   $('metrics').innerHTML=`
     <div class="met"><div class="met-lbl">${t.mProd}</div><div class="met-val">${Math.round(prodMes)}</div><div class="met-sub">${t.mProdSub}</div></div>
     <div class="met"><div class="met-lbl">${t.mCob}</div><div class="met-val">${cobert}%</div><div class="met-sub">${bat>0?t.mCobBat:t.mCobNoBat}</div></div>
     <div class="met"><div class="met-lbl">${t.mDia}</div><div class="met-val">${prodDiaVal}</div><div class="met-sub">${t.mDiaSub}</div></div>
-    <div class="met"><div class="met-lbl">${t.mAut}</div><div class="met-val">${bat>0?autDias+'d':'—'}</div><div class="met-sub">${bat>0?t.mAutBat(bat):t.mAutNoBat}</div></div>
-  `;
+    <div class="met"><div class="met-lbl">${t.mAut}</div><div class="met-val">${bat>0?autDias+'d':'—'}</div><div class="met-sub">${bat>0?t.mAutBat(bat):t.mAutNoBat}</div></div>`;
 
-  // barras
-  const pctD=Math.max(0,100-cobert), bC=Math.round(eBat);
+  const pctD=Math.max(0,100-cobert),bC=Math.round(eBat);
   $('bars').innerHTML=`
     <div class="bar-row"><div class="bar-head"><span>${t.barDir}</span><span>${Math.round(pDireta)} kWh</span></div><div class="bar-track"><div class="bar-fill fill-green" style="width:${Math.min(100,Math.round(pDireta/consumo*100))}%"></div></div></div>
     ${bat>0?`<div class="bar-row"><div class="bar-head"><span>${t.barBat}</span><span>+${bC} kWh</span></div><div class="bar-track"><div class="bar-fill fill-blue" style="width:${Math.min(100,Math.round(bC/consumo*100))}%"></div></div></div>`:''}
     <div class="bar-row"><div class="bar-head"><span>${t.barRede}</span><span>${Math.round(deficit)} kWh</span></div><div class="bar-track"><div class="bar-fill fill-orange" style="width:${pctD}%"></div></div></div>
-    ${excess>=5?`<div class="bar-row"><div class="bar-head"><span>${t.barExc}</span><span>${Math.round(excess)} kWh</span></div><div class="bar-track"><div class="bar-fill fill-gray" style="width:${Math.min(100,Math.round(excess/prodMes*100))}%"></div></div></div>`:''}
-  `;
+    ${excess>=5?`<div class="bar-row"><div class="bar-head"><span>${t.barExc}</span><span>${Math.round(excess)} kWh</span></div><div class="bar-track"><div class="bar-fill fill-gray" style="width:${Math.min(100,Math.round(excess/prodMes*100))}%"></div></div></div>`:''}`;
 
-  // resultado chip
-  const s90=Math.ceil(consumo*0.9/(prodMes/np)), s80=Math.ceil(consumo*0.8/(prodMes/np));
+  const s90=Math.ceil(consumo*0.9/(prodMes/np)),s80=Math.ceil(consumo*0.8/(prodMes/np));
   let msg,cls;
   if(cobert>=85){msg=t.resOk(cobert,bat,autDias);cls='chip-ok'}
   else if(cobert>=45){msg=t.resWarn(pctD,s90);cls='chip-warn'}
   else{msg=t.resDanger(s80);cls='chip-danger'}
   $('resultado').innerHTML=`<div class="chip ${cls}">${msg}</div>`;
 
-  // fatura solar
   let fatS;
   if(tarifaTipo==='bihorario'){
-    const rFV=Math.min(eAprov,consumo*pctFV), rV=eAprov-rFV;
+    const rFV=Math.min(eAprov,consumo*pctFV),rV=eAprov-rFV;
     fatS=calcBihorario(Math.max(0,consumo*pctFV-rFV),Math.max(0,consumo*(1-pctFV)-rV),td,kvaVal);
-  } else {
-    fatS=calcSimples(deficit,td,kvaVal);
-  }
-  const pMes=fatA.tot-fatS.tot, pAno=pMes*12;
+  }else{fatS=calcSimples(deficit,td,kvaVal);}
+  const pMes=fatA.tot-fatS.tot,pAno=pMes*12;
 
-  // savings grid
   $('savings').innerHTML=`
     <div class="sav"><div class="sav-lbl">${t.siAtual}</div><div class="sav-val">${eur(fatA.tot)}</div><div class="sav-sub">${t.siIva}</div></div>
     <div class="sav"><div class="sav-lbl">${t.siNova}</div><div class="sav-val">${eur(fatS.tot)}</div><div class="sav-sub">${t.siIva}</div></div>
     <div class="sav"><div class="sav-lbl">${t.siMes}</div><div class="sav-val pos">−${eur(pMes)}</div><div class="sav-sub">${t.siFat}</div></div>
-    <div class="sav"><div class="sav-lbl">${t.siAno}</div><div class="sav-val pos">−${eur(pAno)}</div><div class="sav-sub">${t.siEst}</div></div>
-  `;
+    <div class="sav"><div class="sav-lbl">${t.siAno}</div><div class="sav-val pos">−${eur(pAno)}</div><div class="sav-sub">${t.siEst}</div></div>`;
 
-  // breakdown
-  let bdR = tarifaTipo==='bihorario'
-    ? `<div class="bd-row"><span>${t.bdFV(Math.round(fatS.kFV))}</span><span>${eur(fatS.eFV)}</span></div><div class="bd-row"><span>${t.bdV(Math.round(fatS.kV))}</span><span>${eur(fatS.eV)}</span></div>`
-    : `<div class="bd-row"><span>${t.bdE(Math.round(deficit))}</span><span>${eur(fatS.e)}</span></div>`;
-  // IVA rows: ≤200kWh tudo a 4% (excepto potência); >200kWh duas linhas
-  let bdIvaRows = '';
-  if (fatS.kwhRed > 0) {
-    bdIvaRows += `<div class="bd-row"><span>${t.bdIva4(Math.round(fatS.kwhRed))}</span><span>${eur(fatS.ivaRed)}</span></div>`;
-  }
-  // IVA 22% aparece sempre (potência contratada paga sempre 22%)
-  // O label muda consoante se há ou não energia acima dos 200kWh
-  const lbl22 = fatS.kwhNorm > 0
-    ? t.bdIva22(Math.round(fatS.kwhNorm))
-    : t.bdIva22pot;
-  bdIvaRows += `<div class="bd-row"><span>${lbl22}</span><span>${eur(fatS.ivaNorm)}</span></div>`;
+  let bdR=tarifaTipo==='bihorario'
+    ?`<div class="bd-row"><span>${t.bdFV(Math.round(fatS.kFV))}</span><span>${eur(fatS.eFV)}</span></div><div class="bd-row"><span>${t.bdV(Math.round(fatS.kV))}</span><span>${eur(fatS.eV)}</span></div>`
+    :`<div class="bd-row"><span>${t.bdE(Math.round(deficit))}</span><span>${eur(fatS.e)}</span></div>`;
+  let bdIva='';
+  if(fatS.kwhRed>0)bdIva+=`<div class="bd-row"><span>${t.bdIva4(Math.round(fatS.kwhRed))}</span><span>${eur(fatS.ivaRed)}</span></div>`;
+  const lbl22=fatS.kwhNorm>0?t.bdIva22(Math.round(fatS.kwhNorm)):t.bdIva22pot;
+  bdIva+=`<div class="bd-row"><span>${lbl22}</span><span>${eur(fatS.ivaNorm)}</span></div>`;
   $('breakdown').innerHTML=`<hr><div class="bd-title">${t.bdTitle}</div>${bdR}
     <div class="bd-row"><span>${t.bdP(td.toFixed(4))}</span><span>${eur(fatS.p)}</span></div>
     <div class="bd-row"><span>${t.bdSub}</span><span>${eur(fatS.sub)}</span></div>
-    ${bdIvaRows}
+    ${bdIva}
     <div class="bd-row"><span>${t.bdCav}</span><span>${eur(fatS.cav)}</span></div>
     <div class="bd-row"><span>${t.bdTot}</span><span>${eur(fatS.tot)}</span></div>`;
 
-  // accordion body
   const excStr=excess>=5?`<li>${t.accExc(Math.round(excess))}</li>`:'';
   $('acc-body').innerHTML=`<strong>${t.accTitle}</strong><ul>${t.accItems(nubW,nubD).map(i=>`<li>${i}</li>`).join('')}${excStr}</ul>`;
 
-  // investimento
-  const cP=np*wp*1.1, cI=(np*wp)<=3000?1200:(np*wp)<=6000?1800:2200;
-  const cB=bat>0?bat*480:0, cIn=800+np*60;
-  const tot=cP+cI+cB+cIn, sub=bat>0?1650:0, liq=tot-sub;
+  const cP=np*wp*1.1,cI=(np*wp)<=3000?1200:(np*wp)<=6000?1800:2200;
+  const cB=bat>0?bat*480:0,cIn=800+np*60;
+  const tot2=cP+cI+cB+cIn,sub2=bat>0?1650:0,liq=tot2-sub2;
   const ret=pAno>0?(liq/pAno).toFixed(1):'—';
   $('costs').innerHTML=`
     <tr><td>${t.ctPaineis(np,wp)}</td><td>${eur(cP)}</td></tr>
     <tr><td>${t.ctInv}</td><td>${eur(cI)}</td></tr>
     ${bat>0?`<tr><td>${t.ctBat(bat)}</td><td>${eur(cB)}</td></tr>`:''}
     <tr><td>${t.ctInst}</td><td>${eur(cIn)}</td></tr>
-    <tr class="trow"><td>${t.ctTot}</td><td>${eur(tot)}</td></tr>
-    ${sub>0?`<tr><td>${t.ctApoio}</td><td class="saving">−${eur(sub)}</td></tr><tr class="trow"><td>${t.ctLiq}</td><td>${eur(liq)}</td></tr>`:''}
-  `;
+    <tr class="trow"><td>${t.ctTot}</td><td>${eur(tot2)}</td></tr>
+    ${sub2>0?`<tr><td>${t.ctApoio}</td><td class="saving">−${eur(sub2)}</td></tr><tr class="trow"><td>${t.ctLiq}</td><td>${eur(liq)}</td></tr>`:''}`;
   $('retorno').innerHTML=t.retorno(ret,eur(pAno*25));
+  $('footer-grid').innerHTML=t.fcells.map(c=>`<div class="fcell"><div class="fcell-lbl">${c.l}</div><div class="fcell-val">${c.v}</div></div>`).join('');
+  $('footer-note').innerHTML=t.fNote;
 }
 
 // ── EVENTS ───────────────────────────────────────────────────────────────────
-// Slider consumo → actualiza input numérico
-$('consumo').addEventListener('input', function(){
-  $('consumo-num').value = this.value;
+$('consumo').addEventListener('input',function(){$('consumo-num').value=this.value;calc();});
+$('consumo-num').addEventListener('input',function(){
+  const v=parseInt(this.value);
+  if(!isNaN(v)&&v>0){$('consumo').value=Math.min(v,700);calc();}
+});
+$('consumo-num').addEventListener('blur',function(){
+  const v=parseInt(this.value);
+  if(isNaN(v)||v<50)this.value=50;
+  if(v>2000)this.value=2000;
+  $('consumo').value=Math.min(parseInt(this.value),700);
   calc();
 });
-
-// Input numérico → recalcula com qualquer dígito válido
-$('consumo-num').addEventListener('input', function(){
-  const v = parseInt(this.value);
-  if (!isNaN(v) && v > 0) {
-    $('consumo').value = Math.min(v, 700);
-    calc();
-  }
-});
-
-// ao sair do campo, normalizar valor fora dos limites
-$('consumo-num').addEventListener('blur', function(){
-  const v = parseInt(this.value);
-  if (isNaN(v) || v < 50)  this.value = 50;
-  if (v > 2000)            this.value = 2000;
-  $('consumo').value = Math.min(parseInt(this.value), 700);
-  calc();
-});
-
 ['npaineis','wp','bat','fora-vazio'].forEach(id=>$(id).addEventListener('input',calc));
 $('potencia').addEventListener('change',calc);
-
 document.querySelectorAll('#orient-group .pill').forEach(btn=>{
   btn.addEventListener('click',function(){
     document.querySelectorAll('#orient-group .pill').forEach(b=>b.classList.remove('on'));
-    this.classList.add('on');
-    orientFactor=parseFloat(this.dataset.v);
-    calc();
+    this.classList.add('on');orientFactor=parseFloat(this.dataset.v);calc();
   });
 });
-
 document.querySelectorAll('.pill[data-t]').forEach(btn=>{
   btn.addEventListener('click',function(){
     document.querySelectorAll('.pill[data-t]').forEach(b=>b.classList.remove('on'));
-    this.classList.add('on');
-    tarifaTipo=this.dataset.t;
-    $('bh-panel').classList.toggle('show',tarifaTipo==='bihorario');
-    calc();
+    this.classList.add('on');tarifaTipo=this.dataset.t;
+    $('bh-panel').classList.toggle('show',tarifaTipo==='bihorario');calc();
   });
 });
 
+// ── LANG TOGGLE (igual ao index) ─────────────────────────────────────────────
+const root=document.documentElement;
+const btnPT=$('btnPT'),btnEN=$('btnEN');
+function setLang(l){
+  lang=l;root.setAttribute('data-lang',l);root.setAttribute('lang',l);
+  btnPT.classList.toggle('active',l==='pt');
+  btnEN.classList.toggle('active',l==='en');
+  localStorage.setItem('aa-lang',l);
+  calc();
+}
+btnPT.addEventListener('click',()=>setLang('pt'));
+btnEN.addEventListener('click',()=>setLang('en'));
+
+// ── THEME TOGGLE (igual ao index) ────────────────────────────────────────────
+$('themeBtn').addEventListener('click',()=>{
+  const next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+  root.setAttribute('data-theme',next);
+  localStorage.setItem('aa-theme',next);
+});
+
 // ── INIT ─────────────────────────────────────────────────────────────────────
-setLang('pt');
+const savedTheme=localStorage.getItem('aa-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+root.setAttribute('data-theme',savedTheme);
+const savedLang=localStorage.getItem('aa-lang')||'pt';
+setLang(savedLang);
 </script>
 </body>
 </html>

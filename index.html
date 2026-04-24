@@ -174,6 +174,15 @@
     .t-tag { font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 20px; background: var(--bg); color: var(--hint); text-transform: uppercase; letter-spacing: .07em; border: 1px solid var(--border); }
     .t-arrow { font-size: 16px; color: var(--hint); transition: transform .2s, color .2s; }
     .t-card:hover .t-arrow { transform: translate(3px,-3px); color: var(--gold); }
+    .t-card.soon { pointer-events: none; opacity: .72; }
+    .t-card.soon:hover { border-color: var(--border); background: var(--surface); transform: none; }
+    .t-soon {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--gold); background: transparent;
+      border: 1px solid var(--gold); border-radius: 20px;
+      padding: 3px 10px; margin-bottom: 10px;
+    }
     footer { border-top: 1px solid var(--border); padding: 30px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     .f-left { display: flex; align-items: center; gap: 8px; }
     .dot { width: 7px; height: 7px; border-radius: 50%; background: #4caf7d; }
@@ -382,9 +391,10 @@
         <div class="t-foot"><span class="t-tag" lang="pt">energia</span><span class="t-tag" lang="en">energy</span><span class="t-arrow">↗</span></div>
       </a>
 
-      <a class="t-card" href="emprestimos.html">
+      <a class="t-card soon" href="#">
         <div class="t-icon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
         <span class="t-num">02</span>
+        <span class="t-soon"><span lang="pt">Brevemente</span><span lang="en">Coming soon</span></span>
         <h3 lang="pt">Calculadora de empréstimos</h3>
         <h3 lang="en">Loan calculator</h3>
         <p lang="pt">Simula prestações mensais, juros totais e plano de amortização para qualquer tipo de empréstimo.</p>
@@ -392,9 +402,10 @@
         <div class="t-foot"><span class="t-tag" lang="pt">finanças</span><span class="t-tag" lang="en">finance</span><span class="t-arrow">↗</span></div>
       </a>
 
-      <a class="t-card" href="juros-compostos.html">
+      <a class="t-card soon" href="#">
         <div class="t-icon"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
         <span class="t-num">03</span>
+        <span class="t-soon"><span lang="pt">Brevemente</span><span lang="en">Coming soon</span></span>
         <h3 lang="pt">Calculadora de juros compostos</h3>
         <h3 lang="en">Compound interest calculator</h3>
         <p lang="pt">Visualiza o crescimento do capital ao longo do tempo com contribuições regulares.</p>
@@ -402,9 +413,10 @@
         <div class="t-foot"><span class="t-tag" lang="pt">investimento</span><span class="t-tag" lang="en">investment</span><span class="t-arrow">↗</span></div>
       </a>
 
-      <a class="t-card" href="amortizacao.html">
+      <a class="t-card soon" href="#">
         <div class="t-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg></div>
         <span class="t-num">04</span>
+        <span class="t-soon"><span lang="pt">Brevemente</span><span lang="en">Coming soon</span></span>
         <h3 lang="pt">Prestação após amortização antecipada</h3>
         <h3 lang="en">Payment after early repayment</h3>
         <p lang="pt">Calcula a nova prestação mensal após uma amortização antecipada de crédito.</p>
@@ -412,9 +424,10 @@
         <div class="t-foot"><span class="t-tag" lang="pt">crédito</span><span class="t-tag" lang="en">credit</span><span class="t-arrow">↗</span></div>
       </a>
 
-      <a class="t-card" href="carro.html">
+      <a class="t-card soon" href="#">
         <div class="t-icon"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11l4 4 1 4H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M17 11V7"/></svg></div>
         <span class="t-num">05</span>
+        <span class="t-soon"><span lang="pt">Brevemente</span><span lang="en">Coming soon</span></span>
         <h3 lang="pt">Carro elétrico vs gasolina</h3>
         <h3 lang="en">Electric vs petrol car</h3>
         <p lang="pt">Compara o custo total de propriedade entre veículo elétrico e combustão ao longo dos anos.</p>

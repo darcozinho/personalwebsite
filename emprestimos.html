@@ -401,7 +401,6 @@ hr{border:none;border-top:1px solid var(--c-border);margin:.9rem 0}
   <div class="card">
     <div class="sec-head"><div class="sec-num">3</div><span class="sec-title"><span lang="pt">Detalhe financeiro</span><span lang="en">Financial detail</span></span></div>
     <div id="prest-hero"></div>
-    <div class="sav-grid" id="savings"></div>
     <div class="breakdown" id="breakdown"></div>
 
     <div class="acc-trigger" id="acc-btn" onclick="toggleAcc()">
@@ -672,16 +671,10 @@ function calc() {
       </div>
     </div>`;
 
-  // Detail grid
-  const juroMes1 = capital * (taxaAnual / 100 / 12);
-  const capMes1 = prest - juroMes1;
-  $('savings').innerHTML = `
-    <div class="sav"><div class="sav-lbl">${t.siTAN}</div><div class="sav-val">${pct(taxaAnual)}</div><div class="sav-sub">${t.siTANSub}</div></div>
-    <div class="sav"><div class="sav-lbl">${t.siJuroMes1}</div><div class="sav-val neg">${eur(juroMes1)}</div><div class="sav-sub">${t.siJuroSub}</div></div>
-    <div class="sav"><div class="sav-lbl">${t.siCapMes1}</div><div class="sav-val pos">${eur(capMes1)}</div><div class="sav-sub">${t.siCapSub}</div></div>`;
+  // Detail grid removed (TAN, JURO 1.º MES, CAPITAL 1.º MES)
 
   // Breakdown
-  $('breakdown').innerHTML = `<hr><div class="bd-title">${t.bdTitle}</div>
+  $('breakdown').innerHTML = `<div class="bd-title">${t.bdTitle}</div>
     <div class="bd-row"><span>${t.bdCapital}</span><span>${eur(capital)}</span></div>
     <div class="bd-row"><span>${t.bdJuros(meses)}</span><span>${eur(jurosTotal)}</span></div>
     <div class="bd-row"><span>${t.bdTotal}</span><span>${eur(mtic)}</span></div>`;

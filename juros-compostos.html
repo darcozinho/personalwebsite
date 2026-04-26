@@ -259,6 +259,17 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 }
 .evol-show-btn:hover{border-color:var(--c-accent);color:var(--c-accent)}
 
+/* ── CHART ── */
+.chart-wrap{margin:1.25rem 0 1rem;position:relative}
+.chart-wrap svg{display:block;width:100%;overflow:visible}
+.r72-badge{
+  display:inline-flex;align-items:baseline;gap:5px;
+  font-size:11px;color:var(--c-text2);margin-top:.75rem;
+  padding:.5rem .85rem;border-radius:var(--r-sm);
+  border:1px solid var(--c-border);background:var(--c-surface2);
+}
+.r72-badge strong{color:var(--c-accent);font-variant-numeric:tabular-nums}
+
 /* ── FOOTER ── */
 .footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--c-border)}
 .footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
@@ -364,8 +375,9 @@ hr{border:none;border-top:1px solid var(--c-border);margin:.9rem 0}
   <div class="card">
     <div class="sec-head"><div class="sec-num">2</div><span class="sec-title"><span lang="pt">Detalhe financeiro</span><span lang="en">Financial detail</span></span></div>
     <div id="result-hero"></div>
+    <div class="chart-wrap" id="chart"></div>
     <div class="metrics" id="metrics"></div>
-    <div class="bars" id="bars"></div>
+    <div id="r72"></div>
     <div class="breakdown" id="breakdown"></div>
 
     <div class="acc-trigger" id="acc-btn" onclick="toggleAcc()">
@@ -518,6 +530,116 @@ function toggleAcc() {
   $('acc-btn').classList.toggle('open');
 }
 
+function renderChart(capital, pmt, taxa, anos) {
+  const wrap = $('chart');
+  const W = wrap.clientWidth || 680;
+  const H = 220;
+  const PAD = {top:20, right:12, bottom:28, left:52};
+  const cw = W - PAD.left - PAD.right;
+  const ch = H - PAD.top - PAD.bottom;
+
+  // Data points (year 0..anos)
+  const pts = [];
+  for (let a = 0; a <= anos; a++) {
+    const n = a * 12;
+    const r = taxa / 100 / 12;
+    const fv = r === 0 ? capital + pmt * n
+      : capital * Math.pow(1+r,n) + pmt * (Math.pow(1+r,n)-1)/r;
+    const inv = capital + pmt * n;
+    pts.push({a, inv, total: fv});
+  }
+  const maxVal = pts[pts.length-1].total || 1;
+
+  const sx = a => PAD.left + (a/anos)*cw;
+  const sy = v => PAD.top + ch - (v/maxVal)*ch;
+
+  // Crossover: year when annual interest earned > annual contributions
+  const yearlyContrib = pmt * 12;
+  let crossYear = null;
+  for (let i = 1; i < pts.length; i++) {
+    const annualInt = pts[i].total - pts[i].inv - (pts[i-1].total - pts[i-1].inv);
+    if (annualInt >= yearlyContrib && crossYear === null) crossYear = pts[i].a;
+  }
+
+  // Build polygon points
+  const invPath  = pts.map(p => `${sx(p.a)},${sy(p.inv)}`).join(' ');
+  const totPath  = pts.map(p => `${sx(p.a)},${sy(p.total)}`).join(' ');
+  const baseline = `${sx(anos)},${sy(0)} ${sx(0)},${sy(0)}`;
+  const capArea  = invPath + ' ' + baseline;
+  const intArea  = totPath + ' ' + pts.slice().reverse().map(p => `${sx(p.a)},${sy(p.inv)}`).join(' ');
+
+  // Axis ticks
+  const fmt = v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? Math.round(v/1e3)+'k' : Math.round(v);
+  const yTicks = [0.25,0.5,0.75,1].map(f => ({v:maxVal*f, y:sy(maxVal*f)}));
+  const xStep  = anos <= 10 ? 2 : anos <= 20 ? 5 : 10;
+  const xTicks = [];
+  for (let a = 0; a <= anos; a += xStep) xTicks.push(a);
+  if (xTicks[xTicks.length-1] !== anos) xTicks.push(anos);
+
+  // CSS vars
+  const cs = getComputedStyle(document.documentElement);
+  const cAccent = cs.getPropertyValue('--c-accent').trim();
+  const cGreen  = cs.getPropertyValue('--c-green').trim();
+  const cBorder = cs.getPropertyValue('--c-border').trim();
+  const cText3  = cs.getPropertyValue('--c-text3').trim();
+  const cText2  = cs.getPropertyValue('--c-text2').trim();
+  const cSurface2 = cs.getPropertyValue('--c-surface2').trim();
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<defs>
+    <linearGradient id="g-cap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${cAccent}" stop-opacity=".45"/>
+      <stop offset="100%" stop-color="${cAccent}" stop-opacity=".08"/>
+    </linearGradient>
+    <linearGradient id="g-int" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${cGreen}" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="${cGreen}" stop-opacity=".12"/>
+    </linearGradient>
+  </defs>`;
+
+  // Grid lines
+  yTicks.forEach(t => {
+    svg += `<line x1="${PAD.left}" y1="${t.y}" x2="${W-PAD.right}" y2="${t.y}" stroke="${cBorder}" stroke-width="1"/>`;
+    svg += `<text x="${PAD.left-5}" y="${t.y+3.5}" font-family="Instrument Sans,sans-serif" font-size="9" fill="${cText3}" text-anchor="end">${fmt(t.v)}€</text>`;
+  });
+
+  // Areas
+  svg += `<polygon points="${capArea}" fill="url(#g-cap)"/>`;
+  svg += `<polygon points="${intArea}" fill="url(#g-int)"/>`;
+
+  // Lines
+  svg += `<polyline points="${invPath}" fill="none" stroke="${cAccent}" stroke-width="1.5" stroke-linejoin="round"/>`;
+  svg += `<polyline points="${totPath}" fill="none" stroke="${cGreen}" stroke-width="1.5" stroke-linejoin="round"/>`;
+
+  // Crossover marker
+  if (crossYear !== null && crossYear < anos) {
+    const cx = sx(crossYear);
+    const cy = sy(pts[crossYear].total);
+    svg += `<line x1="${cx}" y1="${PAD.top}" x2="${cx}" y2="${PAD.top+ch}" stroke="${cGreen}" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>`;
+    // Label above or below based on space
+    const labelY = cy > PAD.top + 22 ? cy - 8 : cy + 16;
+    const anchor = cx > W * 0.7 ? 'end' : 'start';
+    const labelX = anchor === 'end' ? cx - 5 : cx + 5;
+    svg += `<text x="${labelX}" y="${labelY}" font-family="Instrument Sans,sans-serif" font-size="9" fill="${cGreen}" text-anchor="${anchor}" opacity=".9">${lang==='pt'?'juros > contrib.':'interest > contrib.'} (${lang==='pt'?'ano':'yr'} ${crossYear})</text>`;
+    svg += `<circle cx="${cx}" cy="${sy(pts[crossYear].total)}" r="3" fill="${cGreen}" opacity=".8"/>`;
+  }
+
+  // X-axis labels
+  xTicks.forEach(a => {
+    svg += `<text x="${sx(a)}" y="${H-6}" font-family="Instrument Sans,sans-serif" font-size="9" fill="${cText3}" text-anchor="middle">${a}</text>`;
+  });
+
+  // Legend
+  const legY = PAD.top + 3;
+  svg += `<rect x="${PAD.left+4}" y="${legY}" width="10" height="3" rx="1.5" fill="${cAccent}" opacity=".7"/>`;
+  svg += `<text x="${PAD.left+18}" y="${legY+4}" font-family="Instrument Sans,sans-serif" font-size="9" fill="${cText3}">${lang==='pt'?'Capital investido':'Invested capital'}</text>`;
+  svg += `<rect x="${PAD.left+112}" y="${legY}" width="10" height="3" rx="1.5" fill="${cGreen}" opacity=".7"/>`;
+  svg += `<text x="${PAD.left+126}" y="${legY+4}" font-family="Instrument Sans,sans-serif" font-size="9" fill="${cText3}">${lang==='pt'?'Juros compostos':'Compound interest'}</text>`;
+
+  svg += `</svg>`;
+  wrap.innerHTML = svg;
+}
+
 function toggleEvol() {
   showFullEvol = !showFullEvol;
   renderEvol();
@@ -592,12 +714,12 @@ function calc() {
     <div class="met"><div class="met-lbl">${t.mJuros}</div><div class="met-val">${eur(jurosGanhos)}</div><div class="met-sub">${t.mJurosSub}</div></div>
     <div class="met"><div class="met-lbl">${t.mMulti}</div><div class="met-val">${multi}×</div><div class="met-sub">${t.mMultiSub}</div></div>`;
 
-  // Bars
-  const pctInv = fv > 0 ? Math.round(totalInvestido / fv * 100) : 100;
-  const pctJur = 100 - pctInv;
-  $('bars').innerHTML = `
-    <div class="bar-row"><div class="bar-head"><span>${t.barInvestido}</span><span>${eur(totalInvestido)}</span></div><div class="bar-track"><div class="bar-fill fill-accent" style="width:${pctInv}%"></div></div></div>
-    <div class="bar-row"><div class="bar-head"><span>${t.barJuros}</span><span>${eur(jurosGanhos)}</span></div><div class="bar-track"><div class="bar-fill fill-green" style="width:${pctJur}%"></div></div></div>`;
+  // Chart
+  renderChart(capital, pmt, taxa, anos);
+
+  // Regra dos 72
+  const r72 = taxa > 0 ? (72 / taxa).toFixed(1) : '—';
+  $('r72').innerHTML = `<div class="r72-badge">${lang==='pt'?'Regra dos 72':'Rule of 72'}: ${lang==='pt'?'duplica em':'doubles in'} <strong>~${r72} ${lang==='pt'?'anos':'years'}</strong> ${lang==='pt'?'a':'at'} ${taxa}%</div>`;
 
   // Breakdown
   $('breakdown').innerHTML = `<div class="bd-title">${t.bdTitle}</div>
@@ -657,6 +779,7 @@ $('themeBtn').addEventListener('click', () => {
   const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   root.setAttribute('data-theme', next);
   localStorage.setItem('aa-theme', next);
+  setTimeout(calc, 50); // re-render chart with new CSS vars
 });
 
 // ── INIT ─────────────────────────────────────────────

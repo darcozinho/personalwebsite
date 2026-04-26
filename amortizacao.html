@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prestação após amortização antecipada — André Aguiar</title>
+<meta name="description" content="Simula a tua nova prestação ou novo prazo após uma amortização antecipada do crédito habitação. Compara amortizar vs investir.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS ── */
+:root{
+  --c-bg:#f4efe6; --c-surface:#ece6d8; --c-surface2:#e2dace;
+  --c-border:#d6cfc2; --c-border2:#c5bdb0;
+  --c-text:#1c2238; --c-text2:#5c6070; --c-text3:#9ca2b2;
+  --c-accent:#b8912a; --c-accent2:#9a7820; --c-accent-pale:#f7f0e0;
+  --c-green:#2a6e3f; --c-green-pale:#e8f5ed; --c-green-border:#a8d5bc;
+  --c-red:#b83232; --c-red-pale:#fdecea; --c-red-border:#f5c6c2;
+  --c-amber:#7a5000; --c-amber-pale:#fef9ec; --c-amber-border:#e8c870;
+  --c-orange:#a05000; --c-blue:#2860a0;
+  --r:10px; --r-sm:6px; --r-lg:14px;
+  --shadow: 0 1px 3px rgba(28,34,56,.06), 0 1px 2px rgba(28,34,56,.04);
+}
+html[data-theme="dark"]{
+  --c-bg:#131210; --c-surface:#1b1916; --c-surface2:#23211d;
+  --c-border:#2c2924; --c-border2:#3b3730;
+  --c-text:#f0e9d8; --c-text2:#98908a; --c-text3:#585450;
+  --c-accent:#d4a83a; --c-accent2:#b8912a; --c-accent-pale:#2a2010;
+  --c-green:#4caf82; --c-green-pale:#0d2a1a; --c-green-border:#1d5535;
+  --c-red:#e57373; --c-red-pale:#2a0d0d; --c-red-border:#5c2020;
+  --c-amber:#f5c842; --c-amber-pale:#2a1f00; --c-amber-border:#5a4000;
+  --c-orange:#e8830a; --c-blue:#5fa3e8;
+  --shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+[data-lang="pt"] [lang="en"] { display: none; }
+[data-lang="en"] [lang="pt"] { display: none; }
+
+/* ── BASE ── */
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;line-height:1.5;transition:background .2s,color .2s;-webkit-font-smoothing:antialiased}
+
+/* ── HERO ── */
+.hero{background:var(--c-bg);padding:0 1.5rem;border-bottom:1px solid var(--c-border)}
+.hero-nav{
+  max-width:840px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.1rem 0;border-bottom:1px solid var(--c-border);
+}
+.nav-actions{display:flex;gap:6px;align-items:center}
+.nav-btn{
+  padding:5px 13px;border-radius:0;border:none;background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;
+  color:var(--c-text2);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.04em;
+}
+.nav-btn.active{background:var(--c-text);color:var(--c-bg)}
+.nav-btn:hover:not(.active){color:var(--c-text)}
+.nav-icon-btn{
+  width:30px;height:30px;border-radius:50%;border:1px solid var(--c-border);
+  background:var(--c-surface);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text2);transition:border-color .2s,color .2s;
+}
+.nav-icon-btn:hover{border-color:var(--c-border2);color:var(--c-text)}
+.i-sun,.i-moon{display:none}
+[data-theme="light"] .i-sun{display:block}
+[data-theme="dark"]  .i-moon{display:block}
+.hero-body{max-width:840px;margin:0 auto;padding:3.5rem 0 4rem;text-align:center}
+.hero-kicker{
+  font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--c-accent);margin-bottom:1.25rem;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.hero-kicker::before,.hero-kicker::after{content:'';width:24px;height:1px;background:var(--c-accent)}
+.hero h1{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(2rem,5vw,3.25rem);
+  font-weight:400;line-height:1.12;
+  color:var(--c-text);letter-spacing:-.025em;margin-bottom:.85rem;
+}
+.hero h1 em{font-style:italic;color:var(--c-accent)}
+.hero-sub{font-size:16px;color:var(--c-text2);max-width:520px;margin:0 auto 1rem;line-height:1.65}
+
+/* ── MAIN ── */
+.wrap{max-width:840px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+
+/* ── SECTION HEADER ── */
+.sec-head{display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem}
+.sec-num{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--c-accent);color:var(--c-bg);
+  font-size:11px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sec-title{font-size:13px;font-weight:600;color:var(--c-text);letter-spacing:-.01em}
+
+/* ── CARD ── */
+.card{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem;
+  box-shadow:var(--shadow);transition:background .2s,border-color .2s;
+}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:up .35s ease both}
+.card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}
+.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.16s}
+.card:nth-child(5){animation-delay:.20s}
+
+/* ── INPUT GRID ── */
+.input-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+}
+@media(max-width:620px){.input-grid{grid-template-columns:1fr}}
+.input-grid.cols2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:620px){.input-grid.cols2{grid-template-columns:1fr}}
+
+.big-input{
+  background:var(--c-surface2);
+  border:1px solid var(--c-border);
+  border-radius:var(--r);
+  padding:1rem 1.1rem;
+  transition:border-color .15s, background .15s;
+  cursor:text;
+}
+.big-input:hover{border-color:var(--c-border2)}
+.big-input:focus-within{border-color:var(--c-accent);background:var(--c-surface)}
+.big-input-lbl{
+  font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--c-text3);margin-bottom:.55rem;display:block;
+}
+.big-input-row{display:flex;align-items:baseline;gap:6px}
+.big-input input{
+  width:100%;
+  font-family:'Instrument Serif',serif;
+  font-size:1.7rem;font-weight:400;
+  color:var(--c-text);
+  background:transparent;border:none;outline:none;padding:0;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+  -moz-appearance:textfield;
+}
+.big-input input::-webkit-inner-spin-button,
+.big-input input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.big-input-unit{
+  font-family:'Instrument Sans',sans-serif;
+  font-size:13px;font-weight:500;color:var(--c-text2);
+  flex-shrink:0;
+}
+
+/* ── QUICK CHIPS ── */
+.quick-section{margin-top:.85rem}
+.quick-section + .quick-section{margin-top:.6rem}
+.quick-section-lbl{
+  font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--c-text3);display:block;margin-bottom:.4rem;
+}
+.quick-row{display:flex;gap:5px;flex-wrap:wrap}
+.quick-chip{
+  padding:3px 9px;border-radius:12px;
+  border:1px solid var(--c-border);background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:10.5px;font-weight:500;
+  color:var(--c-text3);cursor:pointer;transition:all .12s;
+  letter-spacing:.02em;
+}
+.quick-chip:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.quick-chip.active{
+  border-color:var(--c-accent);background:var(--c-accent);color:var(--c-bg);
+}
+
+/* ── SEGMENTED ── */
+.segmented{
+  display:flex;background:var(--c-surface2);border:1px solid var(--c-border);
+  border-radius:var(--r);padding:3px;gap:3px;margin-top:.85rem;
+}
+.seg-btn{
+  flex:1;padding:.65rem .8rem;border:none;background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;
+  color:var(--c-text2);cursor:pointer;border-radius:calc(var(--r) - 4px);
+  transition:background .18s, color .18s;letter-spacing:.01em;
+}
+.seg-btn:hover:not(.active){color:var(--c-text)}
+.seg-btn.active{background:var(--c-accent);color:var(--c-bg);font-weight:600}
+
+/* ── COMPARISON HERO ── */
+.cmp-hero{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center;
+  padding:1.5rem 0 .5rem;
+}
+@media(max-width:560px){.cmp-hero{grid-template-columns:1fr;gap:.5rem}}
+.cmp-side{text-align:center;padding:.5rem}
+.cmp-side-lbl{
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--c-text3);margin-bottom:.85rem;
+}
+.cmp-side-val{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(1.8rem,5.5vw,2.85rem);
+  font-weight:400;line-height:1;color:var(--c-text);
+  font-variant-numeric:tabular-nums;letter-spacing:-.025em;
+  display:inline-flex;align-items:baseline;gap:.12em;
+}
+.cmp-side-val em{font-style:italic;color:var(--c-text3);font-size:.4em;font-weight:400;letter-spacing:0}
+.cmp-side.after .cmp-side-val{color:var(--c-accent)}
+.cmp-side.after .cmp-side-val em{color:var(--c-accent2)}
+.cmp-side-sub{font-size:11px;color:var(--c-text3);margin-top:.5rem;letter-spacing:.01em}
+.cmp-arrow{
+  width:34px;height:34px;border-radius:50%;
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  display:flex;align-items:center;justify-content:center;color:var(--c-accent);
+  flex-shrink:0;
+}
+@media(max-width:560px){.cmp-arrow{transform:rotate(90deg)}}
+
+.savings{
+  margin-top:1.25rem;padding:1rem 1.25rem;
+  background:var(--c-green-pale);border:1px solid var(--c-green-border);
+  border-radius:var(--r-sm);
+  display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;
+}
+.savings-lbl{font-size:12px;color:var(--c-green);font-weight:500}
+.savings-val{
+  font-family:'Instrument Serif',serif;font-size:1.5rem;color:var(--c-green);
+  font-weight:400;font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.1rem}
+@media(max-width:620px){.metrics{grid-template-columns:repeat(2,1fr)}}
+.met{background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-sm);padding:.8rem .9rem}
+.met-lbl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--c-text3);margin-bottom:5px}
+.met-val{font-size:1.25rem;font-weight:600;color:var(--c-text);line-height:1;font-variant-numeric:tabular-nums}
+.met-val.green{color:var(--c-green)}
+.met-val.red{color:var(--c-red)}
+.met-sub{font-size:10px;color:var(--c-text3);margin-top:4px}
+
+/* ── CHART ── */
+.chart-wrap{position:relative;margin-top:.75rem}
+.chart-wrap svg{display:block;width:100%;height:auto;cursor:crosshair;touch-action:none}
+.chart-info{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  margin-top:.6rem;padding:.7rem .85rem;
+  background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-sm);
+}
+@media(max-width:560px){.chart-info{grid-template-columns:repeat(3,1fr);gap:6px;padding:.6rem .7rem}}
+.ci-block{min-width:0}
+.ci-lbl{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--c-text3);margin-bottom:3px}
+.ci-val{font-size:13px;font-weight:600;color:var(--c-text);font-variant-numeric:tabular-nums}
+.ci-val.before{color:var(--c-text2)}
+.ci-val.after{color:var(--c-accent)}
+.ci-val.delta{color:var(--c-green)}
+.chart-legend{display:flex;justify-content:center;gap:1.25rem;flex-wrap:wrap;margin-top:.5rem;font-size:11px;color:var(--c-text2)}
+.lg-dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.lg-dot.before{background:var(--c-text3)}
+.lg-dot.after{background:var(--c-accent)}
+
+/* ── INVEST CARD ── */
+.invest-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+@media(max-width:620px){.invest-grid{grid-template-columns:1fr}}
+.opt-card{
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  border-radius:var(--r);padding:1.1rem 1.15rem;position:relative;
+  transition:border-color .2s, background .2s;
+}
+.opt-card.winner{
+  border-color:var(--c-green);background:var(--c-green-pale);
+}
+.opt-card.winner::after{
+  content:'★';position:absolute;top:.85rem;right:1rem;
+  color:var(--c-green);font-size:14px;
+}
+.opt-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-text3);margin-bottom:.5rem}
+.opt-card.winner .opt-lbl{color:var(--c-green)}
+.opt-val{
+  font-family:'Instrument Serif',serif;
+  font-size:1.85rem;font-weight:400;color:var(--c-text);
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;
+}
+.opt-card.winner .opt-val{color:var(--c-green)}
+.opt-sub{font-size:11px;color:var(--c-text3);margin-top:.45rem;line-height:1.55}
+
+.breakeven{
+  margin-top:1rem;padding:.85rem 1rem;
+  background:var(--c-surface2);border:1px dashed var(--c-border2);border-radius:var(--r-sm);
+  font-size:12px;color:var(--c-text2);line-height:1.65;
+}
+.breakeven strong{color:var(--c-accent);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ── BREAKDOWN ── */
+.breakdown{margin-top:1rem}
+.bd-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--c-text3);margin-bottom:.5rem}
+.bd-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;padding:.4rem 0;border-bottom:1px solid var(--c-border);color:var(--c-text2)}
+.bd-row span:first-child{min-width:0;flex:1}
+.bd-row span:last-child{white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums;color:var(--c-text)}
+.bd-row:last-child{border-bottom:none;font-weight:600;color:var(--c-text)}
+
+/* ── ACCORDION ── */
+.acc-trigger{
+  display:flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:500;color:var(--c-text2);
+  cursor:pointer;margin-top:1rem;user-select:none;
+  padding:.5rem .75rem;border-radius:var(--r-sm);
+  border:1px solid var(--c-border);background:var(--c-surface);
+  transition:border-color .15s,color .15s;
+}
+.acc-trigger:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.acc-trigger svg{transition:transform .2s;flex-shrink:0}
+.acc-trigger.open svg{transform:rotate(180deg)}
+.acc-body{
+  display:none;margin-top:6px;
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-sm);padding:.9rem 1rem;
+  font-size:12px;color:var(--c-text2);line-height:1;
+}
+.acc-body.open{display:block}
+.acc-body ul{margin:.5rem 0 0 1rem;list-style:disc}
+.acc-body li{margin-bottom:.45rem;line-height:1.65}
+.acc-body li:last-child{margin-bottom:0}
+
+/* ── FOOTER ── */
+.footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--c-border)}
+.footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+@media(max-width:520px){.footer-grid{grid-template-columns:1fr}}
+.fcell{padding:.75rem 1rem;border:1px solid var(--c-border);border-radius:var(--r-sm);background:var(--c-surface)}
+.fcell-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-text3);margin-bottom:.4rem}
+.fcell-val{font-size:11px;color:var(--c-text2);line-height:1.7}
+.footer-note{text-align:center;font-size:11px;color:var(--c-text3);line-height:1.9}
+
+/* ── BACK LINK ── */
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:500;color:var(--c-text2);
+  text-decoration:none;letter-spacing:.01em;transition:color .2s;
+}
+.back-link:hover{color:var(--c-accent)}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <nav class="hero-nav">
+    <a class="back-link" href="index.html#ferramentas">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 2.5L3.5 7l5 4.5"/></svg>
+      <span lang="pt">Voltar ao início</span>
+      <span lang="en">Back to home</span>
+    </a>
+    <div class="nav-actions">
+      <div style="display:flex;border:1px solid var(--c-border);border-radius:8px;overflow:hidden;background:var(--c-surface)">
+        <button class="nav-btn active" id="btnPT">PT</button>
+        <button class="nav-btn" id="btnEN">EN</button>
+      </div>
+      <button class="nav-icon-btn" id="themeBtn" aria-label="Alternar tema">
+        <svg class="i-sun" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><line x1="8" y1="1" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15"/><line x1="1" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15" y2="8"/><line x1="3.05" y1="3.05" x2="4.1" y2="4.1"/><line x1="11.9" y1="11.9" x2="12.95" y2="12.95"/><line x1="12.95" y1="3.05" x2="11.9" y2="4.1"/><line x1="4.1" y1="11.9" x2="3.05" y2="12.95"/></svg>
+        <svg class="i-moon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7z"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="hero-body">
+    <div class="hero-kicker">
+      <span lang="pt">Gratuito · Sem registos · Privado</span>
+      <span lang="en">Free · No sign-up · Private</span>
+    </div>
+    <h1>
+      <span lang="pt">Amortização <em>antecipada</em></span>
+      <span lang="en">Early <em>repayment</em></span>
+    </h1>
+    <p class="hero-sub">
+      <span lang="pt">Descobre a tua nova prestação ou o quanto reduzes o prazo. E se compensa investir em vez de amortizar.</span>
+      <span lang="en">Find out your new payment or how much you cut from the term. And whether investing beats prepaying.</span>
+    </p>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main class="wrap">
+
+  <!-- CARD 1: EMPRESTIMO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">1</div><span class="sec-title"><span lang="pt">Empréstimo atual</span><span lang="en">Current loan</span></span></div>
+
+    <div class="input-grid">
+      <label class="big-input" for="divida-num">
+        <span class="big-input-lbl"><span lang="pt">Capital em dívida</span><span lang="en">Outstanding balance</span></span>
+        <div class="big-input-row">
+          <input type="text" id="divida-num" inputmode="decimal" value="120.000">
+          <span class="big-input-unit">€</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="taxa-num">
+        <span class="big-input-lbl"><span lang="pt">Taxa anual</span><span lang="en">Annual rate</span></span>
+        <div class="big-input-row">
+          <input type="number" id="taxa-num" inputmode="decimal" min="0" max="50" step="any" value="3,75">
+          <span class="big-input-unit">%</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="prazo-num">
+        <span class="big-input-lbl"><span lang="pt">Prazo restante</span><span lang="en">Remaining term</span></span>
+        <div class="big-input-row">
+          <input type="number" id="prazo-num" inputmode="numeric" min="1" max="600" step="1" value="240">
+          <span class="big-input-unit"><span lang="pt">meses</span><span lang="en">months</span></span>
+        </div>
+      </label>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Prazo restante</span><span lang="en">Remaining term</span></span>
+      <div class="quick-row" id="quick-prazo"></div>
+    </div>
+  </div>
+
+  <!-- CARD 2: AMORTIZACAO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">2</div><span class="sec-title"><span lang="pt">Amortização e estratégia</span><span lang="en">Repayment & strategy</span></span></div>
+
+    <div class="input-grid cols2">
+      <label class="big-input" for="amort-num">
+        <span class="big-input-lbl"><span lang="pt">Valor a amortizar</span><span lang="en">Prepayment amount</span></span>
+        <div class="big-input-row">
+          <input type="text" id="amort-num" inputmode="decimal" value="20.000">
+          <span class="big-input-unit">€</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="comis-num">
+        <span class="big-input-lbl"><span lang="pt">Comissão</span><span lang="en">Fee</span></span>
+        <div class="big-input-row">
+          <input type="number" id="comis-num" inputmode="decimal" min="0" max="10" step="any" value="0,5">
+          <span class="big-input-unit">%</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Comissão típica (PT)</span><span lang="en">Typical fee (PT)</span></span>
+      <div class="quick-row" id="quick-comis"></div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Estratégia</span><span lang="en">Strategy</span></span>
+      <div class="segmented" id="seg-strat">
+        <button class="seg-btn active" data-v="prest"><span lang="pt">Reduzir prestação</span><span lang="en">Lower payment</span></button>
+        <button class="seg-btn" data-v="prazo"><span lang="pt">Reduzir prazo</span><span lang="en">Shorter term</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: RESULTADO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">3</div><span class="sec-title"><span lang="pt">Antes vs. depois</span><span lang="en">Before vs. after</span></span></div>
+
+    <div class="cmp-hero" id="cmp-hero"></div>
+    <div class="savings" id="savings"></div>
+
+    <div class="metrics" id="metrics" style="margin-top:1.25rem"></div>
+  </div>
+
+  <!-- CARD 4: GRAFICO SALDO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">4</div><span class="sec-title"><span lang="pt">Evolução do saldo em dívida</span><span lang="en">Outstanding balance over time</span></span></div>
+    <div class="chart-wrap" id="chart"></div>
+    <div class="chart-info" id="chart-info"></div>
+    <div class="chart-legend">
+      <span><span class="lg-dot before"></span><span lang="pt">Sem amortização</span><span lang="en">Without prepayment</span></span>
+      <span><span class="lg-dot after"></span><span lang="pt">Com amortização</span><span lang="en">With prepayment</span></span>
+    </div>
+  </div>
+
+  <!-- CARD 5: INVESTIR vs AMORTIZAR -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">5</div><span class="sec-title"><span lang="pt">Amortizar vs. investir</span><span lang="en">Prepay vs. invest</span></span></div>
+
+    <div class="big-input" style="max-width:320px">
+      <span class="big-input-lbl"><span lang="pt">Retorno esperado anual</span><span lang="en">Expected annual return</span></span>
+      <div class="big-input-row">
+        <input type="number" id="retorno-num" inputmode="decimal" min="0" max="50" step="any" value="7">
+        <span class="big-input-unit">%</span>
+      </div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Referências</span><span lang="en">References</span></span>
+      <div class="quick-row" id="quick-retorno"></div>
+    </div>
+
+    <div class="invest-grid" id="invest-grid"></div>
+    <div class="breakeven" id="breakeven"></div>
+
+    <div class="breakdown" id="breakdown"></div>
+
+    <div class="acc-trigger" id="acc-btn" onclick="toggleAcc()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+        <circle cx="6.5" cy="6.5" r="6" stroke="currentColor" stroke-width="1"/>
+        <path d="M6.5 5.5v3.5M6.5 4v.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+      </svg>
+      <span><span lang="pt">Como funcionam os cálculos</span><span lang="en">How the calculations work</span></span>
+      <svg style="margin-left:auto" width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="acc-body" id="acc-body"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid" id="footer-grid"></div>
+    <p class="footer-note" id="footer-note"></p>
+  </footer>
+
+</main>
+
+<script>
+let lang = 'pt';
+let strategy = 'prest'; // 'prest' or 'prazo'
+let chartState = null;
+
+const T = {
+  pt: {
+    cmpBefore: 'Antes', cmpAfter: 'Depois',
+    cmpPrestSub: 'prestação mensal',
+    cmpPrazoSub: 'meses restantes',
+    savingsLbl: 'Poupança líquida em juros',
+    mPrest: 'Nova prestação', mPrestSub: 'capital + juros',
+    mPrazo: 'Novo prazo', mPrazoSub: 'até ficar liberto da dívida',
+    mTempo: 'Tempo poupado', mTempoSub: 'meses livres antecipados',
+    mJuros: 'Juros poupados', mJurosSub: 'antes da comissão',
+    mComis: 'Comissão paga', mComisSub: 'sobre o valor amortizado',
+    mLiq: 'Poupança líquida', mLiqSub: 'após comissão',
+    optAmort: 'Amortizar agora',
+    optInvest: 'Investir o mesmo montante',
+    optAmortSub: (s) => `Poupas ${s} em juros (após comissão) ao longo do prazo restante.`,
+    optInvestSub: (g, t) => `O capital cresce para ${g} ao fim de ${t} (juros compostos anuais).`,
+    breakevenTxt: (r) => `Para investir compensar amortizar, o teu retorno tem de superar <strong>${r}</strong> ao ano (líquido de impostos).`,
+    breakevenNA: 'Mesmo a 0% de retorno, investir é melhor (amortização não traz poupança líquida).',
+    bdTitle: 'Detalhe da operação',
+    bdDivida: 'Capital em dívida antes',
+    bdAmort: 'Capital amortizado',
+    bdComis: 'Comissão de amortização',
+    bdNovaDivida: 'Capital em dívida depois',
+    bdJurosAntes: 'Juros remanescentes (sem amortizar)',
+    bdJurosDepois: 'Juros remanescentes (depois)',
+    bdLiq: 'Poupança líquida total',
+    accItems: [
+      '<strong>Sistema francês:</strong> a prestação fixa cobre primeiro o juro do mês (sobre o saldo) e o restante reduz o capital. Reduzir o capital antecipadamente corta juros futuros.',
+      '<strong>Reduzir prestação:</strong> mantém-se o prazo, recalcula-se a prestação sobre o novo capital. Liberta liquidez mensal.',
+      '<strong>Reduzir prazo:</strong> mantém-se a prestação, recalcula-se quantos meses faltam. Maximiza a poupança em juros.',
+      '<strong>Comissão típica (PT):</strong> 0,5% para crédito a taxa variável, 2% para taxa fixa. Há períodos de isenção temporária definidos por lei.',
+      '<strong>Investir vs amortizar:</strong> compara a poupança líquida em juros (taxa = TAN do crédito, líquida) com o ganho de investir o mesmo montante (juros compostos sobre o retorno esperado).',
+      '<strong>Break-even:</strong> retorno anual mínimo de um investimento para igualar a poupança da amortização — é a "taxa de juro implícita" da operação.',
+    ],
+    fcells: [
+      {l:'Cálculo da prestação', v:'P = D · i / (1 − (1+i)<sup>−n</sup>)<br>D = capital · i = TAN/12 · n = meses'},
+      {l:'Cálculo do novo prazo', v:'n′ = −ln(1 − (D−A)·i / P) / ln(1+i)<br>D−A = capital após amortização'},
+      {l:'Sobre', v:'Ferramenta indicativa independente<br>Não constitui aconselhamento financeiro'},
+    ],
+    fNote: 'Valores meramente indicativos. Não considera comissões mensais, seguros, IMI ou outros encargos. Os bancos podem aplicar regras distintas. Consulta sempre o banco antes de amortizar.',
+    quickPrazo: [
+      {l:'5 anos', v:60},{l:'10 anos', v:120},{l:'15 anos', v:180},
+      {l:'20 anos', v:240},{l:'25 anos', v:300},{l:'30 anos', v:360},
+    ],
+    quickComis: [
+      {l:'0% · isenção', v:0},{l:'0,5% · taxa variável', v:0.5},{l:'2% · taxa fixa', v:2},
+    ],
+    quickRetorno: [
+      {l:'CA Série E · 3,5%', v:3.5},{l:'All World · 7%', v:7},{l:'S&P 500 · 10,5%', v:10.5},
+    ],
+    chartCi: ['Mês', 'Sem amortização', 'Com amortização'],
+    livre: 'liberto da dívida',
+  },
+  en: {
+    cmpBefore: 'Before', cmpAfter: 'After',
+    cmpPrestSub: 'monthly payment',
+    cmpPrazoSub: 'remaining months',
+    savingsLbl: 'Net interest savings',
+    mPrest: 'New payment', mPrestSub: 'principal + interest',
+    mPrazo: 'New term', mPrazoSub: 'until debt-free',
+    mTempo: 'Time saved', mTempoSub: 'months gained',
+    mJuros: 'Interest saved', mJurosSub: 'before fee',
+    mComis: 'Fee paid', mComisSub: 'on prepaid amount',
+    mLiq: 'Net savings', mLiqSub: 'after fee',
+    optAmort: 'Prepay now',
+    optInvest: 'Invest the same amount',
+    optAmortSub: (s) => `You save ${s} in interest (after fee) over the remaining term.`,
+    optInvestSub: (g, t) => `Your capital grows to ${g} after ${t} (annual compounding).`,
+    breakevenTxt: (r) => `For investing to beat prepaying, your return must exceed <strong>${r}</strong> per year (after tax).`,
+    breakevenNA: 'Even at 0% return, investing wins (prepayment yields no net saving).',
+    bdTitle: 'Operation breakdown',
+    bdDivida: 'Outstanding balance before',
+    bdAmort: 'Prepaid amount',
+    bdComis: 'Prepayment fee',
+    bdNovaDivida: 'Outstanding balance after',
+    bdJurosAntes: 'Interest remaining (no prepayment)',
+    bdJurosDepois: 'Interest remaining (after)',
+    bdLiq: 'Total net savings',
+    accItems: [
+      '<strong>French amortization:</strong> fixed payment first covers monthly interest (on the balance) and the rest reduces principal. Cutting principal early eliminates future interest.',
+      '<strong>Lower payment:</strong> term stays the same, payment is recomputed on the new principal. Frees monthly cash flow.',
+      '<strong>Shorter term:</strong> payment stays the same, the number of remaining months is recomputed. Maximises interest savings.',
+      '<strong>Typical fee (PT):</strong> 0.5% on variable-rate loans, 2% on fixed-rate. Temporary exemptions may apply by law.',
+      '<strong>Invest vs prepay:</strong> compares net interest savings (rate = loan APR) with the gains from investing the same amount (compound interest at the expected return).',
+      '<strong>Break-even:</strong> minimum annual investment return required to match the prepayment savings — this is the "implicit yield" of the operation.',
+    ],
+    fcells: [
+      {l:'Payment formula', v:'P = D · i / (1 − (1+i)<sup>−n</sup>)<br>D = principal · i = APR/12 · n = months'},
+      {l:'New term formula', v:'n′ = −ln(1 − (D−A)·i / P) / ln(1+i)<br>D−A = principal after prepayment'},
+      {l:'About', v:'Independent indicative tool<br>Not financial advice'},
+    ],
+    fNote: 'Indicative values only. Does not consider monthly fees, insurance, property tax or other charges. Banks may apply different rules. Always consult your bank before prepaying.',
+    quickPrazo: [
+      {l:'5 years', v:60},{l:'10 years', v:120},{l:'15 years', v:180},
+      {l:'20 years', v:240},{l:'25 years', v:300},{l:'30 years', v:360},
+    ],
+    quickComis: [
+      {l:'0% · exempt', v:0},{l:'0.5% · variable rate', v:0.5},{l:'2% · fixed rate', v:2},
+    ],
+    quickRetorno: [
+      {l:'PT savings · 3.5%', v:3.5},{l:'All World · 7%', v:7},{l:'S&P 500 · 10.5%', v:10.5},
+    ],
+    chartCi: ['Month', 'No prepayment', 'With prepayment'],
+    livre: 'debt-free',
+  }
+};
+
+const $ = id => document.getElementById(id);
+
+function eur(n) {
+  return new Intl.NumberFormat('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}).format(n) + ' €';
+}
+function eur0(n) {
+  return new Intl.NumberFormat('de-DE', {maximumFractionDigits:0}).format(Math.round(n)) + ' €';
+}
+function pct(n, d=2) {
+  return n.toLocaleString('pt-PT', {minimumFractionDigits:d, maximumFractionDigits:d}).replace('.', ',') + '%';
+}
+function fmtMoney(n) {
+  return new Intl.NumberFormat('de-DE', {maximumFractionDigits:0}).format(Math.round(n));
+}
+function readMoney(id, def, min, max) {
+  let raw = $(id).value.toString().replace(/\./g, '').replace(',', '.');
+  let v = parseFloat(raw);
+  if (isNaN(v)) v = def;
+  if (v < min) v = min;
+  if (v > max) v = max;
+  return v;
+}
+function readNum(id, def, min, max) {
+  let raw = $(id).value.toString().replace(',', '.');
+  let v = parseFloat(raw);
+  if (isNaN(v)) v = def;
+  if (v < min) v = min;
+  if (v > max) v = max;
+  return v;
+}
+
+// ── MATH ───────────────────────────────────────────────
+// Prestação (sistema francês): P = D * i / (1 - (1+i)^-n)
+function calcPrest(D, taxaAnual, n) {
+  const i = taxaAnual / 100 / 12;
+  if (D <= 0 || n <= 0) return 0;
+  if (i === 0) return D / n;
+  return D * i / (1 - Math.pow(1 + i, -n));
+}
+// Novo prazo (com amortização): n' = -ln(1 - D*i/P) / ln(1+i)
+function calcPrazo(D, taxaAnual, P) {
+  const i = taxaAnual / 100 / 12;
+  if (D <= 0) return 0;
+  if (P <= D * i) return Infinity; // payment doesn't even cover interest
+  if (i === 0) return D / P;
+  return -Math.log(1 - D * i / P) / Math.log(1 + i);
+}
+// Total interest paid over n months for a balance D, rate, payment P
+function totalInterest(D, taxaAnual, n, P) {
+  return P * n - D;
+}
+// Build amortization schedule (returns array of monthly balances)
+function balanceSchedule(D, taxaAnual, n, P) {
+  const i = taxaAnual / 100 / 12;
+  const arr = [D];
+  let saldo = D;
+  for (let m = 1; m <= n; m++) {
+    const juro = saldo * i;
+    const cap = P - juro;
+    saldo = Math.max(0, saldo - cap);
+    arr.push(saldo);
+  }
+  return arr;
+}
+
+// ── CALC ───────────────────────────────────────────────
+function calc() {
+  const t = T[lang];
+  const divida = readMoney('divida-num', 120000, 1, 10000000);
+  const taxa   = readNum('taxa-num', 3.75, 0, 50);
+  const n      = Math.round(readNum('prazo-num', 240, 1, 600));
+  let amort    = readMoney('amort-num', 20000, 0, divida);
+  if (amort > divida) amort = divida;
+  const comis  = readNum('comis-num', 0.5, 0, 10);
+  const retorno = readNum('retorno-num', 7, 0, 50);
+
+  // Prestação atual
+  const P0 = calcPrest(divida, taxa, n);
+  // Juros restantes sem amortizar
+  const juros0 = totalInterest(divida, taxa, n, P0);
+
+  // Após amortização
+  const novaDivida = divida - amort;
+  const taxaCom = amort * comis / 100;
+
+  let P1, n1, juros1, tempoPoupado;
+  if (strategy === 'prest') {
+    // mesmo prazo, nova prestação
+    n1 = n;
+    P1 = calcPrest(novaDivida, taxa, n1);
+    juros1 = totalInterest(novaDivida, taxa, n1, P1);
+    tempoPoupado = 0;
+  } else {
+    // mesma prestação, novo prazo
+    P1 = P0;
+    const nRaw = calcPrazo(novaDivida, taxa, P1);
+    n1 = isFinite(nRaw) ? Math.ceil(nRaw) : n;
+    if (n1 > n) n1 = n;
+    juros1 = totalInterest(novaDivida, taxa, n1, P1);
+    tempoPoupado = n - n1;
+  }
+
+  const poupancaBruta = juros0 - juros1;
+  const poupancaLiq = poupancaBruta - taxaCom;
+
+  // ── COMPARISON HERO ──
+  let cmpAfterVal, cmpAfterSub;
+  if (strategy === 'prest') {
+    cmpAfterVal = `${eur(P1)}<em>/${lang==='pt'?'mês':'mo'}</em>`;
+    cmpAfterSub = t.cmpPrestSub;
+  } else {
+    const anos = (n1 / 12);
+    const yrs = Math.floor(anos);
+    const mos = n1 - yrs*12;
+    const subTxt = (yrs > 0 ? `${yrs} ${lang==='pt'?(yrs===1?'ano':'anos'):(yrs===1?'year':'years')}` : '') +
+                   (yrs > 0 && mos > 0 ? ' ' : '') +
+                   (mos > 0 ? `${mos} ${lang==='pt'?'mês'.replace('mês', mos===1?'mês':'meses'):(mos===1?'month':'months')}` : '');
+    cmpAfterVal = `${n1}<em>${lang==='pt'?'meses':'mos'}</em>`;
+    cmpAfterSub = subTxt;
+  }
+  const beforeVal = strategy === 'prest'
+    ? `${eur(P0)}<em>/${lang==='pt'?'mês':'mo'}</em>`
+    : `${n}<em>${lang==='pt'?'meses':'mos'}</em>`;
+  const beforeSub = strategy === 'prest' ? t.cmpPrestSub : t.cmpPrazoSub;
+
+  $('cmp-hero').innerHTML = `
+    <div class="cmp-side before">
+      <div class="cmp-side-lbl">${t.cmpBefore}</div>
+      <div class="cmp-side-val">${beforeVal}</div>
+      <div class="cmp-side-sub">${beforeSub}</div>
+    </div>
+    <div class="cmp-arrow">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+    </div>
+    <div class="cmp-side after">
+      <div class="cmp-side-lbl">${t.cmpAfter}</div>
+      <div class="cmp-side-val">${cmpAfterVal}</div>
+      <div class="cmp-side-sub">${cmpAfterSub}</div>
+    </div>`;
+
+  $('savings').innerHTML = `
+    <div class="savings-lbl">${t.savingsLbl}</div>
+    <div class="savings-val">${poupancaLiq >= 0 ? '+' : ''}${eur(poupancaLiq)}</div>`;
+
+  // ── METRICS ──
+  let metricsHtml = '';
+  if (strategy === 'prest') {
+    const dPrest = P0 - P1;
+    metricsHtml = `
+      <div class="met"><div class="met-lbl">${t.mPrest}</div><div class="met-val">${eur0(P1)}</div><div class="met-sub">−${eur0(dPrest)}/${lang==='pt'?'mês':'mo'}</div></div>
+      <div class="met"><div class="met-lbl">${t.mJuros}</div><div class="met-val green">${eur0(poupancaBruta)}</div><div class="met-sub">${t.mJurosSub}</div></div>
+      <div class="met"><div class="met-lbl">${t.mComis}</div><div class="met-val red">${eur0(taxaCom)}</div><div class="met-sub">${pct(comis,1)}</div></div>
+      <div class="met"><div class="met-lbl">${t.mLiq}</div><div class="met-val green">${eur0(poupancaLiq)}</div><div class="met-sub">${t.mLiqSub}</div></div>`;
+  } else {
+    const ynLbl = lang==='pt' ? 'meses' : 'months';
+    metricsHtml = `
+      <div class="met"><div class="met-lbl">${t.mTempo}</div><div class="met-val green">${tempoPoupado} ${ynLbl}</div><div class="met-sub">${(tempoPoupado/12).toFixed(1)} ${lang==='pt'?'anos':'yrs'}</div></div>
+      <div class="met"><div class="met-lbl">${t.mJuros}</div><div class="met-val green">${eur0(poupancaBruta)}</div><div class="met-sub">${t.mJurosSub}</div></div>
+      <div class="met"><div class="met-lbl">${t.mComis}</div><div class="met-val red">${eur0(taxaCom)}</div><div class="met-sub">${pct(comis,1)}</div></div>
+      <div class="met"><div class="met-lbl">${t.mLiq}</div><div class="met-val green">${eur0(poupancaLiq)}</div><div class="met-sub">${t.mLiqSub}</div></div>`;
+  }
+  $('metrics').innerHTML = metricsHtml;
+
+  // ── CHART ──
+  // Schedule before: full original loan
+  const schedBefore = balanceSchedule(divida, taxa, n, P0);
+  // Schedule after: from novaDivida using new (P1, n1)
+  const schedAfter = [divida, novaDivida].concat(balanceSchedule(novaDivida, taxa, n1, P1).slice(1));
+  // Pad after with zeros up to length of before
+  while (schedAfter.length < schedBefore.length) schedAfter.push(0);
+
+  renderChart(schedBefore, schedAfter, n);
+
+  // ── INVESTIR vs AMORTIZAR ──
+  // Horizon = remaining term in years (use original n)
+  const tYears = n / 12;
+  const ia = retorno / 100;
+  const fvInvest = amort * Math.pow(1 + ia, tYears);
+  const ganhoInvest = fvInvest - amort;
+  // Net comparison: poupancaLiq (saving from amort) vs ganhoInvest (gain from investing)
+  // Note: the cash from the lower payment in 'prest' strategy could itself be invested,
+  // but we keep this comparison simple and conservative.
+  const amortWins = poupancaLiq >= ganhoInvest;
+
+  const yearsTxt = (tYears.toFixed(0)) + ' ' + (lang==='pt' ? 'anos' : 'years');
+
+  $('invest-grid').innerHTML = `
+    <div class="opt-card ${amortWins ? 'winner' : ''}">
+      <div class="opt-lbl">${t.optAmort}</div>
+      <div class="opt-val">${eur0(poupancaLiq)}</div>
+      <div class="opt-sub">${t.optAmortSub(eur0(poupancaLiq))}</div>
+    </div>
+    <div class="opt-card ${!amortWins ? 'winner' : ''}">
+      <div class="opt-lbl">${t.optInvest}</div>
+      <div class="opt-val">${eur0(ganhoInvest)}</div>
+      <div class="opt-sub">${t.optInvestSub(eur0(fvInvest), yearsTxt)}</div>
+    </div>`;
+
+  // Break-even: rate r such that amort * ((1+r)^t - 1) = poupancaLiq
+  if (poupancaLiq <= 0) {
+    $('breakeven').innerHTML = t.breakevenNA;
+  } else {
+    const rBE = Math.pow((amort + poupancaLiq) / amort, 1 / tYears) - 1;
+    $('breakeven').innerHTML = t.breakevenTxt(pct(rBE * 100, 2));
+  }
+
+  // ── BREAKDOWN ──
+  $('breakdown').innerHTML = `
+    <div class="bd-title" style="margin-top:1.25rem">${t.bdTitle}</div>
+    <div class="bd-row"><span>${t.bdDivida}</span><span>${eur(divida)}</span></div>
+    <div class="bd-row"><span>${t.bdAmort}</span><span>−${eur(amort)}</span></div>
+    <div class="bd-row"><span>${t.bdNovaDivida}</span><span>${eur(novaDivida)}</span></div>
+    <div class="bd-row"><span>${t.bdComis}</span><span>${eur(taxaCom)}</span></div>
+    <div class="bd-row"><span>${t.bdJurosAntes}</span><span>${eur(juros0)}</span></div>
+    <div class="bd-row"><span>${t.bdJurosDepois}</span><span>${eur(juros1)}</span></div>
+    <div class="bd-row"><span>${t.bdLiq}</span><span>${eur(poupancaLiq)}</span></div>`;
+
+  // ── ACCORDION ──
+  $('acc-body').innerHTML = `<ul>${t.accItems.map(x => `<li>${x}</li>`).join('')}</ul>`;
+
+  // ── FOOTER ──
+  $('footer-grid').innerHTML = t.fcells.map(c => `<div class="fcell"><div class="fcell-lbl">${c.l}</div><div class="fcell-val">${c.v}</div></div>`).join('');
+  $('footer-note').textContent = t.fNote;
+}
+
+// ── CHART ──
+function renderChart(schedBefore, schedAfter, totalMeses) {
+  const wrap = $('chart');
+  const W = wrap.clientWidth || 680;
+  const H = 220;
+  const PAD = {top:20, right:12, bottom:28, left:52};
+  const cw = W - PAD.left - PAD.right;
+  const ch = H - PAD.top - PAD.bottom;
+
+  const N = schedBefore.length - 1;
+  const maxVal = schedBefore[0] || 1;
+
+  const sx = m => PAD.left + (m/N)*cw;
+  const sy = v => PAD.top + ch - (v/maxVal)*ch;
+
+  chartState = { schedBefore, schedAfter, PAD, W, H, cw, ch, N, maxVal };
+
+  const beforePath = schedBefore.map((v, i) => `${sx(i)},${sy(v)}`).join(' ');
+  const afterPath  = schedAfter.map((v, i) => `${sx(i)},${sy(v)}`).join(' ');
+  const afterArea  = afterPath + ` ${sx(N)},${sy(0)} ${sx(0)},${sy(0)}`;
+
+  // axis
+  const fmt = v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? Math.round(v/1e3)+'k' : Math.round(v);
+  const yTicks = [0.25,0.5,0.75,1].map(f => ({v:maxVal*f, y:sy(maxVal*f)}));
+  const xStep = N <= 60 ? 12 : N <= 240 ? 36 : 60;
+  const xTicks = [];
+  for (let m = 0; m <= N; m += xStep) xTicks.push(m);
+  if (xTicks[xTicks.length-1] !== N) xTicks.push(N);
+
+  const cs = getComputedStyle(document.documentElement);
+  const cAccent  = cs.getPropertyValue('--c-accent').trim();
+  const cText3   = cs.getPropertyValue('--c-text3').trim();
+  const cBorder  = cs.getPropertyValue('--c-border').trim();
+  const cBorder2 = cs.getPropertyValue('--c-border2').trim();
+  const cSurface = cs.getPropertyValue('--c-surface').trim();
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<defs>
+    <linearGradient id="g-aft" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${cAccent}" stop-opacity=".34"/>
+      <stop offset="100%" stop-color="${cAccent}" stop-opacity=".04"/>
+    </linearGradient>
+  </defs>`;
+  // grid + y labels
+  yTicks.forEach(t => {
+    svg += `<line x1="${PAD.left}" y1="${t.y}" x2="${W - PAD.right}" y2="${t.y}" stroke="${cBorder}" stroke-width="1"/>`;
+    svg += `<text x="${PAD.left - 8}" y="${t.y + 3}" fill="${cText3}" font-size="9.5" text-anchor="end" font-family="Instrument Sans">${fmt(t.v)}</text>`;
+  });
+  // x labels
+  xTicks.forEach(m => {
+    svg += `<text x="${sx(m)}" y="${H - 10}" fill="${cText3}" font-size="9.5" text-anchor="middle" font-family="Instrument Sans">${m}</text>`;
+  });
+
+  // after area
+  svg += `<polygon points="${afterArea}" fill="url(#g-aft)" stroke="none"/>`;
+  // before line (dashed)
+  svg += `<polyline points="${beforePath}" fill="none" stroke="${cText3}" stroke-width="1.6" stroke-dasharray="3,3"/>`;
+  // after line
+  svg += `<polyline points="${afterPath}" fill="none" stroke="${cAccent}" stroke-width="2"/>`;
+
+  // cursor (hidden by default)
+  svg += `<g id="ch-cursor" style="display:none">
+    <line id="ch-cursor-line" x1="0" y1="${PAD.top}" x2="0" y2="${PAD.top + ch}" stroke="${cBorder2}" stroke-width="1"/>
+    <circle id="ch-dot-before" cx="0" cy="0" r="3.5" fill="${cSurface}" stroke="${cText3}" stroke-width="1.6"/>
+    <circle id="ch-dot-after" cx="0" cy="0" r="3.5" fill="${cAccent}" stroke="${cSurface}" stroke-width="1.6"/>
+  </g>`;
+
+  // overlay
+  svg += `<rect id="ch-overlay" x="${PAD.left}" y="${PAD.top}" width="${cw}" height="${ch}" fill="transparent"/>`;
+  svg += `</svg>`;
+  wrap.innerHTML = svg;
+
+  showChartInfo(N); // default to last point in info, but no cursor
+
+  const overlay = $('ch-overlay');
+  if (overlay) {
+    const handler = (clientX) => {
+      const rect = wrap.querySelector('svg').getBoundingClientRect();
+      const scale = W / rect.width;
+      const px = (clientX - rect.left) * scale;
+      const m = Math.round(((px - PAD.left) / cw) * N);
+      const mClamped = Math.max(0, Math.min(N, m));
+      moveCursor(mClamped);
+    };
+    overlay.addEventListener('mousemove', e => handler(e.clientX));
+    overlay.addEventListener('mouseleave', () => {
+      const c = $('ch-cursor');
+      if (c) c.style.display = 'none';
+      showChartInfo(N);
+    });
+    overlay.addEventListener('touchmove', e => { e.preventDefault(); handler(e.touches[0].clientX); }, {passive:false});
+    overlay.addEventListener('touchend', () => {
+      const c = $('ch-cursor');
+      if (c) c.style.display = 'none';
+      showChartInfo(N);
+    });
+  }
+}
+
+function moveCursor(m) {
+  if (!chartState) return;
+  const { schedBefore, schedAfter, PAD, cw, ch, N, maxVal } = chartState;
+  const sx = mm => PAD.left + (mm/N)*cw;
+  const sy = v => PAD.top + ch - (v/maxVal)*ch;
+
+  const x = sx(m);
+  const yB = sy(schedBefore[m]);
+  const yA = sy(schedAfter[m]);
+
+  const c = $('ch-cursor');
+  if (c) c.style.display = '';
+  const line = $('ch-cursor-line');
+  if (line) { line.setAttribute('x1', x); line.setAttribute('x2', x); }
+  const dB = $('ch-dot-before');
+  if (dB) { dB.setAttribute('cx', x); dB.setAttribute('cy', yB); }
+  const dA = $('ch-dot-after');
+  if (dA) { dA.setAttribute('cx', x); dA.setAttribute('cy', yA); }
+  showChartInfo(m);
+}
+
+function showChartInfo(m) {
+  if (!chartState) return;
+  const t = T[lang];
+  const { schedBefore, schedAfter } = chartState;
+  const before = schedBefore[m] ?? 0;
+  const after  = schedAfter[m] ?? 0;
+  $('chart-info').innerHTML = `
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[0]}</div><div class="ci-val">${m}</div></div>
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[1]}</div><div class="ci-val before">${eur0(before)}</div></div>
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[2]}</div><div class="ci-val after">${eur0(after)}</div></div>`;
+}
+
+// ── ACCORDION ──
+function toggleAcc() {
+  $('acc-body').classList.toggle('open');
+  $('acc-btn').classList.toggle('open');
+}
+
+// ── QUICK CHIPS ──
+function renderQuick() {
+  const t = T[lang];
+  const mk = (id, items, target, isMoney) => {
+    $(id).innerHTML = items.map(q => `<button class="quick-chip" data-v="${q.v}">${q.l}</button>`).join('');
+    document.querySelectorAll(`#${id} .quick-chip`).forEach(b => {
+      b.addEventListener('click', () => {
+        const el = $(target);
+        if (isMoney) el.value = fmtMoney(parseFloat(b.dataset.v));
+        else el.value = b.dataset.v.toString().replace('.', ',');
+        calc();
+      });
+    });
+  };
+  mk('quick-prazo', t.quickPrazo, 'prazo-num', false);
+  mk('quick-comis', t.quickComis, 'comis-num', false);
+  mk('quick-retorno', t.quickRetorno, 'retorno-num', false);
+}
+
+// ── EVENTS ──
+['divida-num','amort-num'].forEach(id => {
+  const el = $(id);
+  el.addEventListener('focus', () => {
+    const v = readMoney(id, 0, 0, 1e9);
+    el.value = v || '';
+  });
+  el.addEventListener('input', calc);
+  el.addEventListener('blur', () => {
+    const v = readMoney(id, 0, 0, 1e9);
+    el.value = fmtMoney(v);
+    calc();
+  });
+});
+['taxa-num','prazo-num','comis-num','retorno-num'].forEach(id => {
+  $(id).addEventListener('input', calc);
+});
+
+// Strategy toggle
+document.querySelectorAll('#seg-strat .seg-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#seg-strat .seg-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    strategy = b.dataset.v;
+    calc();
+  });
+});
+
+// ── LANG ──
+const root = document.documentElement;
+const btnPT = $('btnPT'), btnEN = $('btnEN');
+function setLang(l) {
+  lang = l;
+  root.setAttribute('data-lang', l);
+  root.setAttribute('lang', l);
+  btnPT.classList.toggle('active', l === 'pt');
+  btnEN.classList.toggle('active', l === 'en');
+  localStorage.setItem('aa-lang', l);
+  renderQuick();
+  calc();
+}
+btnPT.addEventListener('click', () => setLang('pt'));
+btnEN.addEventListener('click', () => setLang('en'));
+
+// ── THEME ──
+$('themeBtn').addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('aa-theme', next);
+  calc();
+});
+
+// ── INIT ──
+const savedTheme = localStorage.getItem('aa-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+root.setAttribute('data-theme', savedTheme);
+const savedLang = localStorage.getItem('aa-lang') || 'pt';
+setLang(savedLang);
+
+// Re-render chart on resize
+let resizeTO;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTO);
+  resizeTO = setTimeout(calc, 150);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carro eléctrico vs gasolina — André Aguiar</title>
+<meta name="description" content="Compara o custo total de propriedade entre eléctrico e combustão. Descobre o ano de paridade, a poupança total e o CO₂ evitado.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS ── */
+:root{
+  --c-bg:#f4efe6; --c-surface:#ece6d8; --c-surface2:#e2dace;
+  --c-border:#d6cfc2; --c-border2:#c5bdb0;
+  --c-text:#1c2238; --c-text2:#5c6070; --c-text3:#9ca2b2;
+  --c-accent:#b8912a; --c-accent2:#9a7820; --c-accent-pale:#f7f0e0;
+  --c-green:#2a6e3f; --c-green-pale:#e8f5ed; --c-green-border:#a8d5bc;
+  --c-red:#b83232; --c-red-pale:#fdecea; --c-red-border:#f5c6c2;
+  --c-amber:#7a5000; --c-amber-pale:#fef9ec; --c-amber-border:#e8c870;
+  --c-orange:#a05000; --c-orange-pale:#fdf2e8; --c-orange-border:#f0c490;
+  --c-blue:#2860a0;
+  --r:10px; --r-sm:6px; --r-lg:14px;
+  --shadow: 0 1px 3px rgba(28,34,56,.06), 0 1px 2px rgba(28,34,56,.04);
+}
+html[data-theme="dark"]{
+  --c-bg:#131210; --c-surface:#1b1916; --c-surface2:#23211d;
+  --c-border:#2c2924; --c-border2:#3b3730;
+  --c-text:#f0e9d8; --c-text2:#98908a; --c-text3:#585450;
+  --c-accent:#d4a83a; --c-accent2:#b8912a; --c-accent-pale:#2a2010;
+  --c-green:#4caf82; --c-green-pale:#0d2a1a; --c-green-border:#1d5535;
+  --c-red:#e57373; --c-red-pale:#2a0d0d; --c-red-border:#5c2020;
+  --c-amber:#f5c842; --c-amber-pale:#2a1f00; --c-amber-border:#5a4000;
+  --c-orange:#e8830a; --c-orange-pale:#2a1808; --c-orange-border:#5a3210;
+  --c-blue:#5fa3e8;
+  --shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+[data-lang="pt"] [lang="en"] { display: none; }
+[data-lang="en"] [lang="pt"] { display: none; }
+
+/* ── BASE ── */
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;line-height:1.5;transition:background .2s,color .2s;-webkit-font-smoothing:antialiased}
+
+/* ── HERO ── */
+.hero{background:var(--c-bg);padding:0 1.5rem;border-bottom:1px solid var(--c-border)}
+.hero-nav{
+  max-width:840px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.1rem 0;border-bottom:1px solid var(--c-border);
+}
+.nav-actions{display:flex;gap:6px;align-items:center}
+.nav-btn{
+  padding:5px 13px;border-radius:0;border:none;background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;
+  color:var(--c-text2);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.04em;
+}
+.nav-btn.active{background:var(--c-text);color:var(--c-bg)}
+.nav-btn:hover:not(.active){color:var(--c-text)}
+.nav-icon-btn{
+  width:30px;height:30px;border-radius:50%;border:1px solid var(--c-border);
+  background:var(--c-surface);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text2);transition:border-color .2s,color .2s;
+}
+.nav-icon-btn:hover{border-color:var(--c-border2);color:var(--c-text)}
+.i-sun,.i-moon{display:none}
+[data-theme="light"] .i-sun{display:block}
+[data-theme="dark"]  .i-moon{display:block}
+.hero-body{max-width:840px;margin:0 auto;padding:3.5rem 0 4rem;text-align:center}
+.hero-kicker{
+  font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--c-accent);margin-bottom:1.25rem;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.hero-kicker::before,.hero-kicker::after{content:'';width:24px;height:1px;background:var(--c-accent)}
+.hero h1{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(2rem,5vw,3.25rem);
+  font-weight:400;line-height:1.12;
+  color:var(--c-text);letter-spacing:-.025em;margin-bottom:.85rem;
+}
+.hero h1 em{font-style:italic;color:var(--c-accent)}
+.hero-sub{font-size:16px;color:var(--c-text2);max-width:520px;margin:0 auto 1rem;line-height:1.65}
+
+/* ── MAIN ── */
+.wrap{max-width:840px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+
+/* ── SECTION HEADER ── */
+.sec-head{display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem}
+.sec-num{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--c-accent);color:var(--c-bg);
+  font-size:11px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sec-title{font-size:13px;font-weight:600;color:var(--c-text);letter-spacing:-.01em}
+
+/* ── CARD ── */
+.card{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem;
+  box-shadow:var(--shadow);transition:background .2s,border-color .2s;
+}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:up .35s ease both}
+.card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}
+.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.16s}
+.card:nth-child(5){animation-delay:.20s}.card:nth-child(6){animation-delay:.24s}
+
+/* ── INPUT GRID ── */
+.input-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:620px){.input-grid{grid-template-columns:1fr}}
+
+.big-input{
+  background:var(--c-surface2);
+  border:1px solid var(--c-border);
+  border-radius:var(--r);
+  padding:1rem 1.1rem;
+  transition:border-color .15s, background .15s;
+  cursor:text;
+}
+.big-input:hover{border-color:var(--c-border2)}
+.big-input:focus-within{border-color:var(--c-accent);background:var(--c-surface)}
+.big-input-lbl{
+  font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--c-text3);margin-bottom:.55rem;display:block;
+}
+.big-input-row{display:flex;align-items:baseline;gap:6px}
+.big-input input{
+  width:100%;
+  font-family:'Instrument Serif',serif;
+  font-size:1.55rem;font-weight:400;
+  color:var(--c-text);
+  background:transparent;border:none;outline:none;padding:0;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+  -moz-appearance:textfield;
+}
+.big-input input::-webkit-inner-spin-button,
+.big-input input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.big-input-unit{
+  font-family:'Instrument Sans',sans-serif;
+  font-size:13px;font-weight:500;color:var(--c-text2);
+  flex-shrink:0;
+}
+
+/* ── QUICK CHIPS ── */
+.quick-section{margin-top:.85rem}
+.quick-section + .quick-section{margin-top:.6rem}
+.quick-section-lbl{
+  font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--c-text3);display:block;margin-bottom:.4rem;
+}
+.quick-row{display:flex;gap:5px;flex-wrap:wrap}
+.quick-chip{
+  padding:3px 9px;border-radius:12px;
+  border:1px solid var(--c-border);background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:10.5px;font-weight:500;
+  color:var(--c-text3);cursor:pointer;transition:all .12s;
+  letter-spacing:.02em;
+}
+.quick-chip:hover{border-color:var(--c-accent);color:var(--c-accent)}
+
+/* ── CARROS (CARD 2 — 2-col side-by-side) ── */
+.cars-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:620px){.cars-grid{grid-template-columns:1fr}}
+.car-block{
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  border-radius:var(--r);padding:1rem;
+  transition:border-color .2s;
+}
+.car-block.ev{border-top:3px solid var(--c-green)}
+.car-block.ice{border-top:3px solid var(--c-orange)}
+.car-head{
+  display:flex;align-items:center;gap:9px;margin-bottom:.85rem;
+  padding-bottom:.7rem;border-bottom:1px solid var(--c-border);
+}
+.car-icon{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.car-block.ev .car-icon{background:var(--c-green-pale);color:var(--c-green)}
+.car-block.ice .car-icon{background:var(--c-orange-pale);color:var(--c-orange)}
+.car-name{font-size:13px;font-weight:600;color:var(--c-text);letter-spacing:-.01em;line-height:1.2}
+.car-name-sub{font-size:10px;color:var(--c-text3);font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+.mini-input{
+  display:flex;align-items:center;gap:8px;
+  padding:.55rem .7rem;border:1px solid var(--c-border);border-radius:var(--r-sm);
+  background:var(--c-surface);
+  margin-bottom:6px;
+  transition:border-color .15s;
+}
+.mini-input:hover{border-color:var(--c-border2)}
+.mini-input:focus-within{border-color:var(--c-accent)}
+.mini-lbl{flex:1;font-size:11px;color:var(--c-text2);font-weight:500;letter-spacing:.01em}
+.mini-val{
+  display:flex;align-items:baseline;gap:4px;flex-shrink:0;
+}
+.mini-input input{
+  width:75px;text-align:right;
+  font-family:'Instrument Serif',serif;font-size:14.5px;font-weight:400;
+  color:var(--c-text);background:transparent;border:none;outline:none;padding:0;
+  font-variant-numeric:tabular-nums;-moz-appearance:textfield;
+}
+.mini-input input::-webkit-inner-spin-button,
+.mini-input input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.mini-unit{font-size:10.5px;color:var(--c-text3);font-weight:500;flex-shrink:0;letter-spacing:.01em}
+
+/* ── VERDICT (CARD 4) ── */
+.verdict{
+  display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:center;
+  padding:1.4rem 1.4rem;border-radius:var(--r);
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  margin-bottom:1.1rem;
+}
+@media(max-width:560px){.verdict{grid-template-columns:1fr;text-align:center}}
+.verdict.ev-wins{background:var(--c-green-pale);border-color:var(--c-green-border)}
+.verdict.ice-wins{background:var(--c-orange-pale);border-color:var(--c-orange-border)}
+.verdict.tie{background:var(--c-amber-pale);border-color:var(--c-amber-border)}
+
+.verdict-badge{
+  width:64px;height:64px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:var(--c-surface);
+}
+.verdict.ev-wins .verdict-badge{background:var(--c-green);color:var(--c-bg)}
+.verdict.ice-wins .verdict-badge{background:var(--c-orange);color:var(--c-bg)}
+.verdict.tie .verdict-badge{background:var(--c-amber);color:var(--c-bg)}
+@media(max-width:560px){.verdict-badge{margin:0 auto}}
+
+.verdict-text{min-width:0}
+.verdict-title{
+  font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;
+  color:var(--c-text2);margin-bottom:.3rem;
+}
+.verdict-main{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(1.65rem,4.5vw,2.3rem);
+  font-weight:400;line-height:1.1;letter-spacing:-.02em;
+  color:var(--c-text);
+}
+.verdict-main em{font-style:italic;color:var(--c-accent)}
+.verdict.ev-wins .verdict-main em{color:var(--c-green)}
+.verdict.ice-wins .verdict-main em{color:var(--c-orange)}
+.verdict-sub{font-size:12px;color:var(--c-text2);margin-top:.45rem;line-height:1.55}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:620px){.metrics{grid-template-columns:repeat(2,1fr)}}
+.met{background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-sm);padding:.8rem .9rem}
+.met-lbl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--c-text3);margin-bottom:5px}
+.met-val{font-size:1.2rem;font-weight:600;color:var(--c-text);line-height:1;font-variant-numeric:tabular-nums}
+.met-val.ev{color:var(--c-green)}
+.met-val.ice{color:var(--c-orange)}
+.met-sub{font-size:10px;color:var(--c-text3);margin-top:4px}
+
+/* ── BARS ── */
+.bars-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+@media(max-width:620px){.bars-grid{grid-template-columns:1fr}}
+.bars-block{
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  border-radius:var(--r-sm);padding:1rem 1.1rem;
+}
+.bars-block-head{
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--c-text3);margin-bottom:.85rem;display:flex;justify-content:space-between;align-items:baseline;
+}
+.bars-block-head strong{font-size:12px;color:var(--c-text);font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:.02em}
+.bar-row{margin-bottom:.65rem}
+.bar-row:last-child{margin-bottom:0}
+.bar-head{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--c-text2);margin-bottom:4px;font-weight:500}
+.bar-head span:last-child{color:var(--c-text);font-variant-numeric:tabular-nums}
+.bar-track{background:var(--c-surface);border-radius:3px;height:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+.fill-ev-1{background:var(--c-green)}
+.fill-ev-2{background:color-mix(in srgb, var(--c-green) 70%, var(--c-bg))}
+.fill-ev-3{background:color-mix(in srgb, var(--c-green) 50%, var(--c-bg))}
+.fill-ev-4{background:color-mix(in srgb, var(--c-green) 32%, var(--c-bg))}
+.fill-ice-1{background:var(--c-orange)}
+.fill-ice-2{background:color-mix(in srgb, var(--c-orange) 70%, var(--c-bg))}
+.fill-ice-3{background:color-mix(in srgb, var(--c-orange) 50%, var(--c-bg))}
+.fill-ice-4{background:color-mix(in srgb, var(--c-orange) 32%, var(--c-bg))}
+
+/* ── CHART ── */
+.chart-wrap{position:relative;margin-top:.5rem}
+.chart-wrap svg{display:block;width:100%;height:auto;cursor:crosshair;touch-action:none}
+.chart-info{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  margin-top:.6rem;padding:.7rem .85rem;
+  background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-sm);
+}
+@media(max-width:560px){.chart-info{grid-template-columns:repeat(2,1fr);gap:8px;padding:.65rem .75rem}}
+.ci-block{min-width:0}
+.ci-lbl{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--c-text3);margin-bottom:3px}
+.ci-val{font-size:13px;font-weight:600;color:var(--c-text);font-variant-numeric:tabular-nums}
+.ci-val.ev{color:var(--c-green)}
+.ci-val.ice{color:var(--c-orange)}
+.ci-val.delta{color:var(--c-accent)}
+.chart-legend{display:flex;justify-content:center;gap:1.25rem;flex-wrap:wrap;margin-top:.5rem;font-size:11px;color:var(--c-text2)}
+.lg-dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.lg-dot.ev{background:var(--c-green)}
+.lg-dot.ice{background:var(--c-orange)}
+.lg-dot.par{background:transparent;border:1.5px dashed var(--c-accent);border-radius:0;height:0;width:14px;margin-right:6px}
+
+/* ── CO2 BANNER ── */
+.co2-banner{
+  display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;
+  padding:1rem 1.2rem;border-radius:var(--r-sm);
+  background:var(--c-green-pale);border:1px solid var(--c-green-border);
+  margin-top:1rem;
+}
+@media(max-width:560px){.co2-banner{grid-template-columns:1fr;text-align:center}}
+.co2-icon{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--c-green);color:var(--c-bg);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+@media(max-width:560px){.co2-icon{margin:0 auto}}
+.co2-text{min-width:0}
+.co2-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-green);margin-bottom:.2rem}
+.co2-val{font-family:'Instrument Serif',serif;font-size:1.55rem;font-weight:400;color:var(--c-green);font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+.co2-sub{font-size:11px;color:var(--c-text2);margin-top:.3rem}
+.co2-trees{
+  font-family:'Instrument Serif',serif;font-size:1.35rem;color:var(--c-green);
+  text-align:right;line-height:1.1;font-variant-numeric:tabular-nums;
+}
+.co2-trees-sub{font-size:10px;color:var(--c-text2);font-family:'Instrument Sans';margin-top:2px;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:560px){.co2-trees,.co2-trees-sub{text-align:center}}
+
+/* ── ACCORDION ── */
+.acc-trigger{
+  display:flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:500;color:var(--c-text2);
+  cursor:pointer;margin-top:1rem;user-select:none;
+  padding:.5rem .75rem;border-radius:var(--r-sm);
+  border:1px solid var(--c-border);background:var(--c-surface);
+  transition:border-color .15s,color .15s;
+}
+.acc-trigger:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.acc-trigger svg{transition:transform .2s;flex-shrink:0}
+.acc-trigger.open svg{transform:rotate(180deg)}
+.acc-body{
+  display:none;margin-top:6px;
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-sm);padding:.9rem 1rem;
+  font-size:12px;color:var(--c-text2);line-height:1;
+}
+.acc-body.open{display:block}
+.acc-body ul{margin:.5rem 0 0 1rem;list-style:disc}
+.acc-body li{margin-bottom:.45rem;line-height:1.65}
+.acc-body li:last-child{margin-bottom:0}
+
+/* ── FOOTER ── */
+.footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--c-border)}
+.footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+@media(max-width:520px){.footer-grid{grid-template-columns:1fr}}
+.fcell{padding:.75rem 1rem;border:1px solid var(--c-border);border-radius:var(--r-sm);background:var(--c-surface)}
+.fcell-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-text3);margin-bottom:.4rem}
+.fcell-val{font-size:11px;color:var(--c-text2);line-height:1.7}
+.footer-note{text-align:center;font-size:11px;color:var(--c-text3);line-height:1.9}
+
+/* ── BACK LINK ── */
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:500;color:var(--c-text2);
+  text-decoration:none;letter-spacing:.01em;transition:color .2s;
+}
+.back-link:hover{color:var(--c-accent)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <nav class="hero-nav">
+    <a class="back-link" href="index.html#ferramentas">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 2.5L3.5 7l5 4.5"/></svg>
+      <span lang="pt">Voltar ao início</span>
+      <span lang="en">Back to home</span>
+    </a>
+    <div class="nav-actions">
+      <div style="display:flex;border:1px solid var(--c-border);border-radius:8px;overflow:hidden;background:var(--c-surface)">
+        <button class="nav-btn active" id="btnPT">PT</button>
+        <button class="nav-btn" id="btnEN">EN</button>
+      </div>
+      <button class="nav-icon-btn" id="themeBtn" aria-label="Alternar tema">
+        <svg class="i-sun" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><line x1="8" y1="1" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15"/><line x1="1" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15" y2="8"/><line x1="3.05" y1="3.05" x2="4.1" y2="4.1"/><line x1="11.9" y1="11.9" x2="12.95" y2="12.95"/><line x1="12.95" y1="3.05" x2="11.9" y2="4.1"/><line x1="4.1" y1="11.9" x2="3.05" y2="12.95"/></svg>
+        <svg class="i-moon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7z"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="hero-body">
+    <div class="hero-kicker">
+      <span lang="pt">Gratuito · Sem registos · Privado</span>
+      <span lang="en">Free · No sign-up · Private</span>
+    </div>
+    <h1>
+      <span lang="pt">Eléctrico ou <em>combustão</em>?</span>
+      <span lang="en">Electric or <em>combustion</em>?</span>
+    </h1>
+    <p class="hero-sub">
+      <span lang="pt">Compara o custo total de propriedade ao longo dos anos. Descobre o ano de paridade, a poupança real e o CO₂ evitado.</span>
+      <span lang="en">Compare total cost of ownership over time. Find the parity year, real savings and CO₂ avoided.</span>
+    </p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- CARD 1: USO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">1</div><span class="sec-title"><span lang="pt">Padrão de utilização</span><span lang="en">Usage profile</span></span></div>
+
+    <div class="input-grid">
+      <label class="big-input" for="km-num">
+        <span class="big-input-lbl"><span lang="pt">Quilómetros / ano</span><span lang="en">Kilometres / year</span></span>
+        <div class="big-input-row">
+          <input type="text" id="km-num" inputmode="decimal" value="15.000">
+          <span class="big-input-unit">km</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="anos-num">
+        <span class="big-input-lbl"><span lang="pt">Horizonte</span><span lang="en">Horizon</span></span>
+        <div class="big-input-row">
+          <input type="number" id="anos-num" inputmode="numeric" min="1" max="25" step="1" value="8">
+          <span class="big-input-unit"><span lang="pt">anos</span><span lang="en">years</span></span>
+        </div>
+      </label>
+
+      <label class="big-input" for="casa-num">
+        <span class="big-input-lbl"><span lang="pt">Carregamento em casa</span><span lang="en">Home charging</span></span>
+        <div class="big-input-row">
+          <input type="number" id="casa-num" inputmode="numeric" min="0" max="100" step="1" value="80">
+          <span class="big-input-unit">%</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Quilometragem</span><span lang="en">Mileage</span></span>
+      <div class="quick-row" id="quick-km"></div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Horizonte</span><span lang="en">Horizon</span></span>
+      <div class="quick-row" id="quick-anos"></div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Mix de carregamento</span><span lang="en">Charging mix</span></span>
+      <div class="quick-row" id="quick-casa"></div>
+    </div>
+  </div>
+
+  <!-- CARD 2: OS DOIS CARROS -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">2</div><span class="sec-title"><span lang="pt">Os teus candidatos</span><span lang="en">Your candidates</span></span></div>
+
+    <div class="cars-grid">
+      <!-- EV -->
+      <div class="car-block ev">
+        <div class="car-head">
+          <div class="car-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div>
+            <div class="car-name"><span lang="pt">Eléctrico</span><span lang="en">Electric</span></div>
+            <div class="car-name-sub">EV</div>
+          </div>
+        </div>
+
+        <label class="mini-input" for="ev-preco">
+          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
+          <span class="mini-val"><input type="text" id="ev-preco" inputmode="decimal" value="35.000"><span class="mini-unit">€</span></span>
+        </label>
+        <label class="mini-input" for="ev-cons">
+          <span class="mini-lbl"><span lang="pt">Consumo</span><span lang="en">Consumption</span></span>
+          <span class="mini-val"><input type="number" id="ev-cons" min="5" max="40" step="any" value="16"><span class="mini-unit">kWh/100</span></span>
+        </label>
+        <label class="mini-input" for="ev-iuc">
+          <span class="mini-lbl">IUC</span>
+          <span class="mini-val"><input type="number" id="ev-iuc" min="0" max="2000" step="any" value="30"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
+        </label>
+        <label class="mini-input" for="ev-manut">
+          <span class="mini-lbl"><span lang="pt">Manutenção</span><span lang="en">Maintenance</span></span>
+          <span class="mini-val"><input type="number" id="ev-manut" min="0" max="5000" step="any" value="200"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
+        </label>
+        <label class="mini-input" for="ev-seguro">
+          <span class="mini-lbl"><span lang="pt">Seguro</span><span lang="en">Insurance</span></span>
+          <span class="mini-val"><input type="number" id="ev-seguro" min="0" max="5000" step="any" value="450"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
+        </label>
+      </div>
+
+      <!-- ICE -->
+      <div class="car-block ice">
+        <div class="car-head">
+          <div class="car-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h13l4 4v5h-2a2 2 0 1 1-4 0H9a2 2 0 1 1-4 0H3z"/><path d="M5 10V6h9l3 4"/></svg>
+          </div>
+          <div>
+            <div class="car-name"><span lang="pt">Combustão</span><span lang="en">Combustion</span></div>
+            <div class="car-name-sub"><span lang="pt">Gasolina / Diesel</span><span lang="en">Petrol / Diesel</span></div>
+          </div>
+        </div>
+
+        <label class="mini-input" for="ice-preco">
+          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
+          <span class="mini-val"><input type="text" id="ice-preco" inputmode="decimal" value="28.000"><span class="mini-unit">€</span></span>
+        </label>
+        <label class="mini-input" for="ice-cons">
+          <span class="mini-lbl"><span lang="pt">Consumo</span><span lang="en">Consumption</span></span>
+          <span class="mini-val"><input type="number" id="ice-cons" min="2" max="30" step="any" value="6"><span class="mini-unit">L/100</span></span>
+        </label>
+        <label class="mini-input" for="ice-iuc">
+          <span class="mini-lbl">IUC</span>
+          <span class="mini-val"><input type="number" id="ice-iuc" min="0" max="2000" step="any" value="220"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
+        </label>
+        <label class="mini-input" for="ice-manut">
+          <span class="mini-lbl"><span lang="pt">Manutenção</span><span lang="en">Maintenance</span></span>
+          <span class="mini-val"><input type="number" id="ice-manut" min="0" max="5000" step="any" value="600"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
+        </label>
+        <label class="mini-input" for="ice-seguro">
+          <span class="mini-lbl"><span lang="pt">Seguro</span><span lang="en">Insurance</span></span>
+          <span class="mini-val"><input type="number" id="ice-seguro" min="0" max="5000" step="any" value="450"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: ENERGIA -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">3</div><span class="sec-title"><span lang="pt">Preços de energia</span><span lang="en">Energy prices</span></span></div>
+
+    <div class="input-grid">
+      <label class="big-input" for="comb-num">
+        <span class="big-input-lbl"><span lang="pt">Combustível</span><span lang="en">Fuel</span></span>
+        <div class="big-input-row">
+          <input type="number" id="comb-num" inputmode="decimal" min="0.5" max="5" step="any" value="1,75">
+          <span class="big-input-unit">€/L</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="kwh-casa-num">
+        <span class="big-input-lbl"><span lang="pt">kWh em casa</span><span lang="en">kWh at home</span></span>
+        <div class="big-input-row">
+          <input type="number" id="kwh-casa-num" inputmode="decimal" min="0.05" max="1" step="any" value="0,15">
+          <span class="big-input-unit">€/kWh</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="kwh-pub-num">
+        <span class="big-input-lbl"><span lang="pt">kWh público</span><span lang="en">kWh public</span></span>
+        <div class="big-input-row">
+          <input type="number" id="kwh-pub-num" inputmode="decimal" min="0.05" max="1.5" step="any" value="0,35">
+          <span class="big-input-unit">€/kWh</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Combustível</span><span lang="en">Fuel</span></span>
+      <div class="quick-row" id="quick-comb"></div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Tarifa em casa</span><span lang="en">Home tariff</span></span>
+      <div class="quick-row" id="quick-kwh-casa"></div>
+    </div>
+  </div>
+
+  <!-- CARD 4: VEREDICTO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">4</div><span class="sec-title"><span lang="pt">Veredicto</span><span lang="en">Verdict</span></span></div>
+
+    <div id="verdict"></div>
+    <div class="metrics" id="metrics"></div>
+
+    <div class="bars-grid" id="bars"></div>
+
+    <div class="co2-banner" id="co2"></div>
+  </div>
+
+  <!-- CARD 5: GRAFICO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">5</div><span class="sec-title"><span lang="pt">Evolução do custo total</span><span lang="en">Total cost evolution</span></span></div>
+    <div class="chart-wrap" id="chart"></div>
+    <div class="chart-info" id="chart-info"></div>
+    <div class="chart-legend">
+      <span><span class="lg-dot ev"></span><span lang="pt">Eléctrico</span><span lang="en">Electric</span></span>
+      <span><span class="lg-dot ice"></span><span lang="pt">Combustão</span><span lang="en">Combustion</span></span>
+      <span><span class="lg-dot par"></span><span lang="pt">Paridade</span><span lang="en">Parity</span></span>
+    </div>
+
+    <div class="acc-trigger" id="acc-btn" onclick="toggleAcc()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+        <circle cx="6.5" cy="6.5" r="6" stroke="currentColor" stroke-width="1"/>
+        <path d="M6.5 5.5v3.5M6.5 4v.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+      </svg>
+      <span><span lang="pt">Como funciona o cálculo</span><span lang="en">How the calculation works</span></span>
+      <svg style="margin-left:auto" width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="acc-body" id="acc-body"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid" id="footer-grid"></div>
+    <p class="footer-note" id="footer-note"></p>
+  </footer>
+
+</main>
+
+<script>
+let lang = 'pt';
+let chartState = null;
+
+// CO2 factors
+const CO2_PETROL = 2.31;   // kg CO2 / litro gasolina (tank-to-wheel)
+const CO2_GRID_PT = 0.16;  // kg CO2 / kWh (mix elétrico PT 2024 — alto renovável)
+const TREE_KG_YR  = 21;    // kg CO2 absorvido por árvore adulta / ano
+
+const T = {
+  pt: {
+    verdict: {
+      ev:  (s, par)  => `Eléctrico poupa <em>${s}</em>`,
+      ice: (s)       => `Combustão poupa <em>${s}</em>`,
+      tie:           '<em>Empate técnico</em>',
+    },
+    verdictSubEvBE:  (y) => `ao fim de ${y}. O premium do eléctrico paga-se no <strong>${parityWord('pt')}</strong>.`,
+    verdictSubEvNoPremium: (y) => `ao fim de ${y}. O eléctrico é mais barato desde o dia 1.`,
+    verdictSubEvNeverParity: (y) => `ao fim de ${y}, mas o premium do eléctrico não se paga neste horizonte.`,
+    verdictSubIce:   (y) => `ao fim de ${y}. Combustão custa menos no total.`,
+    verdictSubTie:   (y) => `ao fim de ${y}. A diferença é desprezável.`,
+
+    mTcoEv: 'TCO eléctrico', mTcoEvSub: 'custo total ao fim do horizonte',
+    mTcoIce: 'TCO combustão', mTcoIceSub: 'custo total ao fim do horizonte',
+    mPerKmEv: 'Custo / km · EV', mPerKmEvSub: 'tudo incluído',
+    mPerKmIce: 'Custo / km · ICE', mPerKmIceSub: 'tudo incluído',
+
+    barsEv: 'Eléctrico — onde vai o dinheiro',
+    barsIce: 'Combustão — onde vai o dinheiro',
+    barPreco: 'Compra',
+    barEnergia: 'Energia',
+    barIuc: 'IUC',
+    barManut: 'Manutenção',
+    barSeguro: 'Seguro',
+
+    co2Lbl: 'CO₂ evitado',
+    co2Sub: (kg, km) => `Em ${km} ao longo do horizonte (combustão tank-to-wheel · mix elétrico PT)`,
+    co2TreesPlural: (n) => `${n} árvores`,
+    co2TreesSub: 'absorção anual equivalente',
+
+    chartCi: ['Ano', 'Eléctrico', 'Combustão', 'Diferença'],
+    chartParityLabel: 'Paridade',
+
+    accItems: [
+      '<strong>TCO (Total Cost of Ownership):</strong> preço de compra + soma de energia, IUC, manutenção e seguro ao longo do horizonte. Não inclui valor de revenda.',
+      '<strong>Custo de energia EV:</strong> consumo (kWh/100km) × km/ano × preço médio ponderado pelo mix casa/público.',
+      '<strong>Custo de combustível ICE:</strong> consumo (L/100km) × km/ano × preço por litro.',
+      '<strong>Paridade:</strong> ano em que as curvas TCO se cruzam. A partir desse ano, o eléctrico fica acumuladamente mais barato.',
+      '<strong>CO₂ evitado:</strong> emissões da gasolina queimada (2,31 kg/L) menos as emissões da electricidade gerada (0,16 kg/kWh — mix português 2024 com ~75% renovável).',
+      '<strong>Equivalente em árvores:</strong> uma árvore adulta absorve cerca de 21 kg de CO₂ por ano. Indica quantas árvores em pleno crescimento durante 1 ano seriam necessárias para absorver o mesmo CO₂ evitado.',
+    ],
+    fcells: [
+      {l:'Premissas EV', v:'Mix elétrico PT: 0,16 kg CO₂/kWh<br>IUC reduzido (categoria EV)<br>Manutenção baixa (sem óleo, travões duram mais)'},
+      {l:'Premissas combustão', v:'Gasolina: 2,31 kg CO₂/L<br>IUC variável com cilindrada e CO₂<br>Manutenção: revisões, óleo, filtros, travões'},
+      {l:'Sobre', v:'Ferramenta indicativa independente<br>Não considera revenda, financiamento ou subsídios'},
+    ],
+    fNote: 'Valores meramente indicativos. Não considera valor de revenda, financiamento, eventuais subsídios à compra (ex.: Fundo Ambiental) ou variações futuras dos preços de energia. Os pressupostos de CO₂ são aproximações: o mix elétrico português é dos mais limpos da Europa e tende a melhorar.',
+
+    quickKm: [{l:'10 000', v:10000},{l:'15 000', v:15000},{l:'20 000', v:20000},{l:'30 000', v:30000},{l:'45 000', v:45000}],
+    quickAnos: [{l:'5 anos', v:5},{l:'8 anos', v:8},{l:'10 anos', v:10},{l:'15 anos', v:15}],
+    quickCasa: [{l:'Garagem (100%)', v:100},{l:'Mista (80%)', v:80},{l:'Equilibrada (50%)', v:50},{l:'Sem casa (0%)', v:0}],
+    quickComb: [{l:'Gasolina · 1,75', v:1.75},{l:'Diesel · 1,60', v:1.60}],
+    quickKwhCasa: [{l:'Bi-horário vazio · 0,10', v:0.10},{l:'Simples · 0,15', v:0.15},{l:'Tarifa indexada alta · 0,22', v:0.22}],
+
+    parityWord: 'ano X',
+    yearsTxt: (n) => n === 1 ? '1 ano' : `${n} anos`,
+  },
+  en: {
+    verdict: {
+      ev:  (s, par)  => `Electric saves <em>${s}</em>`,
+      ice: (s)       => `Combustion saves <em>${s}</em>`,
+      tie:           '<em>Technical tie</em>',
+    },
+    verdictSubEvBE:  (y) => `over ${y}. The EV premium is paid back in <strong>${parityWord('en')}</strong>.`,
+    verdictSubEvNoPremium: (y) => `over ${y}. The EV is cheaper from day one.`,
+    verdictSubEvNeverParity: (y) => `over ${y}, but the EV premium is not paid back within this horizon.`,
+    verdictSubIce:   (y) => `over ${y}. Combustion costs less in total.`,
+    verdictSubTie:   (y) => `over ${y}. The difference is negligible.`,
+
+    mTcoEv: 'EV TCO', mTcoEvSub: 'total cost over horizon',
+    mTcoIce: 'ICE TCO', mTcoIceSub: 'total cost over horizon',
+    mPerKmEv: 'Cost / km · EV', mPerKmEvSub: 'all-in',
+    mPerKmIce: 'Cost / km · ICE', mPerKmIceSub: 'all-in',
+
+    barsEv: 'Electric — where the money goes',
+    barsIce: 'Combustion — where the money goes',
+    barPreco: 'Purchase',
+    barEnergia: 'Energy',
+    barIuc: 'Road tax',
+    barManut: 'Maintenance',
+    barSeguro: 'Insurance',
+
+    co2Lbl: 'CO₂ avoided',
+    co2Sub: (kg, km) => `Over ${km} during the horizon (tank-to-wheel petrol · PT grid mix)`,
+    co2TreesPlural: (n) => `${n} trees`,
+    co2TreesSub: 'equivalent annual absorption',
+
+    chartCi: ['Year', 'Electric', 'Combustion', 'Difference'],
+    chartParityLabel: 'Parity',
+
+    accItems: [
+      '<strong>TCO (Total Cost of Ownership):</strong> purchase price + sum of energy, road tax, maintenance and insurance over the horizon. Does not include resale value.',
+      '<strong>EV energy cost:</strong> consumption (kWh/100km) × km/year × weighted average price (home vs public mix).',
+      '<strong>ICE fuel cost:</strong> consumption (L/100km) × km/year × price per litre.',
+      '<strong>Parity:</strong> year when the TCO curves cross. From that year onwards, the EV is cumulatively cheaper.',
+      '<strong>CO₂ avoided:</strong> emissions from burning petrol (2.31 kg/L) minus emissions from electricity generation (0.16 kg/kWh — Portuguese 2024 mix, ~75% renewable).',
+      '<strong>Tree equivalent:</strong> a mature tree absorbs ~21 kg of CO₂ per year. Shows how many trees growing for one year would absorb the same CO₂.',
+    ],
+    fcells: [
+      {l:'EV assumptions', v:'PT grid: 0.16 kg CO₂/kWh<br>Reduced road tax (EV category)<br>Low maintenance (no oil, brakes last longer)'},
+      {l:'Combustion assumptions', v:'Petrol: 2.31 kg CO₂/L<br>Road tax varies with displacement and CO₂<br>Maintenance: services, oil, filters, brakes'},
+      {l:'About', v:'Independent indicative tool<br>Does not consider resale, financing or subsidies'},
+    ],
+    fNote: 'Indicative values only. Does not consider resale value, financing, possible purchase incentives (e.g. Fundo Ambiental) or future energy price variations. CO₂ assumptions are approximations: the Portuguese electricity mix is among the cleanest in Europe and continues to improve.',
+
+    quickKm: [{l:'10,000', v:10000},{l:'15,000', v:15000},{l:'20,000', v:20000},{l:'30,000', v:30000},{l:'45,000', v:45000}],
+    quickAnos: [{l:'5 years', v:5},{l:'8 years', v:8},{l:'10 years', v:10},{l:'15 years', v:15}],
+    quickCasa: [{l:'Garage (100%)', v:100},{l:'Mixed (80%)', v:80},{l:'Balanced (50%)', v:50},{l:'No home (0%)', v:0}],
+    quickComb: [{l:'Petrol · 1.75', v:1.75},{l:'Diesel · 1.60', v:1.60}],
+    quickKwhCasa: [{l:'Off-peak · 0.10', v:0.10},{l:'Standard · 0.15', v:0.15},{l:'Peak indexed · 0.22', v:0.22}],
+
+    parityWord: 'year X',
+    yearsTxt: (n) => n === 1 ? '1 year' : `${n} years`,
+  }
+};
+
+// Helper used in template strings before T is in scope
+function parityWord(l) { return T[l].parityWord; }
+
+const $ = id => document.getElementById(id);
+
+function eur(n) {
+  return new Intl.NumberFormat('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}).format(n) + ' €';
+}
+function eur0(n) {
+  return new Intl.NumberFormat('de-DE', {maximumFractionDigits:0}).format(Math.round(n)) + ' €';
+}
+function num0(n) {
+  return new Intl.NumberFormat('de-DE', {maximumFractionDigits:0}).format(Math.round(n));
+}
+function fmtMoney(n) {
+  return new Intl.NumberFormat('de-DE', {maximumFractionDigits:0}).format(Math.round(n));
+}
+function readMoney(id, def, min, max) {
+  let raw = $(id).value.toString().replace(/\./g, '').replace(',', '.');
+  let v = parseFloat(raw);
+  if (isNaN(v)) v = def;
+  if (v < min) v = min;
+  if (v > max) v = max;
+  return v;
+}
+function readNum(id, def, min, max) {
+  let raw = $(id).value.toString().replace(',', '.');
+  let v = parseFloat(raw);
+  if (isNaN(v)) v = def;
+  if (v < min) v = min;
+  if (v > max) v = max;
+  return v;
+}
+
+// ── CALC ───────────────────────────────────────────────
+function calc() {
+  const t = T[lang];
+
+  // Usage
+  const km   = readMoney('km-num', 15000, 100, 1000000);
+  const anos = Math.round(readNum('anos-num', 8, 1, 25));
+  const casa = Math.max(0, Math.min(100, readNum('casa-num', 80, 0, 100))) / 100;
+
+  // EV
+  const evPreco  = readMoney('ev-preco', 35000, 1000, 500000);
+  const evCons   = readNum('ev-cons', 16, 1, 100);
+  const evIuc    = readNum('ev-iuc', 30, 0, 5000);
+  const evManut  = readNum('ev-manut', 200, 0, 10000);
+  const evSeguro = readNum('ev-seguro', 450, 0, 10000);
+
+  // ICE
+  const icePreco  = readMoney('ice-preco', 28000, 1000, 500000);
+  const iceCons   = readNum('ice-cons', 6, 0.5, 50);
+  const iceIuc    = readNum('ice-iuc', 220, 0, 5000);
+  const iceManut  = readNum('ice-manut', 600, 0, 10000);
+  const iceSeguro = readNum('ice-seguro', 450, 0, 10000);
+
+  // Energy
+  const pComb     = readNum('comb-num', 1.75, 0.1, 10);
+  const pKwhCasa  = readNum('kwh-casa-num', 0.15, 0.01, 5);
+  const pKwhPub   = readNum('kwh-pub-num', 0.35, 0.01, 5);
+
+  // Annual energy/fuel costs
+  const kwhPorAno = km * evCons / 100;
+  const precoKwhMix = casa * pKwhCasa + (1 - casa) * pKwhPub;
+  const evEnergiaAno = kwhPorAno * precoKwhMix;
+
+  const litrosPorAno = km * iceCons / 100;
+  const iceCombAno = litrosPorAno * pComb;
+
+  // Annual recurring (excl. purchase)
+  const evAnualTot  = evEnergiaAno + evIuc + evManut + evSeguro;
+  const iceAnualTot = iceCombAno + iceIuc + iceManut + iceSeguro;
+
+  // TCO at horizon
+  const evTco  = evPreco  + evAnualTot  * anos;
+  const iceTco = icePreco + iceAnualTot * anos;
+  const diff   = iceTco - evTco; // positive => EV wins
+
+  // Cumulative schedules (year 0 .. anos)
+  const evCum  = [];
+  const iceCum = [];
+  for (let y = 0; y <= anos; y++) {
+    evCum.push(evPreco  + evAnualTot  * y);
+    iceCum.push(icePreco + iceAnualTot * y);
+  }
+
+  // Parity year (first y where sign of (ev - ice) flips)
+  const initialEvHigher = evCum[0] > iceCum[0];
+  let parityYear = -1;
+  for (let y = 1; y <= anos; y++) {
+    const evHigherNow = evCum[y] > iceCum[y];
+    if (evHigherNow !== initialEvHigher) {
+      // Linear interpolation between y-1 and y
+      const a = evCum[y-1] - iceCum[y-1];
+      const b = evCum[y]   - iceCum[y];
+      const frac = a / (a - b);
+      parityYear = (y - 1) + frac;
+      break;
+    }
+  }
+
+  // ── VERDICT ──
+  const horizonTxt = t.yearsTxt(anos);
+  let verdictHtml = '';
+  const tieEps = Math.max(50, evTco * 0.005);
+  if (Math.abs(diff) < tieEps) {
+    verdictHtml = `
+      <div class="verdict tie">
+        <div class="verdict-badge">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="14" x2="21" y2="14"/></svg>
+        </div>
+        <div class="verdict-text">
+          <div class="verdict-title"><span lang="pt">Veredicto</span><span lang="en">Verdict</span></div>
+          <div class="verdict-main">${t.verdict.tie}</div>
+          <div class="verdict-sub">${t.verdictSubTie(horizonTxt)}</div>
+        </div>
+      </div>`;
+  } else if (diff > 0) {
+    // EV wins
+    let subTxt;
+    if (initialEvHigher && parityYear > 0) {
+      const py = parityYear < 1 ? '< 1' : (parityYear < anos ? parityYear.toFixed(1) : '—');
+      const pyTxt = lang === 'pt'
+        ? `ano <strong>${py}</strong>`
+        : `year <strong>${py}</strong>`;
+      subTxt = (lang === 'pt'
+        ? `ao fim de ${horizonTxt}. O premium do eléctrico paga-se no ${pyTxt}.`
+        : `over ${horizonTxt}. The EV premium is paid back in ${pyTxt}.`);
+    } else if (!initialEvHigher) {
+      subTxt = t.verdictSubEvNoPremium(horizonTxt);
+    } else {
+      subTxt = t.verdictSubEvNeverParity(horizonTxt);
+    }
+    verdictHtml = `
+      <div class="verdict ev-wins">
+        <div class="verdict-badge">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="verdict-text">
+          <div class="verdict-title"><span lang="pt">Eléctrico vence</span><span lang="en">Electric wins</span></div>
+          <div class="verdict-main">${t.verdict.ev(eur0(diff))}</div>
+          <div class="verdict-sub">${subTxt}</div>
+        </div>
+      </div>`;
+  } else {
+    // ICE wins
+    verdictHtml = `
+      <div class="verdict ice-wins">
+        <div class="verdict-badge">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h13l4 4v5h-2a2 2 0 1 1-4 0H9a2 2 0 1 1-4 0H3z"/><path d="M5 10V6h9l3 4"/></svg>
+        </div>
+        <div class="verdict-text">
+          <div class="verdict-title"><span lang="pt">Combustão vence</span><span lang="en">Combustion wins</span></div>
+          <div class="verdict-main">${t.verdict.ice(eur0(-diff))}</div>
+          <div class="verdict-sub">${t.verdictSubIce(horizonTxt)}</div>
+        </div>
+      </div>`;
+  }
+  $('verdict').innerHTML = verdictHtml;
+
+  // ── METRICS ──
+  const evPerKm  = evTco  / (km * anos);
+  const icePerKm = iceTco / (km * anos);
+  $('metrics').innerHTML = `
+    <div class="met"><div class="met-lbl">${t.mTcoEv}</div><div class="met-val ev">${eur0(evTco)}</div><div class="met-sub">${t.mTcoEvSub}</div></div>
+    <div class="met"><div class="met-lbl">${t.mTcoIce}</div><div class="met-val ice">${eur0(iceTco)}</div><div class="met-sub">${t.mTcoIceSub}</div></div>
+    <div class="met"><div class="met-lbl">${t.mPerKmEv}</div><div class="met-val ev">${evPerKm.toFixed(3).replace('.', ',')} €</div><div class="met-sub">${t.mPerKmEvSub}</div></div>
+    <div class="met"><div class="met-lbl">${t.mPerKmIce}</div><div class="met-val ice">${icePerKm.toFixed(3).replace('.', ',')} €</div><div class="met-sub">${t.mPerKmIceSub}</div></div>`;
+
+  // ── BARS (breakdown per car) ──
+  const evParts = [
+    {lbl: t.barPreco,   val: evPreco,            cls: 'fill-ev-1'},
+    {lbl: t.barEnergia, val: evEnergiaAno*anos,  cls: 'fill-ev-2'},
+    {lbl: t.barManut,   val: evManut*anos,       cls: 'fill-ev-3'},
+    {lbl: t.barSeguro,  val: evSeguro*anos,      cls: 'fill-ev-4'},
+    {lbl: t.barIuc,     val: evIuc*anos,         cls: 'fill-ev-3'},
+  ];
+  const iceParts = [
+    {lbl: t.barPreco,   val: icePreco,           cls: 'fill-ice-1'},
+    {lbl: t.barEnergia, val: iceCombAno*anos,    cls: 'fill-ice-2'},
+    {lbl: t.barManut,   val: iceManut*anos,      cls: 'fill-ice-3'},
+    {lbl: t.barSeguro,  val: iceSeguro*anos,     cls: 'fill-ice-4'},
+    {lbl: t.barIuc,     val: iceIuc*anos,        cls: 'fill-ice-3'},
+  ];
+  const renderBars = (parts, total, head) => {
+    return `<div class="bars-block">
+      <div class="bars-block-head"><span>${head}</span><strong>${eur0(total)}</strong></div>
+      ${parts.map(p => {
+        const pctVal = total > 0 ? Math.max(2, Math.round(p.val/total*100)) : 0;
+        return `<div class="bar-row">
+          <div class="bar-head"><span>${p.lbl}</span><span>${eur0(p.val)} · ${Math.round(p.val/total*100)}%</span></div>
+          <div class="bar-track"><div class="bar-fill ${p.cls}" style="width:${pctVal}%"></div></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  };
+  $('bars').innerHTML = renderBars(evParts, evTco, t.barsEv) + renderBars(iceParts, iceTco, t.barsIce);
+
+  // ── CO2 ──
+  const co2Ev  = kwhPorAno * anos * CO2_GRID_PT;
+  const co2Ice = litrosPorAno * anos * CO2_PETROL;
+  const co2Saved = Math.max(0, co2Ice - co2Ev);
+  const trees = Math.round(co2Saved / TREE_KG_YR);
+  const totalKm = km * anos;
+  const totalKmTxt = num0(totalKm) + ' km';
+  $('co2').innerHTML = `
+    <div class="co2-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9 6 6 9 6 13a6 6 0 0 0 12 0c0-4-3-7-6-11z"/></svg>
+    </div>
+    <div class="co2-text">
+      <div class="co2-lbl">${t.co2Lbl}</div>
+      <div class="co2-val">${num0(co2Saved)} kg CO₂</div>
+      <div class="co2-sub">${t.co2Sub(num0(co2Saved), totalKmTxt)}</div>
+    </div>
+    <div>
+      <div class="co2-trees">≈ ${t.co2TreesPlural(trees)}</div>
+      <div class="co2-trees-sub">${t.co2TreesSub}</div>
+    </div>`;
+
+  // ── CHART ──
+  renderChart(evCum, iceCum, anos, parityYear);
+
+  // ── ACCORDION ──
+  $('acc-body').innerHTML = `<ul>${t.accItems.map(x => `<li>${x}</li>`).join('')}</ul>`;
+
+  // ── FOOTER ──
+  $('footer-grid').innerHTML = t.fcells.map(c => `<div class="fcell"><div class="fcell-lbl">${c.l}</div><div class="fcell-val">${c.v}</div></div>`).join('');
+  $('footer-note').textContent = t.fNote;
+}
+
+// ── CHART ──
+function renderChart(evCum, iceCum, anos, parityYear) {
+  const wrap = $('chart');
+  const W = wrap.clientWidth || 680;
+  const H = 240;
+  const PAD = {top:24, right:14, bottom:30, left:58};
+  const cw = W - PAD.left - PAD.right;
+  const ch = H - PAD.top - PAD.bottom;
+
+  const N = anos;
+  const maxVal = Math.max(evCum[N], iceCum[N]) * 1.05;
+
+  const sx = y => PAD.left + (y/N)*cw;
+  const sy = v => PAD.top + ch - (v/maxVal)*ch;
+
+  chartState = { evCum, iceCum, PAD, cw, ch, N, maxVal, parityYear };
+
+  const evPath  = evCum.map((v, i) => `${sx(i)},${sy(v)}`).join(' ');
+  const icePath = iceCum.map((v, i) => `${sx(i)},${sy(v)}`).join(' ');
+
+  // Axis
+  const fmt = v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? Math.round(v/1e3)+'k' : Math.round(v);
+  const yTicks = [0.25,0.5,0.75,1].map(f => ({v:maxVal*f, y:sy(maxVal*f)}));
+  const xStep = N <= 8 ? 1 : N <= 15 ? 2 : 5;
+  const xTicks = [];
+  for (let y = 0; y <= N; y += xStep) xTicks.push(y);
+  if (xTicks[xTicks.length-1] !== N) xTicks.push(N);
+
+  const cs = getComputedStyle(document.documentElement);
+  const cGreen   = cs.getPropertyValue('--c-green').trim();
+  const cOrange  = cs.getPropertyValue('--c-orange').trim();
+  const cAccent  = cs.getPropertyValue('--c-accent').trim();
+  const cBorder  = cs.getPropertyValue('--c-border').trim();
+  const cBorder2 = cs.getPropertyValue('--c-border2').trim();
+  const cText3   = cs.getPropertyValue('--c-text3').trim();
+  const cSurface = cs.getPropertyValue('--c-surface').trim();
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<defs>
+    <linearGradient id="g-ev" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${cGreen}" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="${cGreen}" stop-opacity=".02"/>
+    </linearGradient>
+    <linearGradient id="g-ice" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${cOrange}" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="${cOrange}" stop-opacity=".02"/>
+    </linearGradient>
+  </defs>`;
+
+  // grid + y labels
+  yTicks.forEach(t => {
+    svg += `<line x1="${PAD.left}" y1="${t.y}" x2="${W - PAD.right}" y2="${t.y}" stroke="${cBorder}" stroke-width="1"/>`;
+    svg += `<text x="${PAD.left - 8}" y="${t.y + 3}" fill="${cText3}" font-size="9.5" text-anchor="end" font-family="Instrument Sans">${fmt(t.v)} €</text>`;
+  });
+  // x labels
+  xTicks.forEach(y => {
+    svg += `<text x="${sx(y)}" y="${H - 10}" fill="${cText3}" font-size="9.5" text-anchor="middle" font-family="Instrument Sans">${y}</text>`;
+  });
+
+  // Areas
+  const evArea  = evPath  + ` ${sx(N)},${sy(0)} ${sx(0)},${sy(0)}`;
+  const iceArea = icePath + ` ${sx(N)},${sy(0)} ${sx(0)},${sy(0)}`;
+  svg += `<polygon points="${iceArea}" fill="url(#g-ice)" stroke="none"/>`;
+  svg += `<polygon points="${evArea}" fill="url(#g-ev)" stroke="none"/>`;
+  // Lines
+  svg += `<polyline points="${icePath}" fill="none" stroke="${cOrange}" stroke-width="2"/>`;
+  svg += `<polyline points="${evPath}"  fill="none" stroke="${cGreen}"  stroke-width="2"/>`;
+
+  // Parity vertical line + label
+  if (parityYear > 0 && parityYear <= N) {
+    const px = sx(parityYear);
+    svg += `<line x1="${px}" y1="${PAD.top}" x2="${px}" y2="${PAD.top + ch}" stroke="${cAccent}" stroke-width="1.2" stroke-dasharray="4,3"/>`;
+    const lblX = px + 6 > W - PAD.right - 70 ? px - 6 : px + 6;
+    const lblAnchor = px + 6 > W - PAD.right - 70 ? 'end' : 'start';
+    const py = sy(evCum[Math.min(N, Math.round(parityYear))]);
+    svg += `<circle cx="${px}" cy="${py}" r="4" fill="${cAccent}" stroke="${cSurface}" stroke-width="1.5"/>`;
+    const labelTxt = T[lang].chartParityLabel + ' · ' + (parityYear < 1 ? '< 1' : parityYear.toFixed(1));
+    svg += `<text x="${lblX}" y="${PAD.top + 12}" fill="${cAccent}" font-size="10.5" text-anchor="${lblAnchor}" font-family="Instrument Sans" font-weight="600">${labelTxt}</text>`;
+  }
+
+  // Cursor
+  svg += `<g id="ch-cursor" style="display:none">
+    <line id="ch-cursor-line" x1="0" y1="${PAD.top}" x2="0" y2="${PAD.top + ch}" stroke="${cBorder2}" stroke-width="1"/>
+    <circle id="ch-dot-ev"  cx="0" cy="0" r="4" fill="${cGreen}"  stroke="${cSurface}" stroke-width="1.6"/>
+    <circle id="ch-dot-ice" cx="0" cy="0" r="4" fill="${cOrange}" stroke="${cSurface}" stroke-width="1.6"/>
+  </g>`;
+  // overlay
+  svg += `<rect id="ch-overlay" x="${PAD.left}" y="${PAD.top}" width="${cw}" height="${ch}" fill="transparent"/>`;
+  svg += `</svg>`;
+  wrap.innerHTML = svg;
+
+  showChartInfo(N);
+
+  const overlay = $('ch-overlay');
+  if (overlay) {
+    const handler = (clientX) => {
+      const rect = wrap.querySelector('svg').getBoundingClientRect();
+      const scale = W / rect.width;
+      const px = (clientX - rect.left) * scale;
+      const y = Math.round(((px - PAD.left) / cw) * N);
+      moveCursor(Math.max(0, Math.min(N, y)));
+    };
+    overlay.addEventListener('mousemove', e => handler(e.clientX));
+    overlay.addEventListener('mouseleave', () => {
+      const c = $('ch-cursor');
+      if (c) c.style.display = 'none';
+      showChartInfo(N);
+    });
+    overlay.addEventListener('touchmove', e => { e.preventDefault(); handler(e.touches[0].clientX); }, {passive:false});
+    overlay.addEventListener('touchend', () => {
+      const c = $('ch-cursor');
+      if (c) c.style.display = 'none';
+      showChartInfo(N);
+    });
+  }
+}
+
+function moveCursor(y) {
+  if (!chartState) return;
+  const { evCum, iceCum, PAD, cw, ch, N, maxVal } = chartState;
+  const sx = yy => PAD.left + (yy/N)*cw;
+  const sy = v => PAD.top + ch - (v/maxVal)*ch;
+  const x = sx(y);
+  const yEv  = sy(evCum[y]);
+  const yIce = sy(iceCum[y]);
+  const c = $('ch-cursor'); if (c) c.style.display = '';
+  const line = $('ch-cursor-line');
+  if (line) { line.setAttribute('x1', x); line.setAttribute('x2', x); }
+  const dEv = $('ch-dot-ev');
+  if (dEv) { dEv.setAttribute('cx', x); dEv.setAttribute('cy', yEv); }
+  const dIce = $('ch-dot-ice');
+  if (dIce) { dIce.setAttribute('cx', x); dIce.setAttribute('cy', yIce); }
+  showChartInfo(y);
+}
+
+function showChartInfo(y) {
+  if (!chartState) return;
+  const t = T[lang];
+  const { evCum, iceCum } = chartState;
+  const ev  = evCum[y]  ?? 0;
+  const ice = iceCum[y] ?? 0;
+  const d = ice - ev; // positive = EV ahead
+  $('chart-info').innerHTML = `
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[0]}</div><div class="ci-val">${y}</div></div>
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[1]}</div><div class="ci-val ev">${eur0(ev)}</div></div>
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[2]}</div><div class="ci-val ice">${eur0(ice)}</div></div>
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[3]}</div><div class="ci-val delta">${d >= 0 ? '+' : '−'}${eur0(Math.abs(d))}</div></div>`;
+}
+
+// ── ACCORDION ──
+function toggleAcc() {
+  $('acc-body').classList.toggle('open');
+  $('acc-btn').classList.toggle('open');
+}
+
+// ── QUICK CHIPS ──
+function renderQuick() {
+  const t = T[lang];
+  const mk = (id, items, target, formatter) => {
+    $(id).innerHTML = items.map(q => `<button class="quick-chip" data-v="${q.v}">${q.l}</button>`).join('');
+    document.querySelectorAll(`#${id} .quick-chip`).forEach(b => {
+      b.addEventListener('click', () => {
+        const el = $(target);
+        el.value = formatter(parseFloat(b.dataset.v));
+        calc();
+      });
+    });
+  };
+  mk('quick-km',       t.quickKm,       'km-num',       v => fmtMoney(v));
+  mk('quick-anos',     t.quickAnos,     'anos-num',     v => v.toString());
+  mk('quick-casa',     t.quickCasa,     'casa-num',     v => v.toString());
+  mk('quick-comb',     t.quickComb,     'comb-num',     v => v.toString().replace('.', ','));
+  mk('quick-kwh-casa', t.quickKwhCasa,  'kwh-casa-num', v => v.toString().replace('.', ','));
+}
+
+// ── EVENTS ──
+['km-num','ev-preco','ice-preco'].forEach(id => {
+  const el = $(id);
+  el.addEventListener('focus', () => {
+    const v = readMoney(id, 0, 0, 1e9);
+    el.value = v || '';
+  });
+  el.addEventListener('input', calc);
+  el.addEventListener('blur', () => {
+    const v = readMoney(id, 0, 0, 1e9);
+    el.value = fmtMoney(v);
+    calc();
+  });
+});
+[
+  'anos-num','casa-num',
+  'ev-cons','ev-iuc','ev-manut','ev-seguro',
+  'ice-cons','ice-iuc','ice-manut','ice-seguro',
+  'comb-num','kwh-casa-num','kwh-pub-num',
+].forEach(id => {
+  $(id).addEventListener('input', calc);
+});
+
+// ── LANG ──
+const root = document.documentElement;
+const btnPT = $('btnPT'), btnEN = $('btnEN');
+function setLang(l) {
+  lang = l;
+  root.setAttribute('data-lang', l);
+  root.setAttribute('lang', l);
+  btnPT.classList.toggle('active', l === 'pt');
+  btnEN.classList.toggle('active', l === 'en');
+  localStorage.setItem('aa-lang', l);
+  renderQuick();
+  calc();
+}
+btnPT.addEventListener('click', () => setLang('pt'));
+btnEN.addEventListener('click', () => setLang('en'));
+
+// ── THEME ──
+$('themeBtn').addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('aa-theme', next);
+  calc();
+});
+
+// ── INIT ──
+const savedTheme = localStorage.getItem('aa-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+root.setAttribute('data-theme', savedTheme);
+const savedLang = localStorage.getItem('aa-lang') || 'pt';
+setLang(savedLang);
+
+let resizeTO;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTO);
+  resizeTO = setTimeout(calc, 150);
+});
+</script>
+</body>
+</html>

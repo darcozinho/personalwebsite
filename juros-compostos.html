@@ -446,12 +446,12 @@ const T = {
     heroLbl: 'Valor final do investimento',
     bdTitle: 'Decomposição do valor final',
     bdCapital: 'Capital inicial',
-    bdContrib: (n) => `Contribuições mensais (${n} meses)`,
+    bdContrib: (n) => `Contribuições mensais (${n*12} meses)`,
     bdJuros: 'Juros compostos acumulados',
     bdTotal: 'Valor final total',
     accItems: [
       '<strong>Juros compostos:</strong> os juros são reinvestidos e geram novos juros. É o efeito "bola de neve" — quanto mais tempo, mais exponencial é o crescimento.',
-      '<strong>Capitalização anual:</strong> os juros são calculados e adicionados ao capital uma vez por ano. As contribuições mensais são somadas e aplicadas no fim do ano (12 × mensal). Convenção utilizada na maioria das calculadoras e produtos bancários portugueses.',
+      '<strong>Capitalização anual:</strong> os juros são calculados e adicionados ao capital uma vez por ano. As contribuições mensais são tratadas como reforço periódico anual de 12 × mensal, depositado no fim do ano. Convenção utilizada na maioria das calculadoras portuguesas.',
       '<strong>Contribuições regulares (DCA):</strong> investir um valor fixo mensalmente é uma estratégia comprovada para construir riqueza de forma consistente, independentemente das flutuações do mercado.',
       '<strong>Tempo é o factor mais importante:</strong> duplicar o período tem mais impacto no resultado final do que duplicar o capital inicial ou a taxa de juro.',
       '<strong>Taxa real vs nominal:</strong> com uma inflação de ~2–3%/ano, o poder de compra do teu investimento é menor. Subtrai a inflação à taxa nominal para obter a taxa real.',
@@ -469,7 +469,7 @@ const T = {
       {l:'All World · 7%', v:7},{l:'CA Série E · 3,5%', v:3.5},{l:'CA Série F · 2,1%', v:2.1},
     ],
     fcells: [
-      {l:'Método de cálculo', v:'Capitalização anual<br>FV = C×(1+r)ⁿ + R×((1+r)ⁿ−1)/r<br>R = contribuição mensal × 12'},
+      {l:'Método de cálculo', v:'M = C×(1+i)ⁿ + R×((1+i)ⁿ−1)/i<br>Capitalização anual · i = taxa anual · n = anos<br>R = contribuição mensal × 12'},
       {l:'Referências de taxa', v:'ETF global (MSCI World): ~7–10%/ano histórico<br>Depósito a prazo PT: ~3–4% (2025)<br>Inflação PT: ~2–3%/ano'},
       {l:'Sobre', v:'Ferramenta indicativa independente<br>Não constitui aconselhamento financeiro'},
     ],
@@ -485,12 +485,12 @@ const T = {
     heroLbl: 'Final investment value',
     bdTitle: 'Final value breakdown',
     bdCapital: 'Initial capital',
-    bdContrib: (n) => `Monthly contributions (${n} months)`,
+    bdContrib: (n) => `Monthly contributions (${n*12} months)`,
     bdJuros: 'Accumulated compound interest',
     bdTotal: 'Total final value',
     accItems: [
       '<strong>Compound interest:</strong> interest is reinvested and generates new interest. It\'s the "snowball" effect — the longer you wait, the more exponential the growth.',
-      '<strong>Annual compounding:</strong> interest is calculated and added to capital once per year. Monthly contributions are summed and applied at year-end (12 × monthly). Standard convention used in most Portuguese calculators and banking products.',
+      '<strong>Annual compounding:</strong> interest is calculated and added to capital once per year. Monthly contributions are summed and deposited at year-end as 12 × monthly. Standard convention used in most Portuguese calculators.',
       '<strong>Regular contributions (DCA):</strong> investing a fixed amount every month is a proven strategy for consistently building wealth, regardless of market fluctuations.',
       '<strong>Time is the most important factor:</strong> doubling the period has more impact on the final result than doubling the initial capital or the interest rate.',
       '<strong>Real vs nominal rate:</strong> with ~2–3%/year inflation, the purchasing power of your investment decreases. Subtract expected inflation from the nominal rate to get the real rate.',
@@ -508,7 +508,7 @@ const T = {
       {l:'All World · 7%', v:7},{l:'CA Series E · 3.5%', v:3.5},{l:'CA Series F · 2.1%', v:2.1},
     ],
     fcells: [
-      {l:'Calculation method', v:'Annual compounding<br>FV = C×(1+r)ⁿ + R×((1+r)ⁿ−1)/r<br>R = monthly contribution × 12'},
+      {l:'Calculation method', v:'M = C×(1+i)ⁿ + R×((1+i)ⁿ−1)/i<br>Annual compounding · i = annual rate · n = years<br>R = monthly contribution × 12'},
       {l:'Rate references', v:'Global ETF (MSCI World): ~7–10%/yr historical<br>PT term deposit: ~3–4% (2025)<br>PT inflation: ~2–3%/yr'},
       {l:'About', v:'Independent indicative tool<br>Not financial advice'},
     ],
@@ -529,21 +529,23 @@ function readNum(id, def, min, max) {
   return v;
 }
 
+// M = C*(1+i)^n + R*((1+i)^n - 1)/i
+// Capitalização anual: i = taxa/100, n = anos, R = contribuição mensal × 12
 function calcFV(capital, pmt, taxaAnual, anos) {
-  const r = taxaAnual / 100;
+  const i = taxaAnual / 100;
   const R = pmt * 12;
-  if (r === 0) return capital + R * anos;
-  return capital * Math.pow(1 + r, anos) + R * (Math.pow(1 + r, anos) - 1) / r;
+  if (i === 0) return capital + R * anos;
+  return capital * Math.pow(1 + i, anos) + R * (Math.pow(1 + i, anos) - 1) / i;
 }
 
 function buildEvolRows(capital, pmt, taxaAnual, anos) {
-  const r = taxaAnual / 100;
+  const i = taxaAnual / 100;
   const R = pmt * 12;
   const rows = [];
   for (let a = 1; a <= anos; a++) {
-    const fv = r === 0
+    const fv = i === 0
       ? capital + R * a
-      : capital * Math.pow(1 + r, a) + R * (Math.pow(1 + r, a) - 1) / r;
+      : capital * Math.pow(1 + i, a) + R * (Math.pow(1 + i, a) - 1) / i;
     const investido = capital + R * a;
     const juros = fv - investido;
     rows.push({ano: a, investido, juros, total: fv});
@@ -564,13 +566,13 @@ function renderChart(capital, pmt, taxa, anos) {
   const cw = W - PAD.left - PAD.right;
   const ch = H - PAD.top - PAD.bottom;
 
-  // Data points (year 0..anos) — annual compounding
+  // Data points (year 0..anos) — annual compounding, R = pmt × 12
   const pts = [];
-  const r = taxa / 100;
+  const i = taxa / 100;
   const R = pmt * 12;
   for (let a = 0; a <= anos; a++) {
-    const fv = r === 0 ? capital + R * a
-      : capital * Math.pow(1+r,a) + R * (Math.pow(1+r,a)-1)/r;
+    const fv = i === 0 ? capital + R * a
+      : capital * Math.pow(1+i,a) + R * (Math.pow(1+i,a)-1)/i;
     const inv = capital + R * a;
     pts.push({a, inv, total: fv});
   }
@@ -775,13 +777,12 @@ function applyLang() {
 function calc() {
   const t = T[lang];
   const capital = readNum('capital-num', 10000, 0, 10000000);
-  const pmt     = readNum('mensal-num',  200,   0, 100000);
+  const pmt     = readNum('mensal-num', 200, 0, 100000);
   const anos    = Math.round(readNum('anos-num', 20, 1, 60));
   const taxa    = readNum('taxa-num', 7, 0, 50);
 
-  const meses = anos * 12;
   const fv = calcFV(capital, pmt, taxa, anos);
-  const totalInvestido = capital + pmt * meses;
+  const totalInvestido = capital + pmt * 12 * anos;
   const jurosGanhos = fv - totalInvestido;
   const multiNum = totalInvestido > 0 ? fv / totalInvestido : 0;
   const multi = multiNum.toFixed(2);
@@ -814,7 +815,7 @@ function calc() {
   // Breakdown
   $('breakdown').innerHTML = `<div class="bd-title">${t.bdTitle}</div>
     <div class="bd-row"><span>${t.bdCapital}</span><span>${eur(capital)}</span></div>
-    <div class="bd-row"><span>${t.bdContrib(meses)}</span><span>${eur(pmt * meses)}</span></div>
+    <div class="bd-row"><span>${t.bdContrib(anos)}</span><span>${eur(pmt * 12 * anos)}</span></div>
     <div class="bd-row"><span>${t.bdJuros}</span><span style="color:var(--c-green)">${eur(jurosGanhos)}</span></div>
     <div class="bd-row"><span>${t.bdTotal}</span><span>${eur(fv)}</span></div>`;
 

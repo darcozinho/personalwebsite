@@ -272,7 +272,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
   background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-sm);
   min-height:32px;font-variant-numeric:tabular-nums;transition:border-color .15s;
 }
-.chart-info:has(.ci-cross){border-color:var(--c-green-border)}
 .ci-year{font-weight:600;color:var(--c-text)}
 .ci-sep{width:1px;height:11px;background:var(--c-border2);flex-shrink:0}
 .ci-item{display:inline-flex;align-items:center;gap:4px}
@@ -280,7 +279,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 .ci-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .ci-dot-acc{background:var(--c-accent)}
 .ci-dot-grn{background:var(--c-green)}
-.ci-cross{color:var(--c-green);font-size:10px;letter-spacing:.02em;margin-left:2px}
+@media(max-width:480px){.ci-sep{display:none}.chart-info{gap:6px 12px}}
 
 /* ── FOOTER ── */
 .footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--c-border)}
@@ -580,16 +579,8 @@ function renderChart(capital, pmt, taxa, anos) {
   const sx = a => PAD.left + (a/anos)*cw;
   const sy = v => PAD.top + ch - (v/maxVal)*ch;
 
-  // Crossover: year when annual interest > annual contributions
-  const yearlyContrib = pmt * 12;
-  let crossYear = null;
-  for (let i = 1; i < pts.length; i++) {
-    const annualInt = (pts[i].total - pts[i].inv) - (pts[i-1].total - pts[i-1].inv);
-    if (annualInt >= yearlyContrib && crossYear === null) crossYear = pts[i].a;
-  }
-
   // Store for interaction
-  chartState = { pts, PAD, W, H, cw, ch, anos, crossYear, maxVal };
+  chartState = { pts, PAD, W, H, cw, ch, anos, maxVal };
 
   // Paths
   const invPath = pts.map(p => `${sx(p.a)},${sy(p.inv)}`).join(' ');
@@ -662,43 +653,57 @@ function renderChart(capital, pmt, taxa, anos) {
   svg += `</svg>`;
   wrap.innerHTML = svg;
 
-  // Attach mouse events
-  wrap.querySelector('#chart-overlay').addEventListener('mousemove', onChartMove);
-  wrap.querySelector('#chart-overlay').addEventListener('mouseleave', onChartLeave);
+  // Attach mouse + touch events
+  const overlay = wrap.querySelector('#chart-overlay');
+  overlay.addEventListener('mousemove', onChartMove);
+  overlay.addEventListener('mouseleave', onChartLeave);
+  overlay.addEventListener('touchmove', onChartTouch, {passive:true});
+  overlay.addEventListener('touchend', onChartLeave);
 
-  // Show final year by default
-  updateChartCursor(anos);
+  // Show final year info without cursor dots
+  showChartInfo(pts[anos]);
 }
 
 let chartState = {};
 
-function onChartMove(e) {
+function yearFromClientX(clientX) {
   const svgEl = $('chart').querySelector('svg');
-  if (!svgEl) return;
+  if (!svgEl) return 0;
   const rect = svgEl.getBoundingClientRect();
   const { PAD, cw, anos, W } = chartState;
   const scale = W / rect.width;
-  const relX = (e.clientX - rect.left) * scale - PAD.left;
-  const year = Math.max(0, Math.min(anos, Math.round(relX / cw * anos)));
-  updateChartCursor(year);
+  const relX = (clientX - rect.left) * scale - PAD.left;
+  return Math.max(0, Math.min(anos, Math.round(relX / cw * anos)));
+}
+
+function onChartMove(e) {
+  const year = yearFromClientX(e.clientX);
+  moveCursor(year);
+}
+
+function onChartTouch(e) {
+  if (!e.touches.length) return;
+  const year = yearFromClientX(e.touches[0].clientX);
+  moveCursor(year);
 }
 
 function onChartLeave() {
-  const { anos } = chartState;
-  updateChartCursor(anos);
-  // Hide cursor line
-  const cl = document.getElementById('cur-line');
-  if (cl) cl.setAttribute('opacity', '0');
-  const di = document.getElementById('cur-dot-inv');
-  if (di) di.setAttribute('opacity', '0');
-  const dt = document.getElementById('cur-dot-tot');
-  if (dt) dt.setAttribute('opacity', '0');
+  hideCursorDots();
+  const { pts, anos } = chartState;
+  if (pts && pts.length) showChartInfo(pts[anos]);
 }
 
-function updateChartCursor(year) {
-  const { pts, PAD, cw, ch, anos, crossYear, maxVal } = chartState;
+function hideCursorDots() {
+  ['cur-line','cur-dot-inv','cur-dot-tot'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('opacity','0');
+  });
+}
+
+function moveCursor(year) {
+  const { pts, PAD, cw, ch, anos, maxVal } = chartState;
   if (!pts || !pts.length) return;
-  const pt = pts[Math.max(0, Math.min(year, anos))];
+  const pt = pts[year];
   if (!pt) return;
 
   const sx = a => PAD.left + (a/anos)*cw;
@@ -708,19 +713,17 @@ function updateChartCursor(year) {
   const cl = document.getElementById('cur-line');
   const di = document.getElementById('cur-dot-inv');
   const dt = document.getElementById('cur-dot-tot');
-  if (cl && pt.a > 0) {
-    cl.setAttribute('x1', x); cl.setAttribute('x2', x); cl.setAttribute('opacity', '.5');
-    di.setAttribute('cx', x); di.setAttribute('cy', sy(pt.inv)); di.setAttribute('opacity', '1');
-    dt.setAttribute('cx', x); dt.setAttribute('cy', sy(pt.total)); dt.setAttribute('opacity', '1');
+  if (cl) {
+    cl.setAttribute('x1',x); cl.setAttribute('x2',x); cl.setAttribute('opacity','.5');
+    di.setAttribute('cx',x); di.setAttribute('cy',sy(pt.inv)); di.setAttribute('opacity','1');
+    dt.setAttribute('cx',x); dt.setAttribute('cy',sy(pt.total)); dt.setAttribute('opacity','1');
   }
+  showChartInfo(pt);
+}
 
-  // Update info panel
-  const isCross = crossYear !== null && pt.a === crossYear;
+function showChartInfo(pt) {
   const ci = $('chart-info');
-  if (!ci) return;
-  const crossHtml = isCross
-    ? `<span class="ci-sep"></span><span class="ci-cross">${lang==='pt'?'juros > contribuições/ano':'interest > annual contrib.'}</span>`
-    : '';
+  if (!ci || !pt) return;
   ci.innerHTML = `
     <span class="ci-year">${lang==='pt'?'Ano':'Year'} ${pt.a}</span>
     <span class="ci-sep"></span>
@@ -728,8 +731,7 @@ function updateChartCursor(year) {
     <span class="ci-sep"></span>
     <span class="ci-item"><span class="ci-dot ci-dot-grn"></span>${lang==='pt'?'Juros':'Interest'}: <strong>${eur(pt.total - pt.inv)}</strong></span>
     <span class="ci-sep"></span>
-    <span class="ci-item"><strong>${eur(pt.total)}</strong></span>
-    ${crossHtml}`;
+    <span class="ci-item"><strong>${eur(pt.total)}</strong></span>`;
 }
 
 function toggleEvol() {

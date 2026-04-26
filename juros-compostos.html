@@ -529,24 +529,25 @@ function readNum(id, def, min, max) {
   return v;
 }
 
-// M = C*(1+i)^n + R*((1+i)^n - 1)/i
-// Capitalização anual: i = taxa/100, n = anos, R = contribuição mensal × 12
+// Capital com capitalização anual + contribuições mensais com taxa mensal equivalente
+// i_a = taxa anual; i_m = (1+i_a)^(1/12) - 1
+// FV(t anos) = C*(1+i_a)^t + pmt * ((1+i_a)^t - 1) / i_m
 function calcFV(capital, pmt, taxaAnual, anos) {
-  const i = taxaAnual / 100;
-  const R = pmt * 12;
-  if (i === 0) return capital + R * anos;
-  return capital * Math.pow(1 + i, anos) + R * (Math.pow(1 + i, anos) - 1) / i;
+  const ia = taxaAnual / 100;
+  if (ia === 0) return capital + pmt * 12 * anos;
+  const im = Math.pow(1 + ia, 1/12) - 1;
+  return capital * Math.pow(1 + ia, anos) + pmt * (Math.pow(1 + ia, anos) - 1) / im;
 }
 
 function buildEvolRows(capital, pmt, taxaAnual, anos) {
-  const i = taxaAnual / 100;
-  const R = pmt * 12;
+  const ia = taxaAnual / 100;
+  const im = ia === 0 ? 0 : Math.pow(1 + ia, 1/12) - 1;
   const rows = [];
   for (let a = 1; a <= anos; a++) {
-    const fv = i === 0
-      ? capital + R * a
-      : capital * Math.pow(1 + i, a) + R * (Math.pow(1 + i, a) - 1) / i;
-    const investido = capital + R * a;
+    const fv = ia === 0
+      ? capital + pmt * 12 * a
+      : capital * Math.pow(1 + ia, a) + pmt * (Math.pow(1 + ia, a) - 1) / im;
+    const investido = capital + pmt * 12 * a;
     const juros = fv - investido;
     rows.push({ano: a, investido, juros, total: fv});
   }
@@ -566,14 +567,14 @@ function renderChart(capital, pmt, taxa, anos) {
   const cw = W - PAD.left - PAD.right;
   const ch = H - PAD.top - PAD.bottom;
 
-  // Data points (year 0..anos) — annual compounding, R = pmt × 12
+  // Data points (year 0..anos) — capital anual + contribuições mensais (taxa mensal equivalente)
   const pts = [];
-  const i = taxa / 100;
-  const R = pmt * 12;
+  const ia = taxa / 100;
+  const im = ia === 0 ? 0 : Math.pow(1 + ia, 1/12) - 1;
   for (let a = 0; a <= anos; a++) {
-    const fv = i === 0 ? capital + R * a
-      : capital * Math.pow(1+i,a) + R * (Math.pow(1+i,a)-1)/i;
-    const inv = capital + R * a;
+    const fv = ia === 0 ? capital + pmt * 12 * a
+      : capital * Math.pow(1+ia,a) + pmt * (Math.pow(1+ia,a)-1)/im;
+    const inv = capital + pmt * 12 * a;
     pts.push({a, inv, total: fv});
   }
   const maxVal = pts[pts.length-1].total || 1;

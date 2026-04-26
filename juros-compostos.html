@@ -465,8 +465,8 @@ const T = {
       {l:'20 anos', v:20},{l:'30 anos', v:30},{l:'40 anos', v:40},
     ],
     quickTaxa: [
-      {l:'S&P 500 · 10,5%', v:10.5},{l:'MSCI World · 8%', v:8},
-      {l:'All World · 7%', v:7},{l:'CA Série E · 3,5%', v:3.5},{l:'CA Série F · 2,1%', v:2.1},
+      {l:'S&P 500 · 10,5%', v:10.5},{l:'All World · 7%', v:7},
+      {l:'CA Série E · 3,5%', v:3.5},{l:'CA Série F · 2,1%', v:2.1},
     ],
     fcells: [
       {l:'Método de cálculo', v:'M = C×(1+i)ⁿ + R×((1+i)ⁿ−1)/i<br>Capitalização anual · i = taxa anual · n = anos<br>R = contribuição mensal × 12'},
@@ -504,8 +504,8 @@ const T = {
       {l:'20 years', v:20},{l:'30 years', v:30},{l:'40 years', v:40},
     ],
     quickTaxa: [
-      {l:'S&P 500 · 10.5%', v:10.5},{l:'MSCI World · 8%', v:8},
-      {l:'All World · 7%', v:7},{l:'CA Series E · 3.5%', v:3.5},{l:'CA Series F · 2.1%', v:2.1},
+      {l:'S&P 500 · 10.5%', v:10.5},{l:'All World · 7%', v:7},
+      {l:'CA Series E · 3.5%', v:3.5},{l:'CA Series F · 2.1%', v:2.1},
     ],
     fcells: [
       {l:'Calculation method', v:'M = C×(1+i)ⁿ + R×((1+i)ⁿ−1)/i<br>Annual compounding · i = annual rate · n = years<br>R = monthly contribution × 12'},
@@ -519,7 +519,7 @@ const T = {
 const $ = id => document.getElementById(id);
 
 function eur(n) {
-  return n.toLocaleString('pt-PT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+  return new Intl.NumberFormat('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}).format(n) + ' €';
 }
 function readNum(id, def, min, max) {
   let v = parseFloat($(id).value.toString().replace(',', '.'));

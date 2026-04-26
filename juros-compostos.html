@@ -524,9 +524,18 @@ function eur(n) {
 function fmtMoney(n) {
   return new Intl.NumberFormat('de-DE', {maximumFractionDigits:0}).format(Math.round(n));
 }
-function readNum(id, def, min, max) {
-  // strip thousand dots, convert decimal comma to dot
+// Money inputs: PT format with dots as thousand separator, comma as decimal
+function readMoney(id, def, min, max) {
   let raw = $(id).value.toString().replace(/\./g, '').replace(',', '.');
+  let v = parseFloat(raw);
+  if (isNaN(v)) v = def;
+  if (v < min) v = min;
+  if (v > max) v = max;
+  return v;
+}
+// Generic numeric inputs (rate, years): accept both . and , as decimal separator
+function readNum(id, def, min, max) {
+  let raw = $(id).value.toString().replace(',', '.');
   let v = parseFloat(raw);
   if (isNaN(v)) v = def;
   if (v < min) v = min;
@@ -782,8 +791,8 @@ function applyLang() {
 
 function calc() {
   const t = T[lang];
-  const capital = readNum('capital-num', 10000, 0, 10000000);
-  const pmt     = readNum('mensal-num', 200, 0, 100000);
+  const capital = readMoney('capital-num', 10000, 0, 10000000);
+  const pmt     = readMoney('mensal-num', 200, 0, 100000);
   const anos    = Math.round(readNum('anos-num', 20, 1, 60));
   const taxa    = readNum('taxa-num', 7, 0, 50);
 
@@ -868,12 +877,12 @@ function renderQuickTaxa() {
 ['capital-num','mensal-num'].forEach(id => {
   const el = $(id);
   el.addEventListener('focus', () => {
-    const v = readNum(id, 0, 0, 1e9);
+    const v = readMoney(id, 0, 0, 1e9);
     el.value = v || '';
   });
   el.addEventListener('input', calc);
   el.addEventListener('blur', () => {
-    const v = readNum(id, 0, 0, 1e9);
+    const v = readMoney(id, 0, 0, 1e9);
     el.value = fmtMoney(v);
     calc();
   });

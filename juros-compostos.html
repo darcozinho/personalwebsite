@@ -142,7 +142,10 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 }
 
 /* Quick chips */
-.quick-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:.75rem}
+.quick-row{display:flex;gap:5px;flex-wrap:wrap}
+.quick-section{display:flex;align-items:flex-start;gap:8px;margin-top:.75rem}
+.quick-section+.quick-section{margin-top:.4rem}
+.quick-section-lbl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--c-text3);white-space:nowrap;padding-top:4px;flex-shrink:0}
 .quick-chip{
   padding:3px 9px;border-radius:12px;
   border:1px solid var(--c-border);background:transparent;
@@ -377,8 +380,14 @@ hr{border:none;border-top:1px solid var(--c-border);margin:.9rem 0}
       </label>
     </div>
 
-    <div class="quick-row" id="quick-anos"></div>
-    <div class="quick-row" id="quick-taxa" style="margin-top:.4rem"></div>
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Período</span><span lang="en">Period</span></span>
+      <div class="quick-row" id="quick-anos"></div>
+    </div>
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Taxa</span><span lang="en">Rate</span></span>
+      <div class="quick-row" id="quick-taxa"></div>
+    </div>
   </div>
 
   <!-- CARD 2: DETALHE -->
@@ -629,11 +638,6 @@ function renderChart(capital, pmt, taxa, anos) {
   svg += `<polyline points="${invPath}" fill="none" stroke="${cAccent}" stroke-width="1.5" stroke-linejoin="round"/>`;
   svg += `<polyline points="${totPath}" fill="none" stroke="${cGreen}" stroke-width="1.5" stroke-linejoin="round"/>`;
 
-  // Crossover: subtle dot only (no text — shown in chart-info on hover)
-  if (crossYear !== null && crossYear > 0 && crossYear < anos) {
-    svg += `<circle cx="${sx(crossYear)}" cy="${sy(pts[crossYear].total)}" r="3.5" fill="${cGreen}" stroke="${cSurface}" stroke-width="1.5" opacity=".9"/>`;
-    svg += `<circle cx="${sx(crossYear)}" cy="${sy(pts[crossYear].inv)}" r="3.5" fill="${cAccent}" stroke="${cSurface}" stroke-width="1.5" opacity=".9"/>`;
-  }
 
   // X labels
   xTicks.forEach(a => {

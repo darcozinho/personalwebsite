@@ -260,15 +260,24 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 .evol-show-btn:hover{border-color:var(--c-accent);color:var(--c-accent)}
 
 /* ── CHART ── */
-.chart-wrap{margin:1.25rem 0 1rem;position:relative}
-.chart-wrap svg{display:block;width:100%;overflow:visible}
-.r72-badge{
-  display:inline-flex;align-items:baseline;gap:5px;
-  font-size:11px;color:var(--c-text2);margin-top:.75rem;
-  padding:.5rem .85rem;border-radius:var(--r-sm);
-  border:1px solid var(--c-border);background:var(--c-surface2);
+.chart-wrap{margin:1.25rem 0 0;position:relative}
+.chart-wrap svg{display:block;width:100%;overflow:visible;cursor:crosshair}
+.chart-info{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-size:11px;color:var(--c-text2);
+  padding:.5rem .85rem;margin:.5rem 0 1rem;
+  background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-sm);
+  min-height:32px;font-variant-numeric:tabular-nums;transition:border-color .15s;
 }
-.r72-badge strong{color:var(--c-accent);font-variant-numeric:tabular-nums}
+.chart-info:has(.ci-cross){border-color:var(--c-green-border)}
+.ci-year{font-weight:600;color:var(--c-text)}
+.ci-sep{width:1px;height:11px;background:var(--c-border2);flex-shrink:0}
+.ci-item{display:inline-flex;align-items:center;gap:4px}
+.ci-item strong{color:var(--c-text)}
+.ci-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ci-dot-acc{background:var(--c-accent)}
+.ci-dot-grn{background:var(--c-green)}
+.ci-cross{color:var(--c-green);font-size:10px;letter-spacing:.02em;margin-left:2px}
 
 /* ── FOOTER ── */
 .footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--c-border)}
@@ -369,6 +378,7 @@ hr{border:none;border-top:1px solid var(--c-border);margin:.9rem 0}
     </div>
 
     <div class="quick-row" id="quick-anos"></div>
+    <div class="quick-row" id="quick-taxa" style="margin-top:.4rem"></div>
   </div>
 
   <!-- CARD 2: DETALHE -->
@@ -376,8 +386,8 @@ hr{border:none;border-top:1px solid var(--c-border);margin:.9rem 0}
     <div class="sec-head"><div class="sec-num">2</div><span class="sec-title"><span lang="pt">Detalhe financeiro</span><span lang="en">Financial detail</span></span></div>
     <div id="result-hero"></div>
     <div class="chart-wrap" id="chart"></div>
+    <div class="chart-info" id="chart-info"></div>
     <div class="metrics" id="metrics"></div>
-    <div id="r72"></div>
     <div class="breakdown" id="breakdown"></div>
 
     <div class="acc-trigger" id="acc-btn" onclick="toggleAcc()">
@@ -446,6 +456,10 @@ const T = {
       {l:'5 anos', v:5},{l:'10 anos', v:10},{l:'15 anos', v:15},
       {l:'20 anos', v:20},{l:'30 anos', v:30},{l:'40 anos', v:40},
     ],
+    quickTaxa: [
+      {l:'S&P 500 · 10,5%', v:10.5},{l:'MSCI World · 8%', v:8},
+      {l:'All World · 7%', v:7},{l:'5%', v:5},{l:'3%', v:3},
+    ],
     fcells: [
       {l:'Método de cálculo', v:'Capitalização mensal<br>FV = P×(1+r)ⁿ + PMT×((1+r)ⁿ−1)/r'},
       {l:'Referências de taxa', v:'ETF global (MSCI World): ~7–10%/ano histórico<br>Depósito a prazo PT: ~3–4% (2025)<br>Inflação PT: ~2–3%/ano'},
@@ -480,6 +494,10 @@ const T = {
     quickAnos: [
       {l:'5 years', v:5},{l:'10 years', v:10},{l:'15 years', v:15},
       {l:'20 years', v:20},{l:'30 years', v:30},{l:'40 years', v:40},
+    ],
+    quickTaxa: [
+      {l:'S&P 500 · 10.5%', v:10.5},{l:'MSCI World · 8%', v:8},
+      {l:'All World · 7%', v:7},{l:'5%', v:5},{l:'3%', v:3},
     ],
     fcells: [
       {l:'Calculation method', v:'Monthly compounding<br>FV = P×(1+r)ⁿ + PMT×((1+r)ⁿ−1)/r'},
@@ -553,78 +571,71 @@ function renderChart(capital, pmt, taxa, anos) {
   const sx = a => PAD.left + (a/anos)*cw;
   const sy = v => PAD.top + ch - (v/maxVal)*ch;
 
-  // Crossover: year when annual interest earned > annual contributions
+  // Crossover: year when annual interest > annual contributions
   const yearlyContrib = pmt * 12;
   let crossYear = null;
   for (let i = 1; i < pts.length; i++) {
-    const annualInt = pts[i].total - pts[i].inv - (pts[i-1].total - pts[i-1].inv);
+    const annualInt = (pts[i].total - pts[i].inv) - (pts[i-1].total - pts[i-1].inv);
     if (annualInt >= yearlyContrib && crossYear === null) crossYear = pts[i].a;
   }
 
-  // Build polygon points
-  const invPath  = pts.map(p => `${sx(p.a)},${sy(p.inv)}`).join(' ');
-  const totPath  = pts.map(p => `${sx(p.a)},${sy(p.total)}`).join(' ');
-  const baseline = `${sx(anos)},${sy(0)} ${sx(0)},${sy(0)}`;
-  const capArea  = invPath + ' ' + baseline;
-  const intArea  = totPath + ' ' + pts.slice().reverse().map(p => `${sx(p.a)},${sy(p.inv)}`).join(' ');
+  // Store for interaction
+  chartState = { pts, PAD, W, H, cw, ch, anos, crossYear, maxVal };
 
-  // Axis ticks
+  // Paths
+  const invPath = pts.map(p => `${sx(p.a)},${sy(p.inv)}`).join(' ');
+  const totPath = pts.map(p => `${sx(p.a)},${sy(p.total)}`).join(' ');
+  const capArea = invPath + ` ${sx(anos)},${sy(0)} ${sx(0)},${sy(0)}`;
+  const intArea = totPath + ' ' + pts.slice().reverse().map(p => `${sx(p.a)},${sy(p.inv)}`).join(' ');
+
+  // Axis
   const fmt = v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? Math.round(v/1e3)+'k' : Math.round(v);
   const yTicks = [0.25,0.5,0.75,1].map(f => ({v:maxVal*f, y:sy(maxVal*f)}));
-  const xStep  = anos <= 10 ? 2 : anos <= 20 ? 5 : 10;
+  const xStep = anos <= 10 ? 2 : anos <= 20 ? 5 : 10;
   const xTicks = [];
   for (let a = 0; a <= anos; a += xStep) xTicks.push(a);
   if (xTicks[xTicks.length-1] !== anos) xTicks.push(anos);
 
   // CSS vars
   const cs = getComputedStyle(document.documentElement);
-  const cAccent = cs.getPropertyValue('--c-accent').trim();
-  const cGreen  = cs.getPropertyValue('--c-green').trim();
-  const cBorder = cs.getPropertyValue('--c-border').trim();
-  const cText3  = cs.getPropertyValue('--c-text3').trim();
-  const cText2  = cs.getPropertyValue('--c-text2').trim();
-  const cSurface2 = cs.getPropertyValue('--c-surface2').trim();
+  const cAccent  = cs.getPropertyValue('--c-accent').trim();
+  const cGreen   = cs.getPropertyValue('--c-green').trim();
+  const cBorder  = cs.getPropertyValue('--c-border').trim();
+  const cBorder2 = cs.getPropertyValue('--c-border2').trim();
+  const cText3   = cs.getPropertyValue('--c-text3').trim();
+  const cSurface = cs.getPropertyValue('--c-surface').trim();
 
   let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
   svg += `<defs>
     <linearGradient id="g-cap" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${cAccent}" stop-opacity=".45"/>
-      <stop offset="100%" stop-color="${cAccent}" stop-opacity=".08"/>
+      <stop offset="0%" stop-color="${cAccent}" stop-opacity=".4"/>
+      <stop offset="100%" stop-color="${cAccent}" stop-opacity=".06"/>
     </linearGradient>
     <linearGradient id="g-int" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${cGreen}" stop-opacity=".55"/>
-      <stop offset="100%" stop-color="${cGreen}" stop-opacity=".12"/>
+      <stop offset="0%" stop-color="${cGreen}" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="${cGreen}" stop-opacity=".1"/>
     </linearGradient>
   </defs>`;
 
-  // Grid lines
+  // Grid + y labels
   yTicks.forEach(t => {
     svg += `<line x1="${PAD.left}" y1="${t.y}" x2="${W-PAD.right}" y2="${t.y}" stroke="${cBorder}" stroke-width="1"/>`;
     svg += `<text x="${PAD.left-5}" y="${t.y+3.5}" font-family="Instrument Sans,sans-serif" font-size="9" fill="${cText3}" text-anchor="end">${fmt(t.v)}€</text>`;
   });
 
-  // Areas
+  // Areas + lines
   svg += `<polygon points="${capArea}" fill="url(#g-cap)"/>`;
   svg += `<polygon points="${intArea}" fill="url(#g-int)"/>`;
-
-  // Lines
   svg += `<polyline points="${invPath}" fill="none" stroke="${cAccent}" stroke-width="1.5" stroke-linejoin="round"/>`;
   svg += `<polyline points="${totPath}" fill="none" stroke="${cGreen}" stroke-width="1.5" stroke-linejoin="round"/>`;
 
-  // Crossover marker
-  if (crossYear !== null && crossYear < anos) {
-    const cx = sx(crossYear);
-    const cy = sy(pts[crossYear].total);
-    svg += `<line x1="${cx}" y1="${PAD.top}" x2="${cx}" y2="${PAD.top+ch}" stroke="${cGreen}" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>`;
-    // Label above or below based on space
-    const labelY = cy > PAD.top + 22 ? cy - 8 : cy + 16;
-    const anchor = cx > W * 0.7 ? 'end' : 'start';
-    const labelX = anchor === 'end' ? cx - 5 : cx + 5;
-    svg += `<text x="${labelX}" y="${labelY}" font-family="Instrument Sans,sans-serif" font-size="9" fill="${cGreen}" text-anchor="${anchor}" opacity=".9">${lang==='pt'?'juros > contrib.':'interest > contrib.'} (${lang==='pt'?'ano':'yr'} ${crossYear})</text>`;
-    svg += `<circle cx="${cx}" cy="${sy(pts[crossYear].total)}" r="3" fill="${cGreen}" opacity=".8"/>`;
+  // Crossover: subtle dot only (no text — shown in chart-info on hover)
+  if (crossYear !== null && crossYear > 0 && crossYear < anos) {
+    svg += `<circle cx="${sx(crossYear)}" cy="${sy(pts[crossYear].total)}" r="3.5" fill="${cGreen}" stroke="${cSurface}" stroke-width="1.5" opacity=".9"/>`;
+    svg += `<circle cx="${sx(crossYear)}" cy="${sy(pts[crossYear].inv)}" r="3.5" fill="${cAccent}" stroke="${cSurface}" stroke-width="1.5" opacity=".9"/>`;
   }
 
-  // X-axis labels
+  // X labels
   xTicks.forEach(a => {
     svg += `<text x="${sx(a)}" y="${H-6}" font-family="Instrument Sans,sans-serif" font-size="9" fill="${cText3}" text-anchor="middle">${a}</text>`;
   });
@@ -636,8 +647,85 @@ function renderChart(capital, pmt, taxa, anos) {
   svg += `<rect x="${PAD.left+112}" y="${legY}" width="10" height="3" rx="1.5" fill="${cGreen}" opacity=".7"/>`;
   svg += `<text x="${PAD.left+126}" y="${legY+4}" font-family="Instrument Sans,sans-serif" font-size="9" fill="${cText3}">${lang==='pt'?'Juros compostos':'Compound interest'}</text>`;
 
+  // Interactive cursor (initially hidden)
+  svg += `<line id="cur-line" x1="0" y1="${PAD.top}" x2="0" y2="${PAD.top+ch}" stroke="${cBorder2}" stroke-width="1" opacity="0" pointer-events="none"/>`;
+  svg += `<circle id="cur-dot-inv" r="3.5" fill="${cAccent}" stroke="${cSurface}" stroke-width="1.5" opacity="0" pointer-events="none"/>`;
+  svg += `<circle id="cur-dot-tot" r="3.5" fill="${cGreen}" stroke="${cSurface}" stroke-width="1.5" opacity="0" pointer-events="none"/>`;
+
+  // Invisible overlay for mouse events
+  svg += `<rect id="chart-overlay" x="${PAD.left}" y="${PAD.top}" width="${cw}" height="${ch}" fill="transparent"/>`;
+
   svg += `</svg>`;
   wrap.innerHTML = svg;
+
+  // Attach mouse events
+  wrap.querySelector('#chart-overlay').addEventListener('mousemove', onChartMove);
+  wrap.querySelector('#chart-overlay').addEventListener('mouseleave', onChartLeave);
+
+  // Show final year by default
+  updateChartCursor(anos);
+}
+
+let chartState = {};
+
+function onChartMove(e) {
+  const svgEl = $('chart').querySelector('svg');
+  if (!svgEl) return;
+  const rect = svgEl.getBoundingClientRect();
+  const { PAD, cw, anos, W } = chartState;
+  const scale = W / rect.width;
+  const relX = (e.clientX - rect.left) * scale - PAD.left;
+  const year = Math.max(0, Math.min(anos, Math.round(relX / cw * anos)));
+  updateChartCursor(year);
+}
+
+function onChartLeave() {
+  const { anos } = chartState;
+  updateChartCursor(anos);
+  // Hide cursor line
+  const cl = document.getElementById('cur-line');
+  if (cl) cl.setAttribute('opacity', '0');
+  const di = document.getElementById('cur-dot-inv');
+  if (di) di.setAttribute('opacity', '0');
+  const dt = document.getElementById('cur-dot-tot');
+  if (dt) dt.setAttribute('opacity', '0');
+}
+
+function updateChartCursor(year) {
+  const { pts, PAD, cw, ch, anos, crossYear, maxVal } = chartState;
+  if (!pts || !pts.length) return;
+  const pt = pts[Math.max(0, Math.min(year, anos))];
+  if (!pt) return;
+
+  const sx = a => PAD.left + (a/anos)*cw;
+  const sy = v => PAD.top + ch - (v/maxVal)*ch;
+  const x = sx(pt.a);
+
+  const cl = document.getElementById('cur-line');
+  const di = document.getElementById('cur-dot-inv');
+  const dt = document.getElementById('cur-dot-tot');
+  if (cl && pt.a > 0) {
+    cl.setAttribute('x1', x); cl.setAttribute('x2', x); cl.setAttribute('opacity', '.5');
+    di.setAttribute('cx', x); di.setAttribute('cy', sy(pt.inv)); di.setAttribute('opacity', '1');
+    dt.setAttribute('cx', x); dt.setAttribute('cy', sy(pt.total)); dt.setAttribute('opacity', '1');
+  }
+
+  // Update info panel
+  const isCross = crossYear !== null && pt.a === crossYear;
+  const ci = $('chart-info');
+  if (!ci) return;
+  const crossHtml = isCross
+    ? `<span class="ci-sep"></span><span class="ci-cross">${lang==='pt'?'juros > contribuições/ano':'interest > annual contrib.'}</span>`
+    : '';
+  ci.innerHTML = `
+    <span class="ci-year">${lang==='pt'?'Ano':'Year'} ${pt.a}</span>
+    <span class="ci-sep"></span>
+    <span class="ci-item"><span class="ci-dot ci-dot-acc"></span>${lang==='pt'?'Investido':'Invested'}: <strong>${eur(pt.inv)}</strong></span>
+    <span class="ci-sep"></span>
+    <span class="ci-item"><span class="ci-dot ci-dot-grn"></span>${lang==='pt'?'Juros':'Interest'}: <strong>${eur(pt.total - pt.inv)}</strong></span>
+    <span class="ci-sep"></span>
+    <span class="ci-item"><strong>${eur(pt.total)}</strong></span>
+    ${crossHtml}`;
 }
 
 function toggleEvol() {
@@ -717,10 +805,6 @@ function calc() {
   // Chart
   renderChart(capital, pmt, taxa, anos);
 
-  // Regra dos 72
-  const r72 = taxa > 0 ? (72 / taxa).toFixed(1) : '—';
-  $('r72').innerHTML = `<div class="r72-badge">${lang==='pt'?'Regra dos 72':'Rule of 72'}: ${lang==='pt'?'duplica em':'doubles in'} <strong>~${r72} ${lang==='pt'?'anos':'years'}</strong> ${lang==='pt'?'a':'at'} ${taxa}%</div>`;
-
   // Breakdown
   $('breakdown').innerHTML = `<div class="bd-title">${t.bdTitle}</div>
     <div class="bd-row"><span>${t.bdCapital}</span><span>${eur(capital)}</span></div>
@@ -753,6 +837,19 @@ function renderQuickAnos() {
   });
 }
 
+function renderQuickTaxa() {
+  const t = T[lang];
+  $('quick-taxa').innerHTML = t.quickTaxa.map(q =>
+    `<button class="quick-chip" data-v="${q.v}">${q.l}</button>`
+  ).join('');
+  document.querySelectorAll('#quick-taxa .quick-chip').forEach(b => {
+    b.addEventListener('click', () => {
+      $('taxa-num').value = b.dataset.v;
+      calc();
+    });
+  });
+}
+
 // ── EVENTS ─────────────────────────────────────────────
 ['capital-num','mensal-num','anos-num','taxa-num'].forEach(id => {
   $(id).addEventListener('input', calc);
@@ -769,6 +866,7 @@ function setLang(l) {
   btnEN.classList.toggle('active', l === 'en');
   localStorage.setItem('aa-lang', l);
   renderQuickAnos();
+  renderQuickTaxa();
   calc();
 }
 btnPT.addEventListener('click', () => setLang('pt'));

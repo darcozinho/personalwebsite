@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termoacumulador vs esquentador — André Aguiar</title>
+<meta name="description" content="Compara o custo total de aquecimento de água. Descobre quando o solar PV vira o jogo a favor do termoacumulador.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS ── */
+:root{
+  --c-bg:#f4efe6; --c-surface:#ece6d8; --c-surface2:#e2dace;
+  --c-border:#d6cfc2; --c-border2:#c5bdb0;
+  --c-text:#1c2238; --c-text2:#5c6070; --c-text3:#9ca2b2;
+  --c-accent:#b8912a; --c-accent2:#9a7820; --c-accent-pale:#f7f0e0;
+  --c-green:#2a6e3f; --c-green-pale:#e8f5ed; --c-green-border:#a8d5bc;
+  --c-red:#b83232; --c-red-pale:#fdecea; --c-red-border:#f5c6c2;
+  --c-amber:#7a5000; --c-amber-pale:#fef9ec; --c-amber-border:#e8c870;
+  --c-orange:#a05000; --c-orange-pale:#fdf2e8; --c-orange-border:#f0c490;
+  --c-blue:#2860a0; --c-blue-pale:#e8f0fa; --c-blue-border:#b8d0e8;
+  --r:10px; --r-sm:6px; --r-lg:14px;
+  --shadow: 0 1px 3px rgba(28,34,56,.06), 0 1px 2px rgba(28,34,56,.04);
+}
+html[data-theme="dark"]{
+  --c-bg:#131210; --c-surface:#1b1916; --c-surface2:#23211d;
+  --c-border:#2c2924; --c-border2:#3b3730;
+  --c-text:#f0e9d8; --c-text2:#98908a; --c-text3:#585450;
+  --c-accent:#d4a83a; --c-accent2:#b8912a; --c-accent-pale:#2a2010;
+  --c-green:#4caf82; --c-green-pale:#0d2a1a; --c-green-border:#1d5535;
+  --c-red:#e57373; --c-red-pale:#2a0d0d; --c-red-border:#5c2020;
+  --c-amber:#f5c842; --c-amber-pale:#2a1f00; --c-amber-border:#5a4000;
+  --c-orange:#e8830a; --c-orange-pale:#2a1808; --c-orange-border:#5a3210;
+  --c-blue:#5fa3e8; --c-blue-pale:#0d1d2a; --c-blue-border:#1d3a55;
+  --shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+[data-lang="pt"] [lang="en"] { display: none; }
+[data-lang="en"] [lang="pt"] { display: none; }
+
+/* ── BASE ── */
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;line-height:1.5;transition:background .2s,color .2s;-webkit-font-smoothing:antialiased}
+
+/* ── HERO ── */
+.hero{background:var(--c-bg);padding:0 1.5rem;border-bottom:1px solid var(--c-border)}
+.hero-nav{
+  max-width:840px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.1rem 0;border-bottom:1px solid var(--c-border);
+}
+.nav-actions{display:flex;gap:6px;align-items:center}
+.nav-btn{
+  padding:5px 13px;border-radius:0;border:none;background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;
+  color:var(--c-text2);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.04em;
+}
+.nav-btn.active{background:var(--c-text);color:var(--c-bg)}
+.nav-btn:hover:not(.active){color:var(--c-text)}
+.nav-icon-btn{
+  width:30px;height:30px;border-radius:50%;border:1px solid var(--c-border);
+  background:var(--c-surface);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text2);transition:border-color .2s,color .2s;
+}
+.nav-icon-btn:hover{border-color:var(--c-border2);color:var(--c-text)}
+.i-sun,.i-moon{display:none}
+[data-theme="light"] .i-sun{display:block}
+[data-theme="dark"]  .i-moon{display:block}
+.hero-body{max-width:840px;margin:0 auto;padding:3.5rem 0 4rem;text-align:center}
+.hero-kicker{
+  font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--c-accent);margin-bottom:1.25rem;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.hero-kicker::before,.hero-kicker::after{content:'';width:24px;height:1px;background:var(--c-accent)}
+.hero h1{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(2rem,5vw,3.25rem);
+  font-weight:400;line-height:1.12;
+  color:var(--c-text);letter-spacing:-.025em;margin-bottom:.85rem;
+}
+.hero h1 em{font-style:italic;color:var(--c-accent)}
+.hero-sub{font-size:16px;color:var(--c-text2);max-width:520px;margin:0 auto 1rem;line-height:1.65}
+
+/* ── MAIN ── */
+.wrap{max-width:840px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+
+/* ── SECTION HEADER ── */
+.sec-head{display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem}
+.sec-num{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--c-accent);color:var(--c-bg);
+  font-size:11px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sec-title{font-size:13px;font-weight:600;color:var(--c-text);letter-spacing:-.01em}
+
+/* ── CARD ── */
+.card{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem;
+  box-shadow:var(--shadow);transition:background .2s,border-color .2s;
+}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:up .35s ease both}
+.card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}
+.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.16s}
+.card:nth-child(5){animation-delay:.20s}.card:nth-child(6){animation-delay:.24s}
+
+/* ── INPUT GRID ── */
+.input-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:720px){.input-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.input-grid{grid-template-columns:1fr}}
+.input-grid.cols3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:620px){.input-grid.cols3{grid-template-columns:1fr}}
+
+.big-input{
+  background:var(--c-surface2);
+  border:1px solid var(--c-border);
+  border-radius:var(--r);
+  padding:1rem 1.1rem;
+  transition:border-color .15s, background .15s;
+  cursor:text;
+}
+.big-input:hover{border-color:var(--c-border2)}
+.big-input:focus-within{border-color:var(--c-accent);background:var(--c-surface)}
+.big-input-lbl{
+  font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--c-text3);margin-bottom:.55rem;display:block;
+}
+.big-input-row{display:flex;align-items:baseline;gap:6px}
+.big-input input{
+  width:100%;
+  font-family:'Instrument Serif',serif;
+  font-size:1.5rem;font-weight:400;
+  color:var(--c-text);
+  background:transparent;border:none;outline:none;padding:0;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+  -moz-appearance:textfield;
+}
+.big-input input::-webkit-inner-spin-button,
+.big-input input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.big-input-unit{
+  font-family:'Instrument Sans',sans-serif;
+  font-size:13px;font-weight:500;color:var(--c-text2);
+  flex-shrink:0;
+}
+
+/* ── QUICK CHIPS ── */
+.quick-section{margin-top:.85rem}
+.quick-section + .quick-section{margin-top:.6rem}
+.quick-section-lbl{
+  font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--c-text3);display:block;margin-bottom:.4rem;
+}
+.quick-row{display:flex;gap:5px;flex-wrap:wrap}
+.quick-chip{
+  padding:3px 9px;border-radius:12px;
+  border:1px solid var(--c-border);background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:10.5px;font-weight:500;
+  color:var(--c-text3);cursor:pointer;transition:all .12s;
+  letter-spacing:.02em;
+}
+.quick-chip:hover{border-color:var(--c-accent);color:var(--c-accent)}
+
+/* ── CARS GRID (2 sistemas) ── */
+.cars-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:620px){.cars-grid{grid-template-columns:1fr}}
+.car-block{
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  border-radius:var(--r);padding:1rem;
+  transition:border-color .2s;
+}
+.car-block.termo{border-top:3px solid var(--c-blue)}
+.car-block.esq{border-top:3px solid var(--c-orange)}
+.car-head{
+  display:flex;align-items:center;gap:9px;margin-bottom:.85rem;
+  padding-bottom:.7rem;border-bottom:1px solid var(--c-border);
+}
+.car-icon{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.car-block.termo .car-icon{background:var(--c-blue-pale);color:var(--c-blue)}
+.car-block.esq   .car-icon{background:var(--c-orange-pale);color:var(--c-orange)}
+.car-name{font-size:13px;font-weight:600;color:var(--c-text);letter-spacing:-.01em;line-height:1.2}
+.car-name-sub{font-size:10px;color:var(--c-text3);font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+.mini-input{
+  display:flex;align-items:center;gap:8px;
+  padding:.55rem .7rem;border:1px solid var(--c-border);border-radius:var(--r-sm);
+  background:var(--c-surface);
+  margin-bottom:6px;
+  transition:border-color .15s;
+}
+.mini-input:hover{border-color:var(--c-border2)}
+.mini-input:focus-within{border-color:var(--c-accent)}
+.mini-lbl{flex:1;font-size:11px;color:var(--c-text2);font-weight:500;letter-spacing:.01em}
+.mini-val{display:flex;align-items:baseline;gap:4px;flex-shrink:0}
+.mini-input input{
+  width:75px;text-align:right;
+  font-family:'Instrument Serif',serif;font-size:14.5px;font-weight:400;
+  color:var(--c-text);background:transparent;border:none;outline:none;padding:0;
+  font-variant-numeric:tabular-nums;-moz-appearance:textfield;
+}
+.mini-input input::-webkit-inner-spin-button,
+.mini-input input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.mini-unit{font-size:10.5px;color:var(--c-text3);font-weight:500;flex-shrink:0;letter-spacing:.01em}
+
+.car-info{
+  display:flex;align-items:center;gap:6px;
+  font-size:10.5px;color:var(--c-text3);font-weight:500;
+  padding:.5rem .65rem;margin-top:8px;
+  background:var(--c-surface);border:1px dashed var(--c-border);border-radius:var(--r-sm);
+  letter-spacing:.01em;
+}
+.car-info svg{flex-shrink:0;color:var(--c-blue)}
+.car-info.esq svg{color:var(--c-orange)}
+
+/* Sub-section inside a car card with quick chips */
+.mini-quick{margin-top:.45rem;margin-bottom:8px}
+.mini-quick-lbl{
+  font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--c-text3);display:block;margin-bottom:.35rem;
+}
+.mini-chip{
+  padding:3px 8px;border-radius:11px;
+  border:1px solid var(--c-border);background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:10px;font-weight:500;
+  color:var(--c-text3);cursor:pointer;transition:all .12s;
+  letter-spacing:.02em;margin-right:4px;margin-bottom:4px;
+}
+.mini-chip:hover{border-color:var(--c-blue);color:var(--c-blue)}
+.car-block.esq .mini-chip:hover{border-color:var(--c-orange);color:var(--c-orange)}
+
+/* ── VALIDATION ── */
+.big-input.invalid, .mini-input.invalid {
+  border-color: var(--c-red);
+  background: var(--c-red-pale);
+}
+.error-banner{
+  display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:start;
+  padding:1.2rem 1.35rem;border-radius:var(--r);
+  background:var(--c-red-pale);border:1px solid var(--c-red-border);
+  margin-bottom:1.1rem;
+}
+@media(max-width:560px){.error-banner{grid-template-columns:1fr;text-align:left}}
+.err-icon{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--c-red);color:var(--c-bg);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.err-title{font-size:13px;font-weight:600;color:var(--c-red);letter-spacing:-.01em;margin-bottom:.25rem}
+.err-intro{font-size:12px;color:var(--c-red);margin-bottom:.55rem;line-height:1.55}
+.err-list{display:flex;flex-wrap:wrap;gap:6px}
+.err-list-item{
+  font-size:11px;color:var(--c-red);font-weight:500;
+  padding:3px 9px;border-radius:12px;
+  background:var(--c-bg);border:1px solid var(--c-red-border);
+}
+.chart-empty{
+  display:flex;align-items:center;justify-content:center;
+  min-height:160px;color:var(--c-text3);font-size:13px;
+  background:var(--c-surface2);border:1px dashed var(--c-border);border-radius:var(--r-sm);
+}
+
+/* ── VERDICT ── */
+.verdict{
+  display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:center;
+  padding:1.4rem 1.4rem;border-radius:var(--r);
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  margin-bottom:1.1rem;
+}
+@media(max-width:560px){.verdict{grid-template-columns:1fr;text-align:center}}
+.verdict.termo-wins{background:var(--c-blue-pale);border-color:var(--c-blue-border)}
+.verdict.esq-wins{background:var(--c-orange-pale);border-color:var(--c-orange-border)}
+.verdict.tie{background:var(--c-amber-pale);border-color:var(--c-amber-border)}
+
+.verdict-badge{
+  width:64px;height:64px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:var(--c-surface);
+}
+.verdict.termo-wins .verdict-badge{background:var(--c-blue);color:var(--c-bg)}
+.verdict.esq-wins .verdict-badge{background:var(--c-orange);color:var(--c-bg)}
+.verdict.tie .verdict-badge{background:var(--c-amber);color:var(--c-bg)}
+@media(max-width:560px){.verdict-badge{margin:0 auto}}
+
+.verdict-text{min-width:0}
+.verdict-title{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--c-text2);margin-bottom:.3rem}
+.verdict-main{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(1.65rem,4.5vw,2.3rem);
+  font-weight:400;line-height:1.1;letter-spacing:-.02em;
+  color:var(--c-text);
+}
+.verdict-main em{font-style:italic;color:var(--c-accent)}
+.verdict.termo-wins .verdict-main em{color:var(--c-blue)}
+.verdict.esq-wins .verdict-main em{color:var(--c-orange)}
+.verdict-sub{font-size:12px;color:var(--c-text2);margin-top:.45rem;line-height:1.55}
+
+/* Tip banner — solar PV could change the verdict */
+.tip-banner{
+  display:flex;align-items:flex-start;gap:.85rem;
+  padding:.85rem 1rem;border-radius:var(--r-sm);
+  background:var(--c-accent-pale);border:1px solid var(--c-amber-border);
+  margin-top:.9rem;font-size:12px;color:var(--c-text2);line-height:1.6;
+}
+.tip-banner svg{flex-shrink:0;color:var(--c-accent);margin-top:1px}
+.tip-banner strong{color:var(--c-accent);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:620px){.metrics{grid-template-columns:repeat(2,1fr)}}
+.met{background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-sm);padding:.8rem .9rem}
+.met-lbl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--c-text3);margin-bottom:5px}
+.met-val{font-size:1.2rem;font-weight:600;color:var(--c-text);line-height:1;font-variant-numeric:tabular-nums}
+.met-val.termo{color:var(--c-blue)}
+.met-val.esq{color:var(--c-orange)}
+.met-sub{font-size:10px;color:var(--c-text3);margin-top:4px}
+
+/* ── BARS ── */
+.bars-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+@media(max-width:620px){.bars-grid{grid-template-columns:1fr}}
+.bars-block{
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  border-radius:var(--r-sm);padding:1rem 1.1rem;
+}
+.bars-block-head{
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--c-text3);margin-bottom:.85rem;display:flex;justify-content:space-between;align-items:baseline;
+}
+.bars-block-head strong{font-size:12px;color:var(--c-text);font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:.02em}
+.bar-row{margin-bottom:.65rem}
+.bar-row:last-child{margin-bottom:0}
+.bar-head{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--c-text2);margin-bottom:4px;font-weight:500}
+.bar-head span:last-child{color:var(--c-text);font-variant-numeric:tabular-nums}
+.bar-track{background:var(--c-surface);border-radius:3px;height:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+.fill-termo-1{background:var(--c-blue)}
+.fill-termo-2{background:color-mix(in srgb, var(--c-blue) 70%, var(--c-bg))}
+.fill-termo-3{background:color-mix(in srgb, var(--c-blue) 45%, var(--c-bg))}
+.fill-esq-1{background:var(--c-orange)}
+.fill-esq-2{background:color-mix(in srgb, var(--c-orange) 70%, var(--c-bg))}
+.fill-esq-3{background:color-mix(in srgb, var(--c-orange) 45%, var(--c-bg))}
+.fill-esq-4{background:color-mix(in srgb, var(--c-orange) 30%, var(--c-bg))}
+
+/* ── CHART ── */
+.chart-wrap{position:relative;margin-top:.5rem}
+.chart-wrap svg{display:block;width:100%;height:auto;cursor:crosshair;touch-action:none}
+.chart-info{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  margin-top:.6rem;padding:.7rem .85rem;
+  background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-sm);
+}
+@media(max-width:560px){.chart-info{grid-template-columns:repeat(2,1fr);gap:8px;padding:.65rem .75rem}}
+.ci-block{min-width:0}
+.ci-lbl{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--c-text3);margin-bottom:3px}
+.ci-val{font-size:13px;font-weight:600;color:var(--c-text);font-variant-numeric:tabular-nums}
+.ci-val.termo{color:var(--c-blue)}
+.ci-val.esq{color:var(--c-orange)}
+.ci-val.delta{color:var(--c-accent)}
+.chart-legend{display:flex;justify-content:center;gap:1.25rem;flex-wrap:wrap;margin-top:.5rem;font-size:11px;color:var(--c-text2)}
+.lg-dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.lg-dot.termo{background:var(--c-blue)}
+.lg-dot.esq{background:var(--c-orange)}
+.lg-dot.par{background:transparent;border:1.5px dashed var(--c-accent);border-radius:0;height:0;width:14px;margin-right:6px}
+
+/* ── DEMAND BANNER (energia útil/dia) ── */
+.demand-banner{
+  display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;
+  padding:1rem 1.2rem;border-radius:var(--r-sm);
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  margin-bottom:1.1rem;
+}
+@media(max-width:560px){.demand-banner{grid-template-columns:1fr;text-align:center}}
+.demand-icon{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--c-accent);color:var(--c-bg);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+@media(max-width:560px){.demand-icon{margin:0 auto}}
+.demand-text{min-width:0}
+.demand-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-accent);margin-bottom:.2rem}
+.demand-val{font-family:'Instrument Serif',serif;font-size:1.55rem;font-weight:400;color:var(--c-text);font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+.demand-sub{font-size:11px;color:var(--c-text2);margin-top:.3rem}
+.demand-extra{
+  font-family:'Instrument Serif',serif;font-size:1.15rem;color:var(--c-text);
+  text-align:right;line-height:1.1;font-variant-numeric:tabular-nums;
+}
+.demand-extra-sub{font-size:10px;color:var(--c-text3);font-family:'Instrument Sans';margin-top:2px;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:560px){.demand-extra,.demand-extra-sub{text-align:center}}
+
+/* ── CO2 BANNER ── */
+.co2-banner{
+  display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;
+  padding:1rem 1.2rem;border-radius:var(--r-sm);
+  background:var(--c-green-pale);border:1px solid var(--c-green-border);
+  margin-top:1rem;
+}
+@media(max-width:560px){.co2-banner{grid-template-columns:1fr;text-align:center}}
+.co2-banner.neutral{background:var(--c-surface2);border-color:var(--c-border)}
+.co2-icon{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--c-green);color:var(--c-bg);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.co2-banner.neutral .co2-icon{background:var(--c-text3)}
+@media(max-width:560px){.co2-icon{margin:0 auto}}
+.co2-text{min-width:0}
+.co2-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-green);margin-bottom:.2rem}
+.co2-banner.neutral .co2-lbl{color:var(--c-text2)}
+.co2-val{font-family:'Instrument Serif',serif;font-size:1.55rem;font-weight:400;color:var(--c-green);font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+.co2-banner.neutral .co2-val{color:var(--c-text)}
+.co2-sub{font-size:11px;color:var(--c-text2);margin-top:.3rem}
+.co2-extra{
+  font-family:'Instrument Serif',serif;font-size:1.15rem;color:var(--c-green);
+  text-align:right;line-height:1.1;font-variant-numeric:tabular-nums;
+}
+.co2-banner.neutral .co2-extra{color:var(--c-text)}
+.co2-extra-sub{font-size:10px;color:var(--c-text3);font-family:'Instrument Sans';margin-top:2px;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:560px){.co2-extra,.co2-extra-sub{text-align:center}}
+
+/* ── ACCORDION ── */
+.acc-trigger{
+  display:flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:500;color:var(--c-text2);
+  cursor:pointer;margin-top:1rem;user-select:none;
+  padding:.5rem .75rem;border-radius:var(--r-sm);
+  border:1px solid var(--c-border);background:var(--c-surface);
+  transition:border-color .15s,color .15s;
+}
+.acc-trigger:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.acc-trigger svg{transition:transform .2s;flex-shrink:0}
+.acc-trigger.open svg{transform:rotate(180deg)}
+.acc-body{
+  display:none;margin-top:6px;
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-sm);padding:.9rem 1rem;
+  font-size:12px;color:var(--c-text2);line-height:1;
+}
+.acc-body.open{display:block}
+.acc-body ul{margin:.5rem 0 0 1rem;list-style:disc}
+.acc-body li{margin-bottom:.45rem;line-height:1.65}
+.acc-body li:last-child{margin-bottom:0}
+
+/* ── FOOTER ── */
+.footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--c-border)}
+.footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+@media(max-width:520px){.footer-grid{grid-template-columns:1fr}}
+.fcell{padding:.75rem 1rem;border:1px solid var(--c-border);border-radius:var(--r-sm);background:var(--c-surface)}
+.fcell-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-text3);margin-bottom:.4rem}
+.fcell-val{font-size:11px;color:var(--c-text2);line-height:1.7}
+.footer-note{text-align:center;font-size:11px;color:var(--c-text3);line-height:1.9}
+
+/* ── BACK LINK ── */
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:500;color:var(--c-text2);
+  text-decoration:none;letter-spacing:.01em;transition:color .2s;
+}
+.back-link:hover{color:var(--c-accent)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <nav class="hero-nav">
+    <a class="back-link" href="index.html#ferramentas">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 2.5L3.5 7l5 4.5"/></svg>
+      <span lang="pt">Voltar ao início</span>
+      <span lang="en">Back to home</span>
+    </a>
+    <div class="nav-actions">
+      <div style="display:flex;border:1px solid var(--c-border);border-radius:8px;overflow:hidden;background:var(--c-surface)">
+        <button class="nav-btn active" id="btnPT">PT</button>
+        <button class="nav-btn" id="btnEN">EN</button>
+      </div>
+      <button class="nav-icon-btn" id="themeBtn" aria-label="Alternar tema">
+        <svg class="i-sun" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><line x1="8" y1="1" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15"/><line x1="1" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15" y2="8"/><line x1="3.05" y1="3.05" x2="4.1" y2="4.1"/><line x1="11.9" y1="11.9" x2="12.95" y2="12.95"/><line x1="12.95" y1="3.05" x2="11.9" y2="4.1"/><line x1="4.1" y1="11.9" x2="3.05" y2="12.95"/></svg>
+        <svg class="i-moon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7z"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="hero-body">
+    <div class="hero-kicker">
+      <span lang="pt">Gratuito · Sem registos · Privado</span>
+      <span lang="en">Free · No sign-up · Private</span>
+    </div>
+    <h1>
+      <span lang="pt">Termoacumulador ou <em>esquentador</em>?</span>
+      <span lang="en">Tank heater or <em>gas heater</em>?</span>
+    </h1>
+    <p class="hero-sub">
+      <span lang="pt">Compara o custo total ao longo dos anos. Descobre como o solar PV ou o tarifário bi-horário podem virar o jogo.</span>
+      <span lang="en">Compare total cost over time. Discover how PV solar or off-peak tariffs can flip the verdict.</span>
+    </p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- CARD 1: PADRAO DE CONSUMO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">1</div><span class="sec-title"><span lang="pt">Consumo de água quente</span><span lang="en">Hot water consumption</span></span></div>
+
+    <div class="input-grid">
+      <label class="big-input" for="litros-num">
+        <span class="big-input-lbl"><span lang="pt">Litros / dia</span><span lang="en">Litres / day</span></span>
+        <div class="big-input-row">
+          <input type="number" id="litros-num" inputmode="decimal" min="10" max="2000" step="any" value="120">
+          <span class="big-input-unit">L</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="tfria-num">
+        <span class="big-input-lbl"><span lang="pt">T. água fria</span><span lang="en">Cold water T.</span></span>
+        <div class="big-input-row">
+          <input type="number" id="tfria-num" inputmode="decimal" min="0" max="40" step="any" value="14">
+          <span class="big-input-unit">°C</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="tquente-num">
+        <span class="big-input-lbl"><span lang="pt">T. água quente</span><span lang="en">Hot water T.</span></span>
+        <div class="big-input-row">
+          <input type="number" id="tquente-num" inputmode="decimal" min="20" max="80" step="any" value="40">
+          <span class="big-input-unit">°C</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="anos-num">
+        <span class="big-input-lbl"><span lang="pt">Horizonte</span><span lang="en">Horizon</span></span>
+        <div class="big-input-row">
+          <input type="number" id="anos-num" inputmode="numeric" min="1" max="25" step="1" value="10">
+          <span class="big-input-unit"><span lang="pt">anos</span><span lang="en">years</span></span>
+        </div>
+      </label>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Agregado familiar</span><span lang="en">Household size</span></span>
+      <div class="quick-row" id="quick-litros"></div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Temperatura da água fria (PT)</span><span lang="en">Cold water temperature (PT)</span></span>
+      <div class="quick-row" id="quick-tfria"></div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Temperatura à torneira</span><span lang="en">Tap temperature</span></span>
+      <div class="quick-row" id="quick-tquente"></div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Horizonte</span><span lang="en">Horizon</span></span>
+      <div class="quick-row" id="quick-anos"></div>
+    </div>
+  </div>
+
+  <!-- CARD 2: OS DOIS SISTEMAS -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">2</div><span class="sec-title"><span lang="pt">Os dois sistemas</span><span lang="en">The two systems</span></span></div>
+
+    <div class="cars-grid">
+      <!-- TERMOACUMULADOR -->
+      <div class="car-block termo">
+        <div class="car-head">
+          <div class="car-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><circle cx="12" cy="14" r="2"/></svg>
+          </div>
+          <div>
+            <div class="car-name"><span lang="pt">Termoacumulador</span><span lang="en">Tank heater</span></div>
+            <div class="car-name-sub"><span lang="pt">eléctrico</span><span lang="en">electric</span></div>
+          </div>
+        </div>
+
+        <label class="mini-input" for="termo-preco">
+          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
+          <span class="mini-val"><input type="number" id="termo-preco" inputmode="decimal" min="50" max="5000" step="any" value="350"><span class="mini-unit">€</span></span>
+        </label>
+        <label class="mini-input" for="termo-cap">
+          <span class="mini-lbl"><span lang="pt">Capacidade</span><span lang="en">Capacity</span></span>
+          <span class="mini-val"><input type="number" id="termo-cap" inputmode="decimal" min="20" max="500" step="any" value="100"><span class="mini-unit">L</span></span>
+        </label>
+        <label class="mini-input" for="termo-ef">
+          <span class="mini-lbl"><span lang="pt">Eficiência</span><span lang="en">Efficiency</span></span>
+          <span class="mini-val"><input type="number" id="termo-ef" inputmode="decimal" min="50" max="100" step="any" value="95"><span class="mini-unit">%</span></span>
+        </label>
+        <label class="mini-input" for="termo-standby">
+          <span class="mini-lbl"><span lang="pt">Perdas standby</span><span lang="en">Standby losses</span></span>
+          <span class="mini-val"><input type="number" id="termo-standby" inputmode="decimal" min="0" max="10" step="any" value="1.2"><span class="mini-unit">kWh/<span lang="pt">dia</span><span lang="en">day</span></span></span>
+        </label>
+        <label class="mini-input" for="termo-manut">
+          <span class="mini-lbl"><span lang="pt">Manutenção</span><span lang="en">Maintenance</span></span>
+          <span class="mini-val"><input type="number" id="termo-manut" inputmode="decimal" min="0" max="500" step="any" value="50"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
+        </label>
+        <label class="mini-input" for="termo-vazio">
+          <span class="mini-lbl"><span lang="pt">% horário baixo / solar</span><span lang="en">% off-peak / solar</span></span>
+          <span class="mini-val"><input type="number" id="termo-vazio" inputmode="decimal" min="0" max="100" step="any" value="0"><span class="mini-unit">%</span></span>
+        </label>
+        <div class="mini-quick">
+          <span class="mini-quick-lbl"><span lang="pt">Aproveitamento</span><span lang="en">Off-peak usage</span></span>
+          <div id="quick-vazio"></div>
+        </div>
+      </div>
+
+      <!-- ESQUENTADOR -->
+      <div class="car-block esq">
+        <div class="car-head">
+          <div class="car-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 4 4 5 4 10a4 4 0 0 1-8 0c0-3 1.5-4 3-5-.5 2 .5 4 2 4 0-3-1.5-4-1-9z"/></svg>
+          </div>
+          <div>
+            <div class="car-name"><span lang="pt">Esquentador</span><span lang="en">Gas heater</span></div>
+            <div class="car-name-sub"><span lang="pt">a gás</span><span lang="en">gas-powered</span></div>
+          </div>
+        </div>
+
+        <label class="mini-input" for="esq-preco">
+          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
+          <span class="mini-val"><input type="number" id="esq-preco" inputmode="decimal" min="50" max="5000" step="any" value="450"><span class="mini-unit">€</span></span>
+        </label>
+        <label class="mini-input" for="esq-ef">
+          <span class="mini-lbl"><span lang="pt">Eficiência</span><span lang="en">Efficiency</span></span>
+          <span class="mini-val"><input type="number" id="esq-ef" inputmode="decimal" min="50" max="100" step="any" value="87"><span class="mini-unit">%</span></span>
+        </label>
+        <label class="mini-input" for="esq-manut">
+          <span class="mini-lbl"><span lang="pt">Manutenção</span><span lang="en">Maintenance</span></span>
+          <span class="mini-val"><input type="number" id="esq-manut" inputmode="decimal" min="0" max="500" step="any" value="80"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
+        </label>
+        <label class="mini-input" for="esq-aluguer">
+          <span class="mini-lbl"><span lang="pt">Aluguer contador</span><span lang="en">Meter rental</span></span>
+          <span class="mini-val"><input type="number" id="esq-aluguer" inputmode="decimal" min="0" max="100" step="any" value="0"><span class="mini-unit">€/<span lang="pt">mês</span><span lang="en">mo</span></span></span>
+        </label>
+        <div class="car-info esq">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span><span lang="pt">Manutenção obrigatória de 2 em 2 anos (~120-150€)</span><span lang="en">Mandatory service every 2 years (~120-150€)</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: ENERGIA -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">3</div><span class="sec-title"><span lang="pt">Preços de energia</span><span lang="en">Energy prices</span></span></div>
+
+    <div class="input-grid cols3">
+      <label class="big-input" for="kwh-cheia-num">
+        <span class="big-input-lbl"><span lang="pt">kWh em cheia</span><span lang="en">kWh peak</span></span>
+        <div class="big-input-row">
+          <input type="number" id="kwh-cheia-num" inputmode="decimal" min="0.01" max="2" step="any" value="0,15">
+          <span class="big-input-unit">€/kWh</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="kwh-vazio-num">
+        <span class="big-input-lbl"><span lang="pt">kWh em vazio / solar</span><span lang="en">kWh off-peak / solar</span></span>
+        <div class="big-input-row">
+          <input type="number" id="kwh-vazio-num" inputmode="decimal" min="0" max="2" step="any" value="0,10">
+          <span class="big-input-unit">€/kWh</span>
+        </div>
+      </label>
+
+      <label class="big-input" for="gas-num">
+        <span class="big-input-lbl"><span lang="pt">Gás</span><span lang="en">Gas</span></span>
+        <div class="big-input-row">
+          <input type="number" id="gas-num" inputmode="decimal" min="0.01" max="2" step="any" value="0,09">
+          <span class="big-input-unit">€/kWh</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Tarifa em cheia</span><span lang="en">Peak tariff</span></span>
+      <div class="quick-row" id="quick-cheia"></div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Tarifa em vazio / solar</span><span lang="en">Off-peak / solar</span></span>
+      <div class="quick-row" id="quick-vazio-price"></div>
+    </div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Tipo de gás</span><span lang="en">Gas type</span></span>
+      <div class="quick-row" id="quick-gas"></div>
+    </div>
+  </div>
+
+  <!-- CARD 4: VEREDICTO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">4</div><span class="sec-title"><span lang="pt">Veredicto</span><span lang="en">Verdict</span></span></div>
+
+    <div id="verdict"></div>
+    <div id="tip" style="margin-top:.6rem;margin-bottom:1.1rem"></div>
+
+    <div class="demand-banner" id="demand"></div>
+    <div class="metrics" id="metrics"></div>
+    <div class="bars-grid" id="bars"></div>
+    <div class="co2-banner" id="co2"></div>
+  </div>
+
+  <!-- CARD 5: GRAFICO -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">5</div><span class="sec-title"><span lang="pt">Evolução do custo total</span><span lang="en">Total cost evolution</span></span></div>
+    <div class="chart-wrap" id="chart"></div>
+    <div class="chart-info" id="chart-info"></div>
+    <div class="chart-legend">
+      <span><span class="lg-dot termo"></span><span lang="pt">Termoacumulador</span><span lang="en">Tank heater</span></span>
+      <span><span class="lg-dot esq"></span><span lang="pt">Esquentador</span><span lang="en">Gas heater</span></span>
+      <span><span class="lg-dot par"></span><span lang="pt">Paridade</span><span lang="en">Parity</span></span>
+    </div>
+
+    <div class="acc-trigger" id="acc-btn" onclick="toggleAcc()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+        <circle cx="6.5" cy="6.5" r="6" stroke="currentColor" stroke-width="1"/>
+        <path d="M6.5 5.5v3.5M6.5 4v.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+      </svg>
+      <span><span lang="pt">Como funciona o cálculo</span><span lang="en">How the calculation works</span></span>
+      <svg style="margin-left:auto" width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="acc-body" id="acc-body"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid" id="footer-grid"></div>
+    <p class="footer-note" id="footer-note"></p>
+  </footer>
+
+</main>
+
+<script>
+let lang = 'pt';
+let chartState = null;
+
+// Constants
+const KJ_KG_C = 4.186;            // kJ / (kg · °C) — calor específico da água
+const CO2_GRID_PT = 0.16;         // kg CO2 / kWh (mix elétrico PT 2024)
+const CO2_GAS_NAT = 0.20;         // kg CO2 / kWh de gás natural queimado
+const TREE_KG_YR = 21;            // kg CO2 absorvido por árvore adulta / ano
+
+const T = {
+  pt: {
+    verdict: {
+      termo: (s) => `Termoacumulador poupa <em>${s}</em>`,
+      esq:   (s) => `Esquentador poupa <em>${s}</em>`,
+      tie:        '<em>Empate técnico</em>',
+    },
+    verdictTitleTermo: 'Termoacumulador vence',
+    verdictTitleEsq:   'Esquentador vence',
+    verdictTitleTie:   'Veredicto',
+    subPaidBack:       (y, py) => `ao fim de ${y}. O equipamento mais caro paga-se no <strong>ano ${py}</strong>.`,
+    subCheaperFromDay1:(y) => `ao fim de ${y}. Mais barato desde o dia 1.`,
+    subNeverParity:    (y) => `ao fim de ${y}, mas o premium do equipamento mais caro não se paga neste horizonte.`,
+    subTie:            (y) => `ao fim de ${y}. A diferença é desprezável.`,
+
+    tipSolar: (s) => `<strong>Dica:</strong> com 80% de aproveitamento solar/vazio, o termoacumulador passaria a poupar <strong>${s}</strong>. Experimenta na barra "Aproveitamento".`,
+    tipNoVazio: 'Estás a 0% de aproveitamento. Se tiveres bi-horário ou painéis solares, sobe a percentagem para ver o efeito.',
+
+    demandLbl: 'Energia útil necessária',
+    demandSub: (l, dt) => `${l} L/dia × ΔT de ${dt}°C × calor específico da água`,
+    demandExtra: (kwh) => `${kwh} kWh / dia`,
+    demandExtraSub: 'consumo equivalente',
+
+    mTcoTermo: 'TCO termoacumulador', mTcoTermoSub: 'custo total ao fim do horizonte',
+    mTcoEsq: 'TCO esquentador', mTcoEsqSub: 'custo total ao fim do horizonte',
+    mMesTermo: 'Custo / mês · termo', mMesTermoSub: 'energia + manutenção',
+    mMesEsq: 'Custo / mês · esq', mMesEsqSub: 'gás + manutenção + aluguer',
+
+    barsTermo: 'Termoacumulador — onde vai o dinheiro',
+    barsEsq: 'Esquentador — onde vai o dinheiro',
+    barPreco: 'Compra',
+    barEnergia: 'Electricidade',
+    barGas: 'Gás',
+    barManut: 'Manutenção',
+    barAluguer: 'Aluguer contador',
+
+    co2Lbl: 'CO₂ evitado',
+    co2Lbl2: 'CO₂ acrescido',
+    co2SubAvoid: (totL) => `${totL} L de água quente ao longo do horizonte (mix elétrico PT vs combustão de gás)`,
+    co2SubMore:  (totL) => `${totL} L de água quente. O termoacumulador a partir da rede emite mais que o gás neste cenário.`,
+    co2Trees: (n) => `≈ ${n} árvores`,
+    co2TreesSub: 'absorção anual equivalente',
+
+    chartCi: ['Ano', 'Termo', 'Esquentador', 'Diferença'],
+    chartParityLabel: 'Paridade',
+
+    accItems: [
+      '<strong>Energia útil:</strong> Q = m · c · ΔT, onde m = litros/dia (aproximação 1L = 1kg), c = 4,186 kJ/(kg·°C) e ΔT = T<sub>quente</sub> − T<sub>fria</sub>.',
+      '<strong>Termoacumulador:</strong> consumo eléctrico = energia útil ÷ eficiência + perdas em standby do depósito (depende do isolamento e capacidade).',
+      '<strong>Esquentador:</strong> consumo de gás = energia útil ÷ eficiência. Não tem perdas em standby (aquece on-demand).',
+      '<strong>Aproveitamento solar/vazio:</strong> a percentagem de água aquecida em horário baixo (vazio bi-horário ou excedente solar) reduz proporcionalmente o custo da electricidade. Esta é a alavanca chave do termoacumulador.',
+      '<strong>CO₂:</strong> 0,16 kg/kWh para electricidade do mix PT (2024, ~75% renovável); 0,20 kg/kWh para gás natural (combustão).',
+      '<strong>Bomba de calor (HPWH):</strong> alternativa moderna ao termoacumulador eléctrico — usa o ar ambiente para aquecer água com eficiência (COP) de 3–4. Para simular, divide o consumo eléctrico por esse COP.',
+    ],
+    fcells: [
+      {l:'Termoacumulador', v:'Aquecimento por resistência<br>Eficiência ~95%, perdas standby<br>Compatível com solar / bi-horário'},
+      {l:'Esquentador a gás', v:'Aquecimento on-demand<br>Eficiência típica 85–90%<br>Inspecção obrigatória de 2/2 anos'},
+      {l:'Sobre', v:'Ferramenta indicativa independente<br>Não considera variações futuras de preços'},
+    ],
+    fNote: 'Valores meramente indicativos. Não considera revenda dos equipamentos, eventuais subsídios, ou variações futuras dos preços de energia. As perdas em standby reais variam com o isolamento, a temperatura ambiente e a temperatura do depósito.',
+
+    quickLitros: [
+      {l:'1 pessoa · 60', v:60},
+      {l:'Casal · 120', v:120},
+      {l:'Família 3 · 180', v:180},
+      {l:'Família 4 · 240', v:240},
+      {l:'Família 5+ · 300', v:300},
+    ],
+    quickTfria: [{l:'Inverno · 12', v:12},{l:'Média anual · 14', v:14},{l:'Verão · 18', v:18}],
+    quickTquente: [{l:'Duche · 40', v:40},{l:'Confortável · 42', v:42},{l:'Lava-loiça · 50', v:50},{l:'Anti-Legionella · 60', v:60}],
+    quickAnos: [{l:'5 anos', v:5},{l:'8 anos', v:8},{l:'10 anos', v:10},{l:'15 anos', v:15}],
+    quickVazio: [
+      {l:'Sem aproveitamento', v:0},
+      {l:'Bi-horário noturno', v:50},
+      {l:'Solar PV ativo', v:80},
+      {l:'100% solar / vazio', v:100},
+    ],
+    quickCheia: [
+      {l:'Tarifa social · 0,12', v:0.12},
+      {l:'Simples · 0,15', v:0.15},
+      {l:'Indexada alta · 0,22', v:0.22},
+    ],
+    quickVazioPrice: [
+      {l:'Bi-horário · 0,10', v:0.10},
+      {l:'Tri-horário super-vazio · 0,07', v:0.07},
+      {l:'Excedente solar · 0,03', v:0.03},
+      {l:'Autoconsumo solar · 0,00', v:0.00},
+    ],
+    quickGas: [
+      {l:'Gás natural · 0,09', v:0.09},
+      {l:'Propano canalizado · 0,16', v:0.16},
+      {l:'Propano botija · 0,18', v:0.18},
+      {l:'Butano botija · 0,20', v:0.20},
+    ],
+
+    yearsTxt: (n) => n === 1 ? '1 ano' : `${n} anos`,
+  },
+  en: {
+    verdict: {
+      termo: (s) => `Tank heater saves <em>${s}</em>`,
+      esq:   (s) => `Gas heater saves <em>${s}</em>`,
+      tie:        '<em>Technical tie</em>',
+    },
+    verdictTitleTermo: 'Tank heater wins',
+    verdictTitleEsq:   'Gas heater wins',
+    verdictTitleTie:   'Verdict',
+    subPaidBack:       (y, py) => `over ${y}. The pricier device pays back in <strong>year ${py}</strong>.`,
+    subCheaperFromDay1:(y) => `over ${y}. Cheaper from day one.`,
+    subNeverParity:    (y) => `over ${y}, but the premium of the pricier device doesn't pay back in this horizon.`,
+    subTie:            (y) => `over ${y}. The difference is negligible.`,
+
+    tipSolar: (s) => `<strong>Tip:</strong> with 80% off-peak/solar usage, the tank heater would save <strong>${s}</strong>. Try the "Off-peak usage" slider.`,
+    tipNoVazio: 'You\'re at 0% off-peak. If you have bi-hourly tariff or PV solar, raise the percentage to see the impact.',
+
+    demandLbl: 'Useful energy required',
+    demandSub: (l, dt) => `${l} L/day × ΔT of ${dt}°C × specific heat of water`,
+    demandExtra: (kwh) => `${kwh} kWh / day`,
+    demandExtraSub: 'equivalent consumption',
+
+    mTcoTermo: 'Tank heater TCO', mTcoTermoSub: 'total cost over horizon',
+    mTcoEsq: 'Gas heater TCO', mTcoEsqSub: 'total cost over horizon',
+    mMesTermo: 'Cost / mo · tank', mMesTermoSub: 'energy + maintenance',
+    mMesEsq: 'Cost / mo · gas', mMesEsqSub: 'gas + maintenance + meter',
+
+    barsTermo: 'Tank heater — where the money goes',
+    barsEsq: 'Gas heater — where the money goes',
+    barPreco: 'Purchase',
+    barEnergia: 'Electricity',
+    barGas: 'Gas',
+    barManut: 'Maintenance',
+    barAluguer: 'Meter rental',
+
+    co2Lbl: 'CO₂ avoided',
+    co2Lbl2: 'CO₂ added',
+    co2SubAvoid: (totL) => `${totL} L of hot water over the horizon (PT grid mix vs gas combustion)`,
+    co2SubMore:  (totL) => `${totL} L of hot water. Grid-only tank heater emits more than gas in this scenario.`,
+    co2Trees: (n) => `≈ ${n} trees`,
+    co2TreesSub: 'equivalent annual absorption',
+
+    chartCi: ['Year', 'Tank', 'Gas heater', 'Difference'],
+    chartParityLabel: 'Parity',
+
+    accItems: [
+      '<strong>Useful energy:</strong> Q = m · c · ΔT, where m = litres/day (1 L ≈ 1 kg), c = 4.186 kJ/(kg·°C) and ΔT = T<sub>hot</sub> − T<sub>cold</sub>.',
+      '<strong>Tank heater:</strong> electric consumption = useful energy ÷ efficiency + tank standby losses (depends on insulation and capacity).',
+      '<strong>Gas heater:</strong> gas consumption = useful energy ÷ efficiency. No standby losses (heats on-demand).',
+      '<strong>Off-peak / solar share:</strong> the percentage of water heated during off-peak hours (bi-hourly tariff or PV surplus) proportionally reduces the cost of electricity. This is the tank heater\'s key lever.',
+      '<strong>CO₂:</strong> 0.16 kg/kWh for PT grid electricity (2024, ~75% renewable); 0.20 kg/kWh for natural gas combustion.',
+      '<strong>Heat pump (HPWH):</strong> modern alternative to electric tank heaters — uses ambient air with COP 3–4. To simulate, divide electric consumption by that COP.',
+    ],
+    fcells: [
+      {l:'Tank heater', v:'Resistance heating<br>~95% efficient, standby losses<br>Compatible with solar / off-peak'},
+      {l:'Gas heater', v:'On-demand heating<br>Typical efficiency 85–90%<br>Mandatory inspection every 2 yrs (PT)'},
+      {l:'About', v:'Independent indicative tool<br>Does not consider future price variations'},
+    ],
+    fNote: 'Indicative values only. Does not consider device resale value, possible incentives, or future energy price variations. Real standby losses vary with insulation, ambient temperature and tank temperature.',
+
+    quickLitros: [
+      {l:'1 person · 60', v:60},
+      {l:'Couple · 120', v:120},
+      {l:'Family of 3 · 180', v:180},
+      {l:'Family of 4 · 240', v:240},
+      {l:'Family of 5+ · 300', v:300},
+    ],
+    quickTfria: [{l:'Winter · 12', v:12},{l:'Annual avg · 14', v:14},{l:'Summer · 18', v:18}],
+    quickTquente: [{l:'Shower · 40', v:40},{l:'Comfort · 42', v:42},{l:'Dishes · 50', v:50},{l:'Anti-Legionella · 60', v:60}],
+    quickAnos: [{l:'5 years', v:5},{l:'8 years', v:8},{l:'10 years', v:10},{l:'15 years', v:15}],
+    quickVazio: [
+      {l:'No off-peak', v:0},
+      {l:'Night off-peak', v:50},
+      {l:'PV solar active', v:80},
+      {l:'100% solar / off-peak', v:100},
+    ],
+    quickCheia: [
+      {l:'Social rate · 0.12', v:0.12},
+      {l:'Standard · 0.15', v:0.15},
+      {l:'Peak indexed · 0.22', v:0.22},
+    ],
+    quickVazioPrice: [
+      {l:'Bi-hourly · 0.10', v:0.10},
+      {l:'Tri-hourly off-peak · 0.07', v:0.07},
+      {l:'PV surplus · 0.03', v:0.03},
+      {l:'PV self-consumption · 0.00', v:0.00},
+    ],
+    quickGas: [
+      {l:'Natural gas · 0.09', v:0.09},
+      {l:'Propane canalised · 0.16', v:0.16},
+      {l:'Propane bottle · 0.18', v:0.18},
+      {l:'Butane bottle · 0.20', v:0.20},
+    ],
+
+    yearsTxt: (n) => n === 1 ? '1 year' : `${n} years`,
+  }
+};
+
+const $ = id => document.getElementById(id);
+
+function eur(n) { return new Intl.NumberFormat('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}).format(n) + ' €'; }
+function eur0(n) { return new Intl.NumberFormat('de-DE', {maximumFractionDigits:0}).format(Math.round(n)) + ' €'; }
+function num0(n) { return new Intl.NumberFormat('de-DE', {maximumFractionDigits:0}).format(Math.round(n)); }
+function num1(n) { return new Intl.NumberFormat('de-DE', {minimumFractionDigits:1, maximumFractionDigits:1}).format(n); }
+function readNum(id, def, min, max) {
+  let raw = $(id).value.toString().replace(',', '.');
+  let v = parseFloat(raw);
+  if (isNaN(v)) v = def;
+  if (v < min) v = min;
+  if (v > max) v = max;
+  return v;
+}
+function isEmpty(id) {
+  return $(id).value.toString().trim() === '';
+}
+
+// ── VALIDATION ──
+function validate() {
+  const L = lang === 'pt';
+  // Read 'vazio %' tentatively to know if vazio price is required
+  const vazioRaw = $('termo-vazio').value.toString().trim().replace(',', '.');
+  const vazioVal = vazioRaw === '' ? null : parseFloat(vazioRaw);
+  const vazioOk = vazioVal !== null && !isNaN(vazioVal);
+
+  const fields = [
+    {id:'litros-num',    lbl: L?'Litros / dia':'Litres / day'},
+    {id:'tfria-num',     lbl: L?'Temp. água fria':'Cold water temp.'},
+    {id:'tquente-num',   lbl: L?'Temp. água quente':'Hot water temp.'},
+    {id:'anos-num',      lbl: L?'Horizonte':'Horizon'},
+    {id:'termo-preco',   lbl: L?'Preço termoacumulador':'Tank heater price'},
+    {id:'termo-cap',     lbl: L?'Capacidade do termoacumulador':'Tank capacity'},
+    {id:'termo-ef',      lbl: L?'Eficiência do termoacumulador':'Tank efficiency'},
+    {id:'termo-standby', lbl: L?'Perdas em standby':'Standby losses'},
+    {id:'termo-manut',   lbl: L?'Manutenção termoacumulador':'Tank maintenance'},
+    {id:'termo-vazio',   lbl: L?'% horário baixo / solar':'% off-peak / solar'},
+    {id:'esq-preco',     lbl: L?'Preço esquentador':'Gas heater price'},
+    {id:'esq-ef',        lbl: L?'Eficiência do esquentador':'Gas heater efficiency'},
+    {id:'esq-manut',     lbl: L?'Manutenção esquentador':'Gas maintenance'},
+    {id:'esq-aluguer',   lbl: L?'Aluguer contador (pode ser 0)':'Meter rental (may be 0)'},
+    {id:'kwh-cheia-num', lbl: L?'Preço kWh em cheia':'kWh price peak'},
+    {id:'gas-num',       lbl: L?'Preço gás':'Gas price'},
+  ];
+  // Conditional: vazio price only if termoVazio > 0
+  if (!vazioOk || vazioVal > 0) {
+    fields.push({id:'kwh-vazio-num', lbl: L?'Preço kWh em vazio / solar':'kWh price off-peak / solar'});
+  }
+
+  const missing = fields.filter(f => isEmpty(f.id));
+
+  // Cross-field check: T quente > T fria
+  const tFria = isEmpty('tfria-num')   ? null : parseFloat($('tfria-num').value.replace(',', '.'));
+  const tQu   = isEmpty('tquente-num') ? null : parseFloat($('tquente-num').value.replace(',', '.'));
+  let crossError = null;
+  if (tFria !== null && tQu !== null && tQu <= tFria) {
+    crossError = L
+      ? 'A temperatura da água quente tem de ser maior que a da fria.'
+      : 'Hot water temperature must be higher than cold water.';
+  }
+
+  // Reset highlights
+  document.querySelectorAll('.big-input.invalid, .mini-input.invalid').forEach(el => el.classList.remove('invalid'));
+  missing.forEach(m => {
+    const wrap = $(m.id).closest('.big-input, .mini-input');
+    if (wrap) wrap.classList.add('invalid');
+  });
+  if (crossError) {
+    ['tfria-num','tquente-num'].forEach(id => {
+      const wrap = $(id).closest('.big-input, .mini-input');
+      if (wrap) wrap.classList.add('invalid');
+    });
+  }
+
+  return { missing, crossError };
+}
+
+function showError(missing, crossError) {
+  const L = lang === 'pt';
+  const title = crossError
+    ? (L ? 'Dados inconsistentes' : 'Inconsistent data')
+    : (L ? 'Faltam dados para calcular' : 'Missing data');
+  const intro = crossError
+    ? crossError
+    : (L
+      ? 'Preenche os campos a vermelho. Se não tens aproveitamento de horário baixo (vazio ou solar), define a percentagem em 0%.'
+      : 'Fill the red fields. If you have no off-peak usage (bi-hourly or PV solar), set the percentage to 0%.');
+  $('verdict').innerHTML = `
+    <div class="error-banner">
+      <div class="err-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16.5" r=".4" fill="currentColor"/></svg>
+      </div>
+      <div>
+        <div class="err-title">${title}</div>
+        <div class="err-intro">${intro}</div>
+        ${missing.length ? `<div class="err-list">${missing.map(m => `<span class="err-list-item">${m.lbl}</span>`).join('')}</div>` : ''}
+      </div>
+    </div>`;
+  $('tip').innerHTML = '';
+  $('demand').innerHTML = '';
+  $('metrics').innerHTML = '';
+  $('bars').innerHTML = '';
+  $('co2').innerHTML = '';
+  $('chart').innerHTML = `<div class="chart-empty">${L?'— preenche os dados em falta —':'— fill missing data —'}</div>`;
+  $('chart-info').innerHTML = '';
+  chartState = null;
+}
+
+// ── COMPUTE ──
+function computeScenario(litros, dT, ef, standby, manut, anos, pCheia, pVazio, pctVazio, gasPrice, esqEf, esqManut, esqAluguer, esqPreco, termoPreco) {
+  const energiaUtilDia = litros * dT * KJ_KG_C / 3600; // kWh
+  // Termo
+  const termoConsumoDia = energiaUtilDia / ef + standby;
+  const precoKwhMix = (pctVazio/100) * pVazio + (1 - pctVazio/100) * pCheia;
+  const termoEnergiaAno = termoConsumoDia * 365 * precoKwhMix;
+  const termoAnualTot = termoEnergiaAno + manut;
+  const termoTco = termoPreco + termoAnualTot * anos;
+  // Esq
+  const esqConsumoDia = energiaUtilDia / esqEf;
+  const esqEnergiaAno = esqConsumoDia * 365 * gasPrice;
+  const esqAnualTot = esqEnergiaAno + esqManut + esqAluguer * 12;
+  const esqTco = esqPreco + esqAnualTot * anos;
+  return {
+    energiaUtilDia,
+    termoConsumoDia, termoEnergiaAno, termoAnualTot, termoTco,
+    esqConsumoDia, esqEnergiaAno, esqAnualTot, esqTco,
+    precoKwhMix
+  };
+}
+
+// ── CALC ──
+function calc() {
+  const t = T[lang];
+
+  const { missing, crossError } = validate();
+  if (missing.length > 0 || crossError) {
+    showError(missing, crossError);
+    return;
+  }
+
+  // Inputs
+  const litros = readNum('litros-num', 120, 1, 5000);
+  const tFria  = readNum('tfria-num', 14, 0, 50);
+  const tQu    = readNum('tquente-num', 40, 1, 90);
+  const anos   = Math.round(readNum('anos-num', 10, 1, 25));
+
+  const termoPreco   = readNum('termo-preco', 350, 1, 50000);
+  const termoCap     = readNum('termo-cap', 100, 1, 5000);
+  const termoEf      = readNum('termo-ef', 95, 10, 100) / 100;
+  const termoStandby = readNum('termo-standby', 1.2, 0, 20);
+  const termoManut   = readNum('termo-manut', 50, 0, 5000);
+  const termoVazio   = Math.max(0, Math.min(100, readNum('termo-vazio', 0, 0, 100)));
+
+  const esqPreco   = readNum('esq-preco', 450, 1, 50000);
+  const esqEf      = readNum('esq-ef', 87, 10, 100) / 100;
+  const esqManut   = readNum('esq-manut', 80, 0, 5000);
+  const esqAluguer = readNum('esq-aluguer', 0, 0, 200);
+
+  const pCheia = readNum('kwh-cheia-num', 0.15, 0.001, 5);
+  const pVazio = readNum('kwh-vazio-num', 0.10, 0, 5);
+  const pGas   = readNum('gas-num', 0.09, 0.001, 5);
+
+  const dT = tQu - tFria;
+
+  const r = computeScenario(litros, dT, termoEf, termoStandby, termoManut, anos, pCheia, pVazio, termoVazio, pGas, esqEf, esqManut, esqAluguer, esqPreco, termoPreco);
+
+  const diff = r.esqTco - r.termoTco; // positive => termo wins
+
+  // Cumulative
+  const termoCum = [], esqCum = [];
+  for (let y = 0; y <= anos; y++) {
+    termoCum.push(termoPreco + r.termoAnualTot * y);
+    esqCum.push(esqPreco + r.esqAnualTot * y);
+  }
+
+  // Parity year
+  const initialTermoHigher = termoCum[0] > esqCum[0];
+  let parityYear = -1;
+  for (let y = 1; y <= anos; y++) {
+    const termoHigherNow = termoCum[y] > esqCum[y];
+    if (termoHigherNow !== initialTermoHigher) {
+      const a = termoCum[y-1] - esqCum[y-1];
+      const b = termoCum[y]   - esqCum[y];
+      const frac = a / (a - b);
+      parityYear = (y - 1) + frac;
+      break;
+    }
+  }
+
+  // ── VERDICT ──
+  const horizonTxt = t.yearsTxt(anos);
+  const tieEps = Math.max(40, r.termoTco * 0.005);
+  let verdictHtml = '';
+  let winner = '';
+  if (Math.abs(diff) < tieEps) {
+    winner = 'tie';
+    verdictHtml = `
+      <div class="verdict tie">
+        <div class="verdict-badge">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="14" x2="21" y2="14"/></svg>
+        </div>
+        <div class="verdict-text">
+          <div class="verdict-title">${t.verdictTitleTie}</div>
+          <div class="verdict-main">${t.verdict.tie}</div>
+          <div class="verdict-sub">${t.subTie(horizonTxt)}</div>
+        </div>
+      </div>`;
+  } else if (diff > 0) {
+    winner = 'termo';
+    let subTxt;
+    if (initialTermoHigher && parityYear > 0 && parityYear <= anos) {
+      subTxt = t.subPaidBack(horizonTxt, parityYear < 1 ? '< 1' : parityYear.toFixed(1));
+    } else if (!initialTermoHigher) {
+      subTxt = t.subCheaperFromDay1(horizonTxt);
+    } else {
+      subTxt = t.subNeverParity(horizonTxt);
+    }
+    verdictHtml = `
+      <div class="verdict termo-wins">
+        <div class="verdict-badge">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><circle cx="12" cy="14" r="2"/></svg>
+        </div>
+        <div class="verdict-text">
+          <div class="verdict-title">${t.verdictTitleTermo}</div>
+          <div class="verdict-main">${t.verdict.termo(eur0(diff))}</div>
+          <div class="verdict-sub">${subTxt}</div>
+        </div>
+      </div>`;
+  } else {
+    winner = 'esq';
+    let subTxt;
+    if (!initialTermoHigher && parityYear > 0 && parityYear <= anos) {
+      subTxt = t.subPaidBack(horizonTxt, parityYear < 1 ? '< 1' : parityYear.toFixed(1));
+    } else if (initialTermoHigher) {
+      subTxt = t.subCheaperFromDay1(horizonTxt);
+    } else {
+      subTxt = t.subNeverParity(horizonTxt);
+    }
+    verdictHtml = `
+      <div class="verdict esq-wins">
+        <div class="verdict-badge">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 4 4 5 4 10a4 4 0 0 1-8 0c0-3 1.5-4 3-5-.5 2 .5 4 2 4 0-3-1.5-4-1-9z"/></svg>
+        </div>
+        <div class="verdict-text">
+          <div class="verdict-title">${t.verdictTitleEsq}</div>
+          <div class="verdict-main">${t.verdict.esq(eur0(-diff))}</div>
+          <div class="verdict-sub">${subTxt}</div>
+        </div>
+      </div>`;
+  }
+  $('verdict').innerHTML = verdictHtml;
+
+  // ── TIP: solar PV would change verdict? ──
+  let tipHtml = '';
+  if (winner === 'esq' && termoVazio < 80) {
+    // recompute with 80% vazio
+    const r80 = computeScenario(litros, dT, termoEf, termoStandby, termoManut, anos, pCheia, pVazio, 80, pGas, esqEf, esqManut, esqAluguer, esqPreco, termoPreco);
+    const diff80 = r80.esqTco - r80.termoTco;
+    if (diff80 > 0) {
+      tipHtml = `<div class="tip-banner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
+        <span>${t.tipSolar(eur0(diff80))}</span>
+      </div>`;
+    }
+  } else if (termoVazio === 0 && winner === 'termo') {
+    // already winning without off-peak — no tip needed
+    tipHtml = '';
+  }
+  $('tip').innerHTML = tipHtml;
+
+  // ── DEMAND BANNER ──
+  $('demand').innerHTML = `
+    <div class="demand-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9 6 6 9 6 13a6 6 0 0 0 12 0c0-4-3-7-6-11z"/></svg>
+    </div>
+    <div class="demand-text">
+      <div class="demand-lbl">${t.demandLbl}</div>
+      <div class="demand-val">${num1(r.energiaUtilDia)} kWh / ${lang==='pt'?'dia':'day'}</div>
+      <div class="demand-sub">${t.demandSub(num0(litros), num0(dT))}</div>
+    </div>
+    <div>
+      <div class="demand-extra">${num0(r.energiaUtilDia*365)} kWh / ${lang==='pt'?'ano':'yr'}</div>
+      <div class="demand-extra-sub">${lang==='pt'?'energia útil anual':'annual useful energy'}</div>
+    </div>`;
+
+  // ── METRICS ──
+  const termoMes = r.termoAnualTot / 12;
+  const esqMes = r.esqAnualTot / 12;
+  $('metrics').innerHTML = `
+    <div class="met"><div class="met-lbl">${t.mTcoTermo}</div><div class="met-val termo">${eur0(r.termoTco)}</div><div class="met-sub">${t.mTcoTermoSub}</div></div>
+    <div class="met"><div class="met-lbl">${t.mTcoEsq}</div><div class="met-val esq">${eur0(r.esqTco)}</div><div class="met-sub">${t.mTcoEsqSub}</div></div>
+    <div class="met"><div class="met-lbl">${t.mMesTermo}</div><div class="met-val termo">${eur0(termoMes)}</div><div class="met-sub">${t.mMesTermoSub}</div></div>
+    <div class="met"><div class="met-lbl">${t.mMesEsq}</div><div class="met-val esq">${eur0(esqMes)}</div><div class="met-sub">${t.mMesEsqSub}</div></div>`;
+
+  // ── BARS ──
+  const termoParts = [
+    {lbl: t.barPreco,   val: termoPreco,                    cls: 'fill-termo-1'},
+    {lbl: t.barEnergia, val: r.termoEnergiaAno*anos,        cls: 'fill-termo-2'},
+    {lbl: t.barManut,   val: termoManut*anos,               cls: 'fill-termo-3'},
+  ];
+  const esqParts = [
+    {lbl: t.barPreco,   val: esqPreco,                      cls: 'fill-esq-1'},
+    {lbl: t.barGas,     val: r.esqEnergiaAno*anos,          cls: 'fill-esq-2'},
+    {lbl: t.barManut,   val: esqManut*anos,                 cls: 'fill-esq-3'},
+    {lbl: t.barAluguer, val: esqAluguer*12*anos,            cls: 'fill-esq-4'},
+  ];
+  const renderBars = (parts, total, head) => {
+    return `<div class="bars-block">
+      <div class="bars-block-head"><span>${head}</span><strong>${eur0(total)}</strong></div>
+      ${parts.filter(p => p.val > 0.01).map(p => {
+        const pctVal = total > 0 ? Math.max(2, Math.round(p.val/total*100)) : 0;
+        return `<div class="bar-row">
+          <div class="bar-head"><span>${p.lbl}</span><span>${eur0(p.val)} · ${Math.round(p.val/total*100)}%</span></div>
+          <div class="bar-track"><div class="bar-fill ${p.cls}" style="width:${pctVal}%"></div></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  };
+  $('bars').innerHTML = renderBars(termoParts, r.termoTco, t.barsTermo) + renderBars(esqParts, r.esqTco, t.barsEsq);
+
+  // ── CO2 ──
+  // Effective grid factor reduced by solar/vazio share (assume vazio-solar fraction is mostly 0 CO2, which is approx ok if fully solar)
+  // To be honest, we'll use the same 0.16 for grid. For solar excedente, real CO2 is ~0. Make a small correction:
+  // effective = (vazio% × 0 + (1-vazio%) × 0.16) → assumes solar/vazio is 100% green (best case) only when source is solar.
+  // To stay neutral, only count solar (vazio price ≤ 0.05 €/kWh = solar). Otherwise off-peak is still grid.
+  const isSolarMostly = pVazio <= 0.05;
+  const effGridFactor = (termoVazio/100) * (isSolarMostly ? 0 : CO2_GRID_PT) + (1 - termoVazio/100) * CO2_GRID_PT;
+  const co2Termo = r.termoConsumoDia * 365 * anos * effGridFactor;
+  const co2Esq   = r.esqConsumoDia   * 365 * anos * CO2_GAS_NAT;
+  const co2Saved = co2Esq - co2Termo;
+  const totLitros = num0(litros * 365 * anos);
+
+  if (co2Saved >= 0) {
+    const trees = Math.max(0, Math.round(co2Saved / TREE_KG_YR));
+    $('co2').className = 'co2-banner';
+    $('co2').innerHTML = `
+      <div class="co2-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9 6 6 9 6 13a6 6 0 0 0 12 0c0-4-3-7-6-11z"/></svg>
+      </div>
+      <div class="co2-text">
+        <div class="co2-lbl">${t.co2Lbl}</div>
+        <div class="co2-val">${num0(co2Saved)} kg CO₂</div>
+        <div class="co2-sub">${t.co2SubAvoid(totLitros + ' L')}</div>
+      </div>
+      <div>
+        <div class="co2-extra">${t.co2Trees(trees)}</div>
+        <div class="co2-extra-sub">${t.co2TreesSub}</div>
+      </div>`;
+  } else {
+    // Termoacumulador emite mais (caso raro: muita rede, esquentador eficiente)
+    $('co2').className = 'co2-banner neutral';
+    $('co2').innerHTML = `
+      <div class="co2-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+      </div>
+      <div class="co2-text">
+        <div class="co2-lbl">${t.co2Lbl2}</div>
+        <div class="co2-val">+${num0(-co2Saved)} kg CO₂</div>
+        <div class="co2-sub">${t.co2SubMore(totLitros + ' L')}</div>
+      </div>
+      <div>
+        <div class="co2-extra">—</div>
+        <div class="co2-extra-sub">&nbsp;</div>
+      </div>`;
+  }
+
+  // ── CHART ──
+  renderChart(termoCum, esqCum, anos, parityYear);
+
+  // ── ACCORDION ──
+  $('acc-body').innerHTML = `<ul>${t.accItems.map(x => `<li>${x}</li>`).join('')}</ul>`;
+
+  // ── FOOTER ──
+  $('footer-grid').innerHTML = t.fcells.map(c => `<div class="fcell"><div class="fcell-lbl">${c.l}</div><div class="fcell-val">${c.v}</div></div>`).join('');
+  $('footer-note').textContent = t.fNote;
+}
+
+// ── CHART ──
+function renderChart(termoCum, esqCum, anos, parityYear) {
+  const wrap = $('chart');
+  const W = wrap.clientWidth || 680;
+  const H = 240;
+  const PAD = {top:24, right:14, bottom:30, left:58};
+  const cw = W - PAD.left - PAD.right;
+  const ch = H - PAD.top - PAD.bottom;
+
+  const N = anos;
+  const maxVal = Math.max(termoCum[N], esqCum[N]) * 1.05;
+
+  const sx = y => PAD.left + (y/N)*cw;
+  const sy = v => PAD.top + ch - (v/maxVal)*ch;
+
+  chartState = { termoCum, esqCum, PAD, cw, ch, N, maxVal, parityYear };
+
+  const termoPath = termoCum.map((v, i) => `${sx(i)},${sy(v)}`).join(' ');
+  const esqPath   = esqCum.map((v, i) => `${sx(i)},${sy(v)}`).join(' ');
+
+  const fmt = v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? Math.round(v/1e3)+'k' : Math.round(v);
+  const yTicks = [0.25,0.5,0.75,1].map(f => ({v:maxVal*f, y:sy(maxVal*f)}));
+  const xStep = N <= 8 ? 1 : N <= 15 ? 2 : 5;
+  const xTicks = [];
+  for (let y = 0; y <= N; y += xStep) xTicks.push(y);
+  if (xTicks[xTicks.length-1] !== N) xTicks.push(N);
+
+  const cs = getComputedStyle(document.documentElement);
+  const cBlue    = cs.getPropertyValue('--c-blue').trim();
+  const cOrange  = cs.getPropertyValue('--c-orange').trim();
+  const cAccent  = cs.getPropertyValue('--c-accent').trim();
+  const cBorder  = cs.getPropertyValue('--c-border').trim();
+  const cBorder2 = cs.getPropertyValue('--c-border2').trim();
+  const cText3   = cs.getPropertyValue('--c-text3').trim();
+  const cSurface = cs.getPropertyValue('--c-surface').trim();
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<defs>
+    <linearGradient id="g-termo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${cBlue}" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="${cBlue}" stop-opacity=".02"/>
+    </linearGradient>
+    <linearGradient id="g-esq" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${cOrange}" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="${cOrange}" stop-opacity=".02"/>
+    </linearGradient>
+  </defs>`;
+  yTicks.forEach(t => {
+    svg += `<line x1="${PAD.left}" y1="${t.y}" x2="${W - PAD.right}" y2="${t.y}" stroke="${cBorder}" stroke-width="1"/>`;
+    svg += `<text x="${PAD.left - 8}" y="${t.y + 3}" fill="${cText3}" font-size="9.5" text-anchor="end" font-family="Instrument Sans">${fmt(t.v)} €</text>`;
+  });
+  xTicks.forEach(y => {
+    svg += `<text x="${sx(y)}" y="${H - 10}" fill="${cText3}" font-size="9.5" text-anchor="middle" font-family="Instrument Sans">${y}</text>`;
+  });
+
+  const termoArea = termoPath + ` ${sx(N)},${sy(0)} ${sx(0)},${sy(0)}`;
+  const esqArea   = esqPath   + ` ${sx(N)},${sy(0)} ${sx(0)},${sy(0)}`;
+  svg += `<polygon points="${esqArea}" fill="url(#g-esq)" stroke="none"/>`;
+  svg += `<polygon points="${termoArea}" fill="url(#g-termo)" stroke="none"/>`;
+  svg += `<polyline points="${esqPath}"   fill="none" stroke="${cOrange}" stroke-width="2"/>`;
+  svg += `<polyline points="${termoPath}" fill="none" stroke="${cBlue}"   stroke-width="2"/>`;
+
+  if (parityYear > 0 && parityYear <= N) {
+    const px = sx(parityYear);
+    svg += `<line x1="${px}" y1="${PAD.top}" x2="${px}" y2="${PAD.top + ch}" stroke="${cAccent}" stroke-width="1.2" stroke-dasharray="4,3"/>`;
+    const lblX = px + 6 > W - PAD.right - 70 ? px - 6 : px + 6;
+    const lblAnchor = px + 6 > W - PAD.right - 70 ? 'end' : 'start';
+    const py = sy(termoCum[Math.min(N, Math.round(parityYear))]);
+    svg += `<circle cx="${px}" cy="${py}" r="4" fill="${cAccent}" stroke="${cSurface}" stroke-width="1.5"/>`;
+    const labelTxt = T[lang].chartParityLabel + ' · ' + (parityYear < 1 ? '< 1' : parityYear.toFixed(1));
+    svg += `<text x="${lblX}" y="${PAD.top + 12}" fill="${cAccent}" font-size="10.5" text-anchor="${lblAnchor}" font-family="Instrument Sans" font-weight="600">${labelTxt}</text>`;
+  }
+
+  svg += `<g id="ch-cursor" style="display:none">
+    <line id="ch-cursor-line" x1="0" y1="${PAD.top}" x2="0" y2="${PAD.top + ch}" stroke="${cBorder2}" stroke-width="1"/>
+    <circle id="ch-dot-termo" cx="0" cy="0" r="4" fill="${cBlue}"   stroke="${cSurface}" stroke-width="1.6"/>
+    <circle id="ch-dot-esq"   cx="0" cy="0" r="4" fill="${cOrange}" stroke="${cSurface}" stroke-width="1.6"/>
+  </g>`;
+  svg += `<rect id="ch-overlay" x="${PAD.left}" y="${PAD.top}" width="${cw}" height="${ch}" fill="transparent"/>`;
+  svg += `</svg>`;
+  wrap.innerHTML = svg;
+
+  showChartInfo(N);
+
+  const overlay = $('ch-overlay');
+  if (overlay) {
+    const handler = (clientX) => {
+      const rect = wrap.querySelector('svg').getBoundingClientRect();
+      const scale = W / rect.width;
+      const px = (clientX - rect.left) * scale;
+      const y = Math.round(((px - PAD.left) / cw) * N);
+      moveCursor(Math.max(0, Math.min(N, y)));
+    };
+    overlay.addEventListener('mousemove', e => handler(e.clientX));
+    overlay.addEventListener('mouseleave', () => {
+      const c = $('ch-cursor');
+      if (c) c.style.display = 'none';
+      showChartInfo(N);
+    });
+    overlay.addEventListener('touchmove', e => { e.preventDefault(); handler(e.touches[0].clientX); }, {passive:false});
+    overlay.addEventListener('touchend', () => {
+      const c = $('ch-cursor');
+      if (c) c.style.display = 'none';
+      showChartInfo(N);
+    });
+  }
+}
+
+function moveCursor(y) {
+  if (!chartState) return;
+  const { termoCum, esqCum, PAD, cw, ch, N, maxVal } = chartState;
+  const sx = yy => PAD.left + (yy/N)*cw;
+  const sy = v => PAD.top + ch - (v/maxVal)*ch;
+  const x = sx(y);
+  const yT = sy(termoCum[y]);
+  const yE = sy(esqCum[y]);
+  const c = $('ch-cursor'); if (c) c.style.display = '';
+  const line = $('ch-cursor-line');
+  if (line) { line.setAttribute('x1', x); line.setAttribute('x2', x); }
+  const dT_ = $('ch-dot-termo'); if (dT_) { dT_.setAttribute('cx', x); dT_.setAttribute('cy', yT); }
+  const dE  = $('ch-dot-esq');   if (dE)  { dE.setAttribute('cx', x);  dE.setAttribute('cy', yE); }
+  showChartInfo(y);
+}
+
+function showChartInfo(y) {
+  if (!chartState) return;
+  const t = T[lang];
+  const { termoCum, esqCum } = chartState;
+  const tco = termoCum[y] ?? 0;
+  const ec  = esqCum[y]   ?? 0;
+  const d = ec - tco;
+  $('chart-info').innerHTML = `
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[0]}</div><div class="ci-val">${y}</div></div>
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[1]}</div><div class="ci-val termo">${eur0(tco)}</div></div>
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[2]}</div><div class="ci-val esq">${eur0(ec)}</div></div>
+    <div class="ci-block"><div class="ci-lbl">${t.chartCi[3]}</div><div class="ci-val delta">${d >= 0 ? '+' : '−'}${eur0(Math.abs(d))}</div></div>`;
+}
+
+function toggleAcc() {
+  $('acc-body').classList.toggle('open');
+  $('acc-btn').classList.toggle('open');
+}
+
+// ── QUICK CHIPS ──
+function renderQuick() {
+  const t = T[lang];
+  const mk = (id, items, target, formatter, chipCls) => {
+    const cls = chipCls || 'quick-chip';
+    $(id).innerHTML = items.map(q => `<button class="${cls}" data-v="${q.v}">${q.l}</button>`).join('');
+    document.querySelectorAll(`#${id} .${cls}`).forEach(b => {
+      b.addEventListener('click', () => {
+        const el = $(target);
+        el.value = formatter(parseFloat(b.dataset.v));
+        calc();
+      });
+    });
+  };
+  const intStr = v => v.toString();
+  const decComma = v => v.toString().replace('.', ',');
+  mk('quick-litros',     t.quickLitros,     'litros-num',    intStr);
+  mk('quick-tfria',      t.quickTfria,      'tfria-num',     intStr);
+  mk('quick-tquente',    t.quickTquente,    'tquente-num',   intStr);
+  mk('quick-anos',       t.quickAnos,       'anos-num',      intStr);
+  mk('quick-vazio',      t.quickVazio,      'termo-vazio',   intStr, 'mini-chip');
+  mk('quick-cheia',      t.quickCheia,      'kwh-cheia-num', decComma);
+  mk('quick-vazio-price',t.quickVazioPrice, 'kwh-vazio-num', decComma);
+  mk('quick-gas',        t.quickGas,        'gas-num',       decComma);
+}
+
+// ── EVENTS ──
+[
+  'litros-num','tfria-num','tquente-num','anos-num',
+  'termo-preco','termo-cap','termo-ef','termo-standby','termo-manut','termo-vazio',
+  'esq-preco','esq-ef','esq-manut','esq-aluguer',
+  'kwh-cheia-num','kwh-vazio-num','gas-num',
+].forEach(id => {
+  $(id).addEventListener('input', calc);
+});
+
+// ── LANG ──
+const root = document.documentElement;
+const btnPT = $('btnPT'), btnEN = $('btnEN');
+function setLang(l) {
+  lang = l;
+  root.setAttribute('data-lang', l);
+  root.setAttribute('lang', l);
+  btnPT.classList.toggle('active', l === 'pt');
+  btnEN.classList.toggle('active', l === 'en');
+  localStorage.setItem('aa-lang', l);
+  renderQuick();
+  calc();
+}
+btnPT.addEventListener('click', () => setLang('pt'));
+btnEN.addEventListener('click', () => setLang('en'));
+
+// ── THEME ──
+$('themeBtn').addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('aa-theme', next);
+  calc();
+});
+
+// ── INIT ──
+const savedTheme = localStorage.getItem('aa-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+root.setAttribute('data-theme', savedTheme);
+const savedLang = localStorage.getItem('aa-lang') || 'pt';
+setLang(savedLang);
+
+let resizeTO;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTO);
+  resizeTO = setTimeout(calc, 150);
+});
+</script>
+</body>
+</html>

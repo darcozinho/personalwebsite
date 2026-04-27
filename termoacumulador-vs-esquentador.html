@@ -236,6 +236,23 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 .mini-chip:hover{border-color:var(--c-blue);color:var(--c-blue)}
 .car-block.esq .mini-chip:hover{border-color:var(--c-orange);color:var(--c-orange)}
 
+/* ── GAS TYPE PICKER ── */
+.gas-chip{
+  padding:5px 12px;border-radius:12px;
+  border:1px solid var(--c-border);background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:11px;font-weight:500;
+  color:var(--c-text2);cursor:pointer;transition:all .15s;
+  letter-spacing:.02em;
+}
+.gas-chip:hover{border-color:var(--c-orange);color:var(--c-orange)}
+.gas-chip.active{background:var(--c-orange);color:var(--c-bg);border-color:var(--c-orange)}
+.gas-equiv{
+  font-size:11px;color:var(--c-text3);
+  padding:.4rem .85rem;
+  background:var(--c-surface2);border:1px dashed var(--c-border);border-radius:var(--r-sm);
+  margin-top:6px;font-variant-numeric:tabular-nums;
+}
+
 /* ── VALIDATION ── */
 .big-input.invalid, .mini-input.invalid {
   border-color: var(--c-red);
@@ -579,26 +596,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
           </div>
         </div>
 
-        <label class="mini-input" for="termo-preco">
-          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
-          <span class="mini-val"><input type="number" id="termo-preco" inputmode="decimal" min="50" max="5000" step="any" value="350"><span class="mini-unit">€</span></span>
-        </label>
-        <label class="mini-input" for="termo-cap">
-          <span class="mini-lbl"><span lang="pt">Capacidade</span><span lang="en">Capacity</span></span>
-          <span class="mini-val"><input type="number" id="termo-cap" inputmode="decimal" min="20" max="500" step="any" value="100"><span class="mini-unit">L</span></span>
-        </label>
-        <label class="mini-input" for="termo-ef">
-          <span class="mini-lbl"><span lang="pt">Eficiência</span><span lang="en">Efficiency</span></span>
-          <span class="mini-val"><input type="number" id="termo-ef" inputmode="decimal" min="50" max="100" step="any" value="95"><span class="mini-unit">%</span></span>
-        </label>
-        <label class="mini-input" for="termo-standby">
-          <span class="mini-lbl"><span lang="pt">Perdas standby</span><span lang="en">Standby losses</span></span>
-          <span class="mini-val"><input type="number" id="termo-standby" inputmode="decimal" min="0" max="10" step="any" value="1.2"><span class="mini-unit">kWh/<span lang="pt">dia</span><span lang="en">day</span></span></span>
-        </label>
-        <label class="mini-input" for="termo-manut">
-          <span class="mini-lbl"><span lang="pt">Manutenção</span><span lang="en">Maintenance</span></span>
-          <span class="mini-val"><input type="number" id="termo-manut" inputmode="decimal" min="0" max="500" step="any" value="50"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
-        </label>
         <label class="mini-input" for="termo-vazio">
           <span class="mini-lbl"><span lang="pt">% horário baixo / solar</span><span lang="en">% off-peak / solar</span></span>
           <span class="mini-val"><input type="number" id="termo-vazio" inputmode="decimal" min="0" max="100" step="any" value="0"><span class="mini-unit">%</span></span>
@@ -606,6 +603,14 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
         <div class="mini-quick">
           <span class="mini-quick-lbl"><span lang="pt">Aproveitamento</span><span lang="en">Off-peak usage</span></span>
           <div id="quick-vazio"></div>
+        </div>
+        <label class="mini-input" for="termo-manut">
+          <span class="mini-lbl"><span lang="pt">Manutenção / ano</span><span lang="en">Maintenance / yr</span></span>
+          <span class="mini-val"><input type="number" id="termo-manut" inputmode="decimal" min="0" max="500" step="any" value="30"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
+        </label>
+        <div class="car-info">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span><span lang="pt">Resistência eléctrica · compatível com solar PV e bi-horário</span><span lang="en">Electric resistance · compatible with solar PV and off-peak tariffs</span></span>
         </div>
       </div>
 
@@ -621,25 +626,13 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
           </div>
         </div>
 
-        <label class="mini-input" for="esq-preco">
-          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
-          <span class="mini-val"><input type="number" id="esq-preco" inputmode="decimal" min="50" max="5000" step="any" value="450"><span class="mini-unit">€</span></span>
-        </label>
-        <label class="mini-input" for="esq-ef">
-          <span class="mini-lbl"><span lang="pt">Eficiência</span><span lang="en">Efficiency</span></span>
-          <span class="mini-val"><input type="number" id="esq-ef" inputmode="decimal" min="50" max="100" step="any" value="87"><span class="mini-unit">%</span></span>
-        </label>
         <label class="mini-input" for="esq-manut">
-          <span class="mini-lbl"><span lang="pt">Manutenção</span><span lang="en">Maintenance</span></span>
+          <span class="mini-lbl"><span lang="pt">Manutenção / ano</span><span lang="en">Maintenance / yr</span></span>
           <span class="mini-val"><input type="number" id="esq-manut" inputmode="decimal" min="0" max="500" step="any" value="80"><span class="mini-unit">€/<span lang="pt">ano</span><span lang="en">yr</span></span></span>
-        </label>
-        <label class="mini-input" for="esq-aluguer">
-          <span class="mini-lbl"><span lang="pt">Aluguer contador</span><span lang="en">Meter rental</span></span>
-          <span class="mini-val"><input type="number" id="esq-aluguer" inputmode="decimal" min="0" max="100" step="any" value="0"><span class="mini-unit">€/<span lang="pt">mês</span><span lang="en">mo</span></span></span>
         </label>
         <div class="car-info esq">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span><span lang="pt">Manutenção obrigatória de 2 em 2 anos (~120-150€)</span><span lang="en">Mandatory service every 2 years (~120-150€)</span></span>
+          <span><span lang="pt">Aquece on-demand · inspecção obrigatória de 2 em 2 anos (~130 €)</span><span lang="en">On-demand heating · mandatory inspection every 2 years (~130 €)</span></span>
         </div>
       </div>
     </div>
@@ -649,9 +642,9 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
   <div class="card">
     <div class="sec-head"><div class="sec-num">3</div><span class="sec-title"><span lang="pt">Preços de energia</span><span lang="en">Energy prices</span></span></div>
 
-    <div class="input-grid cols3">
+    <div class="input-grid" style="grid-template-columns:1fr 1fr">
       <label class="big-input" for="kwh-cheia-num">
-        <span class="big-input-lbl"><span lang="pt">kWh em cheia</span><span lang="en">kWh peak</span></span>
+        <span class="big-input-lbl"><span lang="pt">Electricidade (tarifa cheia)</span><span lang="en">Electricity (peak rate)</span></span>
         <div class="big-input-row">
           <input type="number" id="kwh-cheia-num" inputmode="decimal" min="0.01" max="2" step="any" value="0,15">
           <span class="big-input-unit">€/kWh</span>
@@ -659,17 +652,9 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
       </label>
 
       <label class="big-input" for="kwh-vazio-num">
-        <span class="big-input-lbl"><span lang="pt">kWh em vazio / solar</span><span lang="en">kWh off-peak / solar</span></span>
+        <span class="big-input-lbl"><span lang="pt">Electricidade (vazio / solar)</span><span lang="en">Electricity (off-peak / solar)</span></span>
         <div class="big-input-row">
           <input type="number" id="kwh-vazio-num" inputmode="decimal" min="0" max="2" step="any" value="0,10">
-          <span class="big-input-unit">€/kWh</span>
-        </div>
-      </label>
-
-      <label class="big-input" for="gas-num">
-        <span class="big-input-lbl"><span lang="pt">Gás</span><span lang="en">Gas</span></span>
-        <div class="big-input-row">
-          <input type="number" id="gas-num" inputmode="decimal" min="0.01" max="2" step="any" value="0,09">
           <span class="big-input-unit">€/kWh</span>
         </div>
       </label>
@@ -685,9 +670,14 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
       <div class="quick-row" id="quick-vazio-price"></div>
     </div>
 
-    <div class="quick-section">
-      <span class="quick-section-lbl"><span lang="pt">Tipo de gás</span><span lang="en">Gas type</span></span>
-      <div class="quick-row" id="quick-gas"></div>
+    <!-- GÁS -->
+    <div style="margin-top:1.25rem;padding-top:1.1rem;border-top:1px solid var(--c-border)">
+      <div class="sec-head" style="margin-bottom:.75rem">
+        <div class="sec-num" style="background:var(--c-orange)">G</div>
+        <span class="sec-title"><span lang="pt">Tipo de gás</span><span lang="en">Gas type</span></span>
+      </div>
+      <div class="quick-row" id="gas-type-row" style="margin-bottom:.85rem"></div>
+      <div id="gas-input-area"></div>
     </div>
   </div>
 
@@ -739,12 +729,94 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 <script>
 let lang = 'pt';
 let chartState = null;
+let gasType = 'nat'; // nat | but | pro | man
 
 // Constants
 const KJ_KG_C = 4.186;            // kJ / (kg · °C) — calor específico da água
 const CO2_GRID_PT = 0.16;         // kg CO2 / kWh (mix elétrico PT 2024)
 const CO2_GAS_NAT = 0.20;         // kg CO2 / kWh de gás natural queimado
 const TREE_KG_YR = 21;            // kg CO2 absorvido por árvore adulta / ano
+
+// Gas type definitions
+const GAS_TYPES = {
+  nat: { kwhPerUnit: 10.55, defaultVal: 0.95 },  // 1 m³ natural gas ≈ 10.55 kWh
+  but: { kwhPerUnit: 165.1, defaultVal: 24  },    // 13 kg butane × 12.7 kWh/kg
+  pro: { kwhPerUnit: 141.9, defaultVal: 22  },    // 11 kg propane × 12.9 kWh/kg
+  man: { kwhPerUnit: 1,     defaultVal: 0.10},    // manual €/kWh
+};
+const gasVals = { nat: 0.95, but: 24, pro: 22, man: 0.10 };
+
+function getGasPriceKwh() {
+  const raw = $('gas-val')?.value?.toString().replace(',', '.');
+  const v = raw ? parseFloat(raw) : gasVals[gasType];
+  return isNaN(v) ? 0 : v / GAS_TYPES[gasType].kwhPerUnit;
+}
+
+function renderGasSection() {
+  const L = lang === 'pt';
+  const labels = {
+    nat: { pt:'Gás natural (canalizado)', en:'Natural gas (piped)' },
+    but: { pt:'Butano (botija 13 kg)',    en:'Butane (13 kg bottle)' },
+    pro: { pt:'Propano (botija 11 kg)',   en:'Propane (11 kg bottle)' },
+    man: { pt:'Outro / manual',           en:'Other / manual' },
+  };
+  const units = {
+    nat: '€/m³',
+    but: L ? '€/botija' : '€/bottle',
+    pro: L ? '€/botija' : '€/bottle',
+    man: '€/kWh',
+  };
+  const infos = {
+    nat: L ? '1 m³ ≈ 10,55 kWh · gás natural PT' : '1 m³ ≈ 10.55 kWh · PT natural gas',
+    but: L ? '1 botija 13 kg ≈ 165 kWh (12,7 kWh/kg)' : '1 bottle 13 kg ≈ 165 kWh (12.7 kWh/kg)',
+    pro: L ? '1 botija 11 kg ≈ 142 kWh (12,9 kWh/kg)' : '1 bottle 11 kg ≈ 142 kWh (12.9 kWh/kg)',
+    man: L ? 'Introduz o preço por kWh directamente' : 'Enter the price per kWh directly',
+  };
+
+  // Type picker
+  $('gas-type-row').innerHTML = Object.keys(GAS_TYPES).map(k =>
+    `<button class="gas-chip${k === gasType ? ' active' : ''}" data-gt="${k}">${labels[k][L?'pt':'en']}</button>`
+  ).join('');
+  $('gas-type-row').querySelectorAll('.gas-chip').forEach(b => {
+    b.addEventListener('click', () => {
+      gasType = b.dataset.gt;
+      if ($('gas-val')) {
+        $('gas-val').value = gasVals[gasType].toString().replace('.', ',');
+      }
+      renderGasSection();
+      calc();
+    });
+  });
+
+  const val = gasVals[gasType];
+  const kwh = val / GAS_TYPES[gasType].kwhPerUnit;
+  const equivTxt = gasType === 'man'
+    ? ''
+    : `≈ ${kwh.toFixed(4).replace('.', ',')} €/kWh &nbsp;·&nbsp; ${infos[gasType]}`;
+
+  $('gas-input-area').innerHTML = `
+    <label class="big-input" for="gas-val">
+      <span class="big-input-lbl">${labels[gasType][L?'pt':'en']}</span>
+      <div class="big-input-row">
+        <input type="number" id="gas-val" inputmode="decimal" min="0.001" max="9999" step="any" value="${val.toString().replace('.', ',')}">
+        <span class="big-input-unit">${units[gasType]}</span>
+      </div>
+    </label>
+    ${equivTxt ? `<div class="gas-equiv">${equivTxt}</div>` : ''}`;
+
+  $('gas-val').addEventListener('input', () => {
+    const raw = $('gas-val').value.toString().replace(',', '.');
+    const v = parseFloat(raw);
+    if (!isNaN(v)) gasVals[gasType] = v;
+    // update equiv display
+    const kwh2 = v / GAS_TYPES[gasType].kwhPerUnit;
+    const eq = document.querySelector('.gas-equiv');
+    if (eq && gasType !== 'man') {
+      eq.innerHTML = `≈ ${kwh2.toFixed(4).replace('.', ',')} €/kWh &nbsp;·&nbsp; ${infos[gasType]}`;
+    }
+    calc();
+  });
+}
 
 const T = {
   pt: {
@@ -776,11 +848,9 @@ const T = {
 
     barsTermo: 'Termoacumulador — onde vai o dinheiro',
     barsEsq: 'Esquentador — onde vai o dinheiro',
-    barPreco: 'Compra',
     barEnergia: 'Electricidade',
     barGas: 'Gás',
     barManut: 'Manutenção',
-    barAluguer: 'Aluguer contador',
 
     co2Lbl: 'CO₂ evitado',
     co2Lbl2: 'CO₂ acrescido',
@@ -794,18 +864,18 @@ const T = {
 
     accItems: [
       '<strong>Energia útil:</strong> Q = m · c · ΔT, onde m = litros/dia (aproximação 1L = 1kg), c = 4,186 kJ/(kg·°C) e ΔT = T<sub>quente</sub> − T<sub>fria</sub>.',
-      '<strong>Termoacumulador:</strong> consumo eléctrico = energia útil ÷ eficiência + perdas em standby do depósito (depende do isolamento e capacidade).',
-      '<strong>Esquentador:</strong> consumo de gás = energia útil ÷ eficiência. Não tem perdas em standby (aquece on-demand).',
+      '<strong>Termoacumulador:</strong> custo anual = energia útil diária × 365 × preço médio €/kWh eléctrico. O preço médio é a ponderação entre tarifa cheia e tarifa vazio/solar conforme a percentagem de aproveitamento.',
+      '<strong>Esquentador:</strong> custo anual = energia útil diária × 365 × preço €/kWh do gás. O preço por kWh é calculado automaticamente a partir da unidade natural (€/m³ ou €/botija).',
+      '<strong>Conversões de gás:</strong> gás natural 1 m³ ≈ 10,55 kWh; butano 1 kg ≈ 12,7 kWh (botija 13 kg ≈ 165 kWh); propano 1 kg ≈ 12,9 kWh (botija 11 kg ≈ 142 kWh).',
       '<strong>Aproveitamento solar/vazio:</strong> a percentagem de água aquecida em horário baixo (vazio bi-horário ou excedente solar) reduz proporcionalmente o custo da electricidade. Esta é a alavanca chave do termoacumulador.',
-      '<strong>CO₂:</strong> 0,16 kg/kWh para electricidade do mix PT (2024, ~75% renovável); 0,20 kg/kWh para gás natural (combustão).',
-      '<strong>Bomba de calor (HPWH):</strong> alternativa moderna ao termoacumulador eléctrico — usa o ar ambiente para aquecer água com eficiência (COP) de 3–4. Para simular, divide o consumo eléctrico por esse COP.',
+      '<strong>CO₂:</strong> 0,16 kg/kWh para electricidade do mix PT (2024, ~75% renovável); 0,20 kg/kWh para gás (combustão). Se o aproveitamento solar for >0% e o preço em vazio ≤ 0,05 €/kWh (autoconsumo), essa fracção é contabilizada a 0 kg CO₂.',
     ],
     fcells: [
-      {l:'Termoacumulador', v:'Aquecimento por resistência<br>Eficiência ~95%, perdas standby<br>Compatível com solar / bi-horário'},
-      {l:'Esquentador a gás', v:'Aquecimento on-demand<br>Eficiência típica 85–90%<br>Inspecção obrigatória de 2/2 anos'},
+      {l:'Termoacumulador', v:'Resistência eléctrica<br>Compatível com solar PV e bi-horário<br>Custo do equipamento não considerado'},
+      {l:'Esquentador a gás', v:'Aquecimento on-demand<br>Inspecção obrigatória de 2/2 anos<br>Custo do equipamento não considerado'},
       {l:'Sobre', v:'Ferramenta indicativa independente<br>Não considera variações futuras de preços'},
     ],
-    fNote: 'Valores meramente indicativos. Não considera revenda dos equipamentos, eventuais subsídios, ou variações futuras dos preços de energia. As perdas em standby reais variam com o isolamento, a temperatura ambiente e a temperatura do depósito.',
+    fNote: 'Valores meramente indicativos. A comparação é feita com base no custo de energia (kWh útil) — não inclui custo de aquisição dos equipamentos. Não considera subsídios, variações futuras de preços de energia ou custos de instalação.',
 
     quickLitros: [
       {l:'1 pessoa · 60', v:60},
@@ -834,13 +904,6 @@ const T = {
       {l:'Excedente solar · 0,03', v:0.03},
       {l:'Autoconsumo solar · 0,00', v:0.00},
     ],
-    quickGas: [
-      {l:'Gás natural · 0,09', v:0.09},
-      {l:'Propano canalizado · 0,16', v:0.16},
-      {l:'Propano botija · 0,18', v:0.18},
-      {l:'Butano botija · 0,20', v:0.20},
-    ],
-
     yearsTxt: (n) => n === 1 ? '1 ano' : `${n} anos`,
   },
   en: {
@@ -872,11 +935,9 @@ const T = {
 
     barsTermo: 'Tank heater — where the money goes',
     barsEsq: 'Gas heater — where the money goes',
-    barPreco: 'Purchase',
     barEnergia: 'Electricity',
     barGas: 'Gas',
     barManut: 'Maintenance',
-    barAluguer: 'Meter rental',
 
     co2Lbl: 'CO₂ avoided',
     co2Lbl2: 'CO₂ added',
@@ -890,18 +951,18 @@ const T = {
 
     accItems: [
       '<strong>Useful energy:</strong> Q = m · c · ΔT, where m = litres/day (1 L ≈ 1 kg), c = 4.186 kJ/(kg·°C) and ΔT = T<sub>hot</sub> − T<sub>cold</sub>.',
-      '<strong>Tank heater:</strong> electric consumption = useful energy ÷ efficiency + tank standby losses (depends on insulation and capacity).',
-      '<strong>Gas heater:</strong> gas consumption = useful energy ÷ efficiency. No standby losses (heats on-demand).',
-      '<strong>Off-peak / solar share:</strong> the percentage of water heated during off-peak hours (bi-hourly tariff or PV surplus) proportionally reduces the cost of electricity. This is the tank heater\'s key lever.',
-      '<strong>CO₂:</strong> 0.16 kg/kWh for PT grid electricity (2024, ~75% renewable); 0.20 kg/kWh for natural gas combustion.',
-      '<strong>Heat pump (HPWH):</strong> modern alternative to electric tank heaters — uses ambient air with COP 3–4. To simulate, divide electric consumption by that COP.',
+      '<strong>Tank heater:</strong> annual cost = daily useful energy × 365 × weighted average electricity price (peak vs off-peak/solar mix).',
+      '<strong>Gas heater:</strong> annual cost = daily useful energy × 365 × gas price in €/kWh (auto-converted from your chosen unit).',
+      '<strong>Gas conversions:</strong> natural gas 1 m³ ≈ 10.55 kWh; butane 1 kg ≈ 12.7 kWh (13 kg bottle ≈ 165 kWh); propane 1 kg ≈ 12.9 kWh (11 kg bottle ≈ 142 kWh).',
+      '<strong>Off-peak / solar share:</strong> the percentage of water heated during off-peak hours (bi-hourly tariff or PV surplus) proportionally reduces electricity cost. This is the tank heater\'s key lever.',
+      '<strong>CO₂:</strong> 0.16 kg/kWh for PT grid electricity (2024, ~75% renewable); 0.20 kg/kWh for gas combustion. If off-peak price ≤ 0.05 €/kWh (self-consumption), that share is counted at 0 kg CO₂.',
     ],
     fcells: [
-      {l:'Tank heater', v:'Resistance heating<br>~95% efficient, standby losses<br>Compatible with solar / off-peak'},
-      {l:'Gas heater', v:'On-demand heating<br>Typical efficiency 85–90%<br>Mandatory inspection every 2 yrs (PT)'},
+      {l:'Tank heater', v:'Electric resistance<br>Compatible with solar PV and off-peak<br>Equipment cost not considered'},
+      {l:'Gas heater', v:'On-demand heating<br>Mandatory inspection every 2 yrs (PT)<br>Equipment cost not considered'},
       {l:'About', v:'Independent indicative tool<br>Does not consider future price variations'},
     ],
-    fNote: 'Indicative values only. Does not consider device resale value, possible incentives, or future energy price variations. Real standby losses vary with insulation, ambient temperature and tank temperature.',
+    fNote: 'Indicative values only. Comparison is based on energy cost (useful kWh) — does not include equipment purchase price. Does not consider incentives, future energy price changes or installation costs.',
 
     quickLitros: [
       {l:'1 person · 60', v:60},
@@ -930,13 +991,6 @@ const T = {
       {l:'PV surplus · 0.03', v:0.03},
       {l:'PV self-consumption · 0.00', v:0.00},
     ],
-    quickGas: [
-      {l:'Natural gas · 0.09', v:0.09},
-      {l:'Propane canalised · 0.16', v:0.16},
-      {l:'Propane bottle · 0.18', v:0.18},
-      {l:'Butane bottle · 0.20', v:0.20},
-    ],
-
     yearsTxt: (n) => n === 1 ? '1 year' : `${n} years`,
   }
 };
@@ -962,7 +1016,6 @@ function isEmpty(id) {
 // ── VALIDATION ──
 function validate() {
   const L = lang === 'pt';
-  // Read 'vazio %' tentatively to know if vazio price is required
   const vazioRaw = $('termo-vazio').value.toString().trim().replace(',', '.');
   const vazioVal = vazioRaw === '' ? null : parseFloat(vazioRaw);
   const vazioOk = vazioVal !== null && !isNaN(vazioVal);
@@ -972,20 +1025,12 @@ function validate() {
     {id:'tfria-num',     lbl: L?'Temp. água fria':'Cold water temp.'},
     {id:'tquente-num',   lbl: L?'Temp. água quente':'Hot water temp.'},
     {id:'anos-num',      lbl: L?'Horizonte':'Horizon'},
-    {id:'termo-preco',   lbl: L?'Preço termoacumulador':'Tank heater price'},
-    {id:'termo-cap',     lbl: L?'Capacidade do termoacumulador':'Tank capacity'},
-    {id:'termo-ef',      lbl: L?'Eficiência do termoacumulador':'Tank efficiency'},
-    {id:'termo-standby', lbl: L?'Perdas em standby':'Standby losses'},
     {id:'termo-manut',   lbl: L?'Manutenção termoacumulador':'Tank maintenance'},
     {id:'termo-vazio',   lbl: L?'% horário baixo / solar':'% off-peak / solar'},
-    {id:'esq-preco',     lbl: L?'Preço esquentador':'Gas heater price'},
-    {id:'esq-ef',        lbl: L?'Eficiência do esquentador':'Gas heater efficiency'},
     {id:'esq-manut',     lbl: L?'Manutenção esquentador':'Gas maintenance'},
-    {id:'esq-aluguer',   lbl: L?'Aluguer contador (pode ser 0)':'Meter rental (may be 0)'},
-    {id:'kwh-cheia-num', lbl: L?'Preço kWh em cheia':'kWh price peak'},
-    {id:'gas-num',       lbl: L?'Preço gás':'Gas price'},
+    {id:'kwh-cheia-num', lbl: L?'Preço electricidade':'Electricity price'},
+    {id:'gas-val',       lbl: L?'Preço do gás':'Gas price'},
   ];
-  // Conditional: vazio price only if termoVazio > 0
   if (!vazioOk || vazioVal > 0) {
     fields.push({id:'kwh-vazio-num', lbl: L?'Preço kWh em vazio / solar':'kWh price off-peak / solar'});
   }
@@ -1049,24 +1094,26 @@ function showError(missing, crossError) {
   chartState = null;
 }
 
+function isGasValEmpty() {
+  return !$('gas-val') || $('gas-val').value.toString().trim() === '';
+}
+
 // ── COMPUTE ──
-function computeScenario(litros, dT, ef, standby, manut, anos, pCheia, pVazio, pctVazio, gasPrice, esqEf, esqManut, esqAluguer, esqPreco, termoPreco) {
+function computeScenario(litros, dT, manut, anos, pCheia, pVazio, pctVazio, gasPrice, esqManut) {
   const energiaUtilDia = litros * dT * KJ_KG_C / 3600; // kWh
   // Termo
-  const termoConsumoDia = energiaUtilDia / ef + standby;
   const precoKwhMix = (pctVazio/100) * pVazio + (1 - pctVazio/100) * pCheia;
-  const termoEnergiaAno = termoConsumoDia * 365 * precoKwhMix;
+  const termoEnergiaAno = energiaUtilDia * 365 * precoKwhMix;
   const termoAnualTot = termoEnergiaAno + manut;
-  const termoTco = termoPreco + termoAnualTot * anos;
+  const termoTco = termoAnualTot * anos;
   // Esq
-  const esqConsumoDia = energiaUtilDia / esqEf;
-  const esqEnergiaAno = esqConsumoDia * 365 * gasPrice;
-  const esqAnualTot = esqEnergiaAno + esqManut + esqAluguer * 12;
-  const esqTco = esqPreco + esqAnualTot * anos;
+  const esqEnergiaAno = energiaUtilDia * 365 * gasPrice;
+  const esqAnualTot = esqEnergiaAno + esqManut;
+  const esqTco = esqAnualTot * anos;
   return {
     energiaUtilDia,
-    termoConsumoDia, termoEnergiaAno, termoAnualTot, termoTco,
-    esqConsumoDia, esqEnergiaAno, esqAnualTot, esqTco,
+    termoEnergiaAno, termoAnualTot, termoTco,
+    esqEnergiaAno, esqAnualTot, esqTco,
     precoKwhMix
   };
 }
@@ -1074,6 +1121,7 @@ function computeScenario(litros, dT, ef, standby, manut, anos, pCheia, pVazio, p
 // ── CALC ──
 function calc() {
   const t = T[lang];
+  renderGasSection();
 
   const { missing, crossError } = validate();
   if (missing.length > 0 || crossError) {
@@ -1082,38 +1130,28 @@ function calc() {
   }
 
   // Inputs
-  const litros = readNum('litros-num', 120, 1, 5000);
-  const tFria  = readNum('tfria-num', 14, 0, 50);
-  const tQu    = readNum('tquente-num', 40, 1, 90);
-  const anos   = Math.round(readNum('anos-num', 10, 1, 25));
-
-  const termoPreco   = readNum('termo-preco', 350, 1, 50000);
-  const termoCap     = readNum('termo-cap', 100, 1, 5000);
-  const termoEf      = readNum('termo-ef', 95, 10, 100) / 100;
-  const termoStandby = readNum('termo-standby', 1.2, 0, 20);
-  const termoManut   = readNum('termo-manut', 50, 0, 5000);
-  const termoVazio   = Math.max(0, Math.min(100, readNum('termo-vazio', 0, 0, 100)));
-
-  const esqPreco   = readNum('esq-preco', 450, 1, 50000);
-  const esqEf      = readNum('esq-ef', 87, 10, 100) / 100;
+  const litros    = readNum('litros-num', 120, 1, 5000);
+  const tFria     = readNum('tfria-num', 14, 0, 50);
+  const tQu       = readNum('tquente-num', 40, 1, 90);
+  const anos      = Math.round(readNum('anos-num', 10, 1, 25));
+  const termoManut = readNum('termo-manut', 30, 0, 5000);
+  const termoVazio = Math.max(0, Math.min(100, readNum('termo-vazio', 0, 0, 100)));
   const esqManut   = readNum('esq-manut', 80, 0, 5000);
-  const esqAluguer = readNum('esq-aluguer', 0, 0, 200);
-
-  const pCheia = readNum('kwh-cheia-num', 0.15, 0.001, 5);
-  const pVazio = readNum('kwh-vazio-num', 0.10, 0, 5);
-  const pGas   = readNum('gas-num', 0.09, 0.001, 5);
+  const pCheia    = readNum('kwh-cheia-num', 0.15, 0.001, 5);
+  const pVazio    = readNum('kwh-vazio-num', 0.10, 0, 5);
+  const pGas      = getGasPriceKwh();
 
   const dT = tQu - tFria;
 
-  const r = computeScenario(litros, dT, termoEf, termoStandby, termoManut, anos, pCheia, pVazio, termoVazio, pGas, esqEf, esqManut, esqAluguer, esqPreco, termoPreco);
+  const r = computeScenario(litros, dT, termoManut, anos, pCheia, pVazio, termoVazio, pGas, esqManut);
 
   const diff = r.esqTco - r.termoTco; // positive => termo wins
 
   // Cumulative
   const termoCum = [], esqCum = [];
   for (let y = 0; y <= anos; y++) {
-    termoCum.push(termoPreco + r.termoAnualTot * y);
-    esqCum.push(esqPreco + r.esqAnualTot * y);
+    termoCum.push(r.termoAnualTot * y);
+    esqCum.push(r.esqAnualTot * y);
   }
 
   // Parity year
@@ -1197,7 +1235,7 @@ function calc() {
   let tipHtml = '';
   if (winner === 'esq' && termoVazio < 80) {
     // recompute with 80% vazio
-    const r80 = computeScenario(litros, dT, termoEf, termoStandby, termoManut, anos, pCheia, pVazio, 80, pGas, esqEf, esqManut, esqAluguer, esqPreco, termoPreco);
+    const r80 = computeScenario(litros, dT, termoManut, anos, pCheia, pVazio, 80, pGas, esqManut);
     const diff80 = r80.esqTco - r80.termoTco;
     if (diff80 > 0) {
       tipHtml = `<div class="tip-banner">
@@ -1237,15 +1275,12 @@ function calc() {
 
   // ── BARS ──
   const termoParts = [
-    {lbl: t.barPreco,   val: termoPreco,                    cls: 'fill-termo-1'},
-    {lbl: t.barEnergia, val: r.termoEnergiaAno*anos,        cls: 'fill-termo-2'},
-    {lbl: t.barManut,   val: termoManut*anos,               cls: 'fill-termo-3'},
+    {lbl: t.barEnergia, val: r.termoEnergiaAno*anos, cls: 'fill-termo-1'},
+    {lbl: t.barManut,   val: termoManut*anos,         cls: 'fill-termo-3'},
   ];
   const esqParts = [
-    {lbl: t.barPreco,   val: esqPreco,                      cls: 'fill-esq-1'},
-    {lbl: t.barGas,     val: r.esqEnergiaAno*anos,          cls: 'fill-esq-2'},
-    {lbl: t.barManut,   val: esqManut*anos,                 cls: 'fill-esq-3'},
-    {lbl: t.barAluguer, val: esqAluguer*12*anos,            cls: 'fill-esq-4'},
+    {lbl: t.barGas,   val: r.esqEnergiaAno*anos, cls: 'fill-esq-1'},
+    {lbl: t.barManut, val: esqManut*anos,         cls: 'fill-esq-3'},
   ];
   const renderBars = (parts, total, head) => {
     return `<div class="bars-block">
@@ -1262,14 +1297,10 @@ function calc() {
   $('bars').innerHTML = renderBars(termoParts, r.termoTco, t.barsTermo) + renderBars(esqParts, r.esqTco, t.barsEsq);
 
   // ── CO2 ──
-  // Effective grid factor reduced by solar/vazio share (assume vazio-solar fraction is mostly 0 CO2, which is approx ok if fully solar)
-  // To be honest, we'll use the same 0.16 for grid. For solar excedente, real CO2 is ~0. Make a small correction:
-  // effective = (vazio% × 0 + (1-vazio%) × 0.16) → assumes solar/vazio is 100% green (best case) only when source is solar.
-  // To stay neutral, only count solar (vazio price ≤ 0.05 €/kWh = solar). Otherwise off-peak is still grid.
   const isSolarMostly = pVazio <= 0.05;
   const effGridFactor = (termoVazio/100) * (isSolarMostly ? 0 : CO2_GRID_PT) + (1 - termoVazio/100) * CO2_GRID_PT;
-  const co2Termo = r.termoConsumoDia * 365 * anos * effGridFactor;
-  const co2Esq   = r.esqConsumoDia   * 365 * anos * CO2_GAS_NAT;
+  const co2Termo = r.energiaUtilDia * 365 * anos * effGridFactor;
+  const co2Esq   = r.energiaUtilDia * 365 * anos * CO2_GAS_NAT;
   const co2Saved = co2Esq - co2Termo;
   const totLitros = num0(litros * 365 * anos);
 
@@ -1484,15 +1515,14 @@ function renderQuick() {
   mk('quick-vazio',      t.quickVazio,      'termo-vazio',   intStr, 'mini-chip');
   mk('quick-cheia',      t.quickCheia,      'kwh-cheia-num', decComma);
   mk('quick-vazio-price',t.quickVazioPrice, 'kwh-vazio-num', decComma);
-  mk('quick-gas',        t.quickGas,        'gas-num',       decComma);
 }
 
 // ── EVENTS ──
 [
   'litros-num','tfria-num','tquente-num','anos-num',
-  'termo-preco','termo-cap','termo-ef','termo-standby','termo-manut','termo-vazio',
-  'esq-preco','esq-ef','esq-manut','esq-aluguer',
-  'kwh-cheia-num','kwh-vazio-num','gas-num',
+  'termo-manut','termo-vazio',
+  'esq-manut',
+  'kwh-cheia-num','kwh-vazio-num',
 ].forEach(id => {
   $(id).addEventListener('input', calc);
 });

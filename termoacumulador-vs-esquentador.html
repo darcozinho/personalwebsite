@@ -117,6 +117,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 @media(max-width:620px){.input-grid.cols3{grid-template-columns:1fr}}
 
 .big-input{
+  display:block;
   background:var(--c-surface2);
   border:1px solid var(--c-border);
   border-radius:var(--r);
@@ -236,22 +237,14 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 .mini-chip:hover{border-color:var(--c-blue);color:var(--c-blue)}
 .car-block.esq .mini-chip:hover{border-color:var(--c-orange);color:var(--c-orange)}
 
-/* ── GAS TYPE PICKER ── */
-.gas-chip{
-  padding:5px 12px;border-radius:12px;
-  border:1px solid var(--c-border);background:transparent;
-  font-family:'Instrument Sans',sans-serif;font-size:11px;font-weight:500;
-  color:var(--c-text2);cursor:pointer;transition:all .15s;
-  letter-spacing:.02em;
-}
-.gas-chip:hover{border-color:var(--c-orange);color:var(--c-orange)}
-.gas-chip.active{background:var(--c-orange);color:var(--c-bg);border-color:var(--c-orange)}
+/* ── GAS EQUIV BADGE ── */
 .gas-equiv{
   font-size:11px;color:var(--c-text3);
-  padding:.4rem .85rem;
+  padding:.45rem .85rem;
   background:var(--c-surface2);border:1px dashed var(--c-border);border-radius:var(--r-sm);
   margin-top:6px;font-variant-numeric:tabular-nums;
 }
+.gas-equiv:empty{display:none}
 
 /* ── VALIDATION ── */
 .big-input.invalid, .mini-input.invalid {
@@ -634,7 +627,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
   <div class="card">
     <div class="sec-head"><div class="sec-num">3</div><span class="sec-title"><span lang="pt">Preços de energia</span><span lang="en">Energy prices</span></span></div>
 
-    <label class="big-input" for="kwh-num" style="display:block;margin-bottom:.85rem">
+    <label class="big-input" for="kwh-num">
       <span class="big-input-lbl"><span lang="pt">Electricidade</span><span lang="en">Electricity</span></span>
       <div class="big-input-row">
         <input type="number" id="kwh-num" inputmode="decimal" min="0.01" max="2" step="any" value="0,15">
@@ -642,18 +635,24 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
       </div>
     </label>
 
-    <div class="quick-section" style="margin-top:0">
+    <div class="quick-section">
       <span class="quick-section-lbl"><span lang="pt">Tarifa</span><span lang="en">Rate</span></span>
       <div class="quick-row" id="quick-cheia"></div>
     </div>
 
     <!-- GÁS -->
-    <div style="margin-top:1.25rem;padding-top:1.1rem;border-top:1px solid var(--c-border)">
-      <div class="quick-section" style="margin-top:0;margin-bottom:.65rem">
-        <span class="quick-section-lbl"><span lang="pt">Gás — tipo</span><span lang="en">Gas — type</span></span>
-        <div class="quick-row" id="gas-type-row"></div>
+    <label class="big-input" for="gas-num" style="margin-top:1rem">
+      <span class="big-input-lbl"><span lang="pt">Gás natural</span><span lang="en">Natural gas</span></span>
+      <div class="big-input-row">
+        <input type="number" id="gas-num" inputmode="decimal" min="0.01" max="20" step="any" value="0,95">
+        <span class="big-input-unit">€/m³</span>
       </div>
-      <div id="gas-input-area"></div>
+    </label>
+    <div class="gas-equiv" id="gas-equiv"></div>
+
+    <div class="quick-section">
+      <span class="quick-section-lbl"><span lang="pt">Preço típico do gás natural</span><span lang="en">Typical natural gas price</span></span>
+      <div class="quick-row" id="quick-gas"></div>
     </div>
   </div>
 
@@ -705,93 +704,30 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 <script>
 let lang = 'pt';
 let chartState = null;
-let gasType = 'nat'; // nat | but | pro | man
 
 // Constants
 const KJ_KG_C = 4.186;            // kJ / (kg · °C) — calor específico da água
 const CO2_GRID_PT = 0.16;         // kg CO2 / kWh (mix elétrico PT 2024)
 const CO2_GAS_NAT = 0.20;         // kg CO2 / kWh de gás natural queimado
 const TREE_KG_YR = 21;            // kg CO2 absorvido por árvore adulta / ano
-
-// Gas type definitions
-const GAS_TYPES = {
-  nat: { kwhPerUnit: 10.55, defaultVal: 0.95 },  // 1 m³ natural gas ≈ 10.55 kWh
-  but: { kwhPerUnit: 165.1, defaultVal: 24  },    // 13 kg butane × 12.7 kWh/kg
-  pro: { kwhPerUnit: 141.9, defaultVal: 22  },    // 11 kg propane × 12.9 kWh/kg
-  man: { kwhPerUnit: 1,     defaultVal: 0.10},    // manual €/kWh
-};
-const gasVals = { nat: 0.95, but: 24, pro: 22, man: 0.10 };
+const KWH_PER_M3_GAS = 10.55;     // 1 m³ gás natural ≈ 10,55 kWh (PCS PT)
 
 function getGasPriceKwh() {
-  const raw = $('gas-val')?.value?.toString().replace(',', '.');
-  const v = raw ? parseFloat(raw) : gasVals[gasType];
-  return isNaN(v) ? 0 : v / GAS_TYPES[gasType].kwhPerUnit;
+  const raw = $('gas-num').value.toString().replace(',', '.');
+  const v = parseFloat(raw);
+  return isNaN(v) ? 0 : v / KWH_PER_M3_GAS;
 }
 
-function renderGasSection() {
+function updateGasEquiv() {
+  const raw = $('gas-num').value.toString().replace(',', '.');
+  const v = parseFloat(raw);
   const L = lang === 'pt';
-  const labels = {
-    nat: { pt:'Gás natural (canalizado)', en:'Natural gas (piped)' },
-    but: { pt:'Butano (botija 13 kg)',    en:'Butane (13 kg bottle)' },
-    pro: { pt:'Propano (botija 11 kg)',   en:'Propane (11 kg bottle)' },
-    man: { pt:'Outro / manual',           en:'Other / manual' },
-  };
-  const units = {
-    nat: '€/m³',
-    but: L ? '€/botija' : '€/bottle',
-    pro: L ? '€/botija' : '€/bottle',
-    man: '€/kWh',
-  };
-  const infos = {
-    nat: L ? '1 m³ ≈ 10,55 kWh · gás natural PT' : '1 m³ ≈ 10.55 kWh · PT natural gas',
-    but: L ? '1 botija 13 kg ≈ 165 kWh (12,7 kWh/kg)' : '1 bottle 13 kg ≈ 165 kWh (12.7 kWh/kg)',
-    pro: L ? '1 botija 11 kg ≈ 142 kWh (12,9 kWh/kg)' : '1 bottle 11 kg ≈ 142 kWh (12.9 kWh/kg)',
-    man: L ? 'Introduz o preço por kWh directamente' : 'Enter the price per kWh directly',
-  };
-
-  // Type picker
-  $('gas-type-row').innerHTML = Object.keys(GAS_TYPES).map(k =>
-    `<button class="gas-chip${k === gasType ? ' active' : ''}" data-gt="${k}">${labels[k][L?'pt':'en']}</button>`
-  ).join('');
-  $('gas-type-row').querySelectorAll('.gas-chip').forEach(b => {
-    b.addEventListener('click', () => {
-      gasType = b.dataset.gt;
-      if ($('gas-val')) {
-        $('gas-val').value = gasVals[gasType].toString().replace('.', ',');
-      }
-      renderGasSection();
-      calc();
-    });
-  });
-
-  const val = gasVals[gasType];
-  const kwh = val / GAS_TYPES[gasType].kwhPerUnit;
-  const equivTxt = gasType === 'man'
-    ? ''
-    : `≈ ${kwh.toFixed(4).replace('.', ',')} €/kWh &nbsp;·&nbsp; ${infos[gasType]}`;
-
-  $('gas-input-area').innerHTML = `
-    <label class="big-input" for="gas-val">
-      <span class="big-input-lbl">${labels[gasType][L?'pt':'en']}</span>
-      <div class="big-input-row">
-        <input type="number" id="gas-val" inputmode="decimal" min="0.001" max="9999" step="any" value="${val.toString().replace('.', ',')}">
-        <span class="big-input-unit">${units[gasType]}</span>
-      </div>
-    </label>
-    ${equivTxt ? `<div class="gas-equiv">${equivTxt}</div>` : ''}`;
-
-  $('gas-val').addEventListener('input', () => {
-    const raw = $('gas-val').value.toString().replace(',', '.');
-    const v = parseFloat(raw);
-    if (!isNaN(v)) gasVals[gasType] = v;
-    // update equiv display
-    const kwh2 = v / GAS_TYPES[gasType].kwhPerUnit;
-    const eq = document.querySelector('.gas-equiv');
-    if (eq && gasType !== 'man') {
-      eq.innerHTML = `≈ ${kwh2.toFixed(4).replace('.', ',')} €/kWh &nbsp;·&nbsp; ${infos[gasType]}`;
-    }
-    calc();
-  });
+  if (isNaN(v)) { $('gas-equiv').innerHTML = ''; return; }
+  const kwh = v / KWH_PER_M3_GAS;
+  const tail = L
+    ? `&nbsp;·&nbsp; 1 m³ ≈ 10,55 kWh (PCS gás natural PT)`
+    : `&nbsp;·&nbsp; 1 m³ ≈ 10.55 kWh (PT natural gas)`;
+  $('gas-equiv').innerHTML = `≈ ${kwh.toFixed(4).replace('.', ',')} €/kWh${tail}`;
 }
 
 const T = {
@@ -838,10 +774,8 @@ const T = {
     accItems: [
       '<strong>Energia útil:</strong> Q = m · c · ΔT, onde m = litros/dia (aproximação 1L = 1kg), c = 4,186 kJ/(kg·°C) e ΔT = T<sub>quente</sub> − T<sub>fria</sub>.',
       '<strong>Termoacumulador:</strong> custo anual = energia útil diária × 365 × preço médio €/kWh eléctrico. O preço médio é a ponderação entre tarifa cheia e tarifa vazio/solar conforme a percentagem de aproveitamento.',
-      '<strong>Esquentador:</strong> custo anual = energia útil diária × 365 × preço €/kWh do gás. O preço por kWh é calculado automaticamente a partir da unidade natural (€/m³ ou €/botija).',
-      '<strong>Conversões de gás:</strong> gás natural 1 m³ ≈ 10,55 kWh; butano 1 kg ≈ 12,7 kWh (botija 13 kg ≈ 165 kWh); propano 1 kg ≈ 12,9 kWh (botija 11 kg ≈ 142 kWh).',
-      '<strong>Aproveitamento solar/vazio:</strong> a percentagem de água aquecida em horário baixo (vazio bi-horário ou excedente solar) reduz proporcionalmente o custo da electricidade. Esta é a alavanca chave do termoacumulador.',
-      '<strong>CO₂:</strong> 0,16 kg/kWh para electricidade do mix PT (2024, ~75% renovável); 0,20 kg/kWh para gás (combustão). Se o aproveitamento solar for >0% e o preço em vazio ≤ 0,05 €/kWh (autoconsumo), essa fracção é contabilizada a 0 kg CO₂.',
+      '<strong>Esquentador:</strong> custo anual = energia útil diária × 365 × preço €/kWh do gás. O preço por kWh é convertido a partir do preço €/m³ usando 1 m³ ≈ 10,55 kWh (PCS gás natural PT).',
+      '<strong>CO₂:</strong> 0,16 kg/kWh para electricidade do mix PT (2024, ~75% renovável); 0,20 kg/kWh para gás natural (combustão).',
     ],
     fcells: [
       {l:'Termoacumulador', v:'Resistência eléctrica<br>Compatível com solar PV e bi-horário<br>Custo do equipamento não considerado'},
@@ -864,6 +798,11 @@ const T = {
       {l:'Tarifa social · 0,12', v:0.12},
       {l:'Simples · 0,15', v:0.15},
       {l:'Indexada alta · 0,22', v:0.22},
+    ],
+    quickGas: [
+      {l:'Tarifa social · 0,75', v:0.75},
+      {l:'Típico · 0,95', v:0.95},
+      {l:'Mais caro · 1,15', v:1.15},
     ],
     yearsTxt: (n) => n === 1 ? '1 ano' : `${n} anos`,
   },
@@ -910,10 +849,8 @@ const T = {
     accItems: [
       '<strong>Useful energy:</strong> Q = m · c · ΔT, where m = litres/day (1 L ≈ 1 kg), c = 4.186 kJ/(kg·°C) and ΔT = T<sub>hot</sub> − T<sub>cold</sub>.',
       '<strong>Tank heater:</strong> annual cost = daily useful energy × 365 × weighted average electricity price (peak vs off-peak/solar mix).',
-      '<strong>Gas heater:</strong> annual cost = daily useful energy × 365 × gas price in €/kWh (auto-converted from your chosen unit).',
-      '<strong>Gas conversions:</strong> natural gas 1 m³ ≈ 10.55 kWh; butane 1 kg ≈ 12.7 kWh (13 kg bottle ≈ 165 kWh); propane 1 kg ≈ 12.9 kWh (11 kg bottle ≈ 142 kWh).',
-      '<strong>Off-peak / solar share:</strong> the percentage of water heated during off-peak hours (bi-hourly tariff or PV surplus) proportionally reduces electricity cost. This is the tank heater\'s key lever.',
-      '<strong>CO₂:</strong> 0.16 kg/kWh for PT grid electricity (2024, ~75% renewable); 0.20 kg/kWh for gas combustion. If off-peak price ≤ 0.05 €/kWh (self-consumption), that share is counted at 0 kg CO₂.',
+      '<strong>Gas heater:</strong> annual cost = daily useful energy × 365 × gas price in €/kWh. Price per kWh is converted from €/m³ using 1 m³ ≈ 10.55 kWh (PT natural gas).',
+      '<strong>CO₂:</strong> 0.16 kg/kWh for PT grid electricity (2024, ~75% renewable); 0.20 kg/kWh for natural gas combustion.',
     ],
     fcells: [
       {l:'Tank heater', v:'Electric resistance<br>Compatible with solar PV and off-peak<br>Equipment cost not considered'},
@@ -936,6 +873,11 @@ const T = {
       {l:'Social rate · 0.12', v:0.12},
       {l:'Standard · 0.15', v:0.15},
       {l:'Peak indexed · 0.22', v:0.22},
+    ],
+    quickGas: [
+      {l:'Social rate · 0.75', v:0.75},
+      {l:'Typical · 0.95', v:0.95},
+      {l:'High · 1.15', v:1.15},
     ],
     yearsTxt: (n) => n === 1 ? '1 year' : `${n} years`,
   }
@@ -971,7 +913,7 @@ function validate() {
     {id:'termo-manut', lbl: L?'Manutenção termoacumulador':'Tank maintenance'},
     {id:'esq-manut',   lbl: L?'Manutenção esquentador':'Gas maintenance'},
     {id:'kwh-num',     lbl: L?'Preço electricidade':'Electricity price'},
-    {id:'gas-val',     lbl: L?'Preço do gás':'Gas price'},
+    {id:'gas-num',     lbl: L?'Preço do gás':'Gas price'},
   ];
 
   const missing = fields.filter(f => isEmpty(f.id));
@@ -1033,10 +975,6 @@ function showError(missing, crossError) {
   chartState = null;
 }
 
-function isGasValEmpty() {
-  return !$('gas-val') || $('gas-val').value.toString().trim() === '';
-}
-
 // ── COMPUTE ──
 function computeScenario(litros, dT, manut, anos, pElec, gasPrice, esqManut) {
   const energiaUtilDia = litros * dT * KJ_KG_C / 3600; // kWh
@@ -1056,7 +994,7 @@ function computeScenario(litros, dT, manut, anos, pElec, gasPrice, esqManut) {
 // ── CALC ──
 function calc() {
   const t = T[lang];
-  renderGasSection();
+  updateGasEquiv();
 
   const { missing, crossError } = validate();
   if (missing.length > 0 || crossError) {
@@ -1428,13 +1366,14 @@ function renderQuick() {
   mk('quick-tquente', t.quickTquente, 'tquente-num',intStr);
   mk('quick-anos',    t.quickAnos,    'anos-num',   intStr);
   mk('quick-cheia',   t.quickCheia,   'kwh-num',    decComma);
+  mk('quick-gas',     t.quickGas,     'gas-num',    decComma);
 }
 
 // ── EVENTS ──
 [
   'litros-num','tfria-num','tquente-num','anos-num',
   'termo-manut','esq-manut',
-  'kwh-num',
+  'kwh-num','gas-num',
 ].forEach(id => {
   $(id).addEventListener('input', calc);
 });
@@ -1450,6 +1389,7 @@ function setLang(l) {
   btnEN.classList.toggle('active', l === 'en');
   localStorage.setItem('aa-lang', l);
   renderQuick();
+  updateGasEquiv();
   calc();
 }
 btnPT.addEventListener('click', () => setLang('pt'));

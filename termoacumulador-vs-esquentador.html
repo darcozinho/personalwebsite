@@ -630,7 +630,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
     <label class="big-input" for="kwh-num">
       <span class="big-input-lbl"><span lang="pt">Electricidade</span><span lang="en">Electricity</span></span>
       <div class="big-input-row">
-        <input type="number" id="kwh-num" inputmode="decimal" min="0.01" max="2" step="any" value="0,15">
+        <input type="number" id="kwh-num" inputmode="decimal" min="0.01" max="2" step="any" value="0.15">
         <span class="big-input-unit">€/kWh</span>
       </div>
     </label>
@@ -641,19 +641,20 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
     </div>
 
     <!-- GÁS -->
-    <label class="big-input" for="gas-num" style="margin-top:1rem">
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--c-border)">
+    <label class="big-input" for="gas-num">
       <span class="big-input-lbl"><span lang="pt">Gás natural</span><span lang="en">Natural gas</span></span>
       <div class="big-input-row">
-        <input type="number" id="gas-num" inputmode="decimal" min="0.01" max="20" step="any" value="0,95">
+        <input type="number" id="gas-num" inputmode="decimal" min="0.01" max="20" step="any" value="0.95">
         <span class="big-input-unit">€/m³</span>
       </div>
     </label>
     <div class="gas-equiv" id="gas-equiv"></div>
-
     <div class="quick-section">
-      <span class="quick-section-lbl"><span lang="pt">Preço típico do gás natural</span><span lang="en">Typical natural gas price</span></span>
+      <span class="quick-section-lbl"><span lang="pt">Preço típico PT</span><span lang="en">Typical PT price</span></span>
       <div class="quick-row" id="quick-gas"></div>
     </div>
+    </div><!-- /gas wrapper -->
   </div>
 
   <!-- CARD 4: VEREDICTO -->
@@ -753,7 +754,7 @@ const T = {
     mTcoTermo: 'TCO termoacumulador', mTcoTermoSub: 'custo total ao fim do horizonte',
     mTcoEsq: 'TCO esquentador', mTcoEsqSub: 'custo total ao fim do horizonte',
     mMesTermo: 'Custo / mês · termo', mMesTermoSub: 'energia + manutenção',
-    mMesEsq: 'Custo / mês · esq', mMesEsqSub: 'gás + manutenção + aluguer',
+    mMesEsq: 'Custo / mês · esq', mMesEsqSub: 'gás + manutenção',
 
     barsTermo: 'Termoacumulador — onde vai o dinheiro',
     barsEsq: 'Esquentador — onde vai o dinheiro',
@@ -828,7 +829,7 @@ const T = {
     mTcoTermo: 'Tank heater TCO', mTcoTermoSub: 'total cost over horizon',
     mTcoEsq: 'Gas heater TCO', mTcoEsqSub: 'total cost over horizon',
     mMesTermo: 'Cost / mo · tank', mMesTermoSub: 'energy + maintenance',
-    mMesEsq: 'Cost / mo · gas', mMesEsqSub: 'gas + maintenance + meter',
+    mMesEsq: 'Cost / mo · gas', mMesEsqSub: 'gas + maintenance',
 
     barsTermo: 'Tank heater — where the money goes',
     barsEsq: 'Gas heater — where the money goes',
@@ -952,8 +953,8 @@ function showError(missing, crossError) {
   const intro = crossError
     ? crossError
     : (L
-      ? 'Preenche os campos a vermelho. Se não tens aproveitamento de horário baixo (vazio ou solar), define a percentagem em 0%.'
-      : 'Fill the red fields. If you have no off-peak usage (bi-hourly or PV solar), set the percentage to 0%.');
+      ? 'Preenche os campos assinalados a vermelho para calcular.'
+      : 'Fill the highlighted fields to calculate.');
   $('verdict').innerHTML = `
     <div class="error-banner">
       <div class="err-icon">
@@ -1059,14 +1060,6 @@ function calc() {
       </div>`;
   } else if (diff > 0) {
     winner = 'termo';
-    let subTxt;
-    if (initialTermoHigher && parityYear > 0 && parityYear <= anos) {
-      subTxt = t.subPaidBack(horizonTxt, parityYear < 1 ? '< 1' : parityYear.toFixed(1));
-    } else if (!initialTermoHigher) {
-      subTxt = t.subCheaperFromDay1(horizonTxt);
-    } else {
-      subTxt = t.subNeverParity(horizonTxt);
-    }
     verdictHtml = `
       <div class="verdict termo-wins">
         <div class="verdict-badge">
@@ -1075,19 +1068,11 @@ function calc() {
         <div class="verdict-text">
           <div class="verdict-title">${t.verdictTitleTermo}</div>
           <div class="verdict-main">${t.verdict.termo(eur0(diff))}</div>
-          <div class="verdict-sub">${subTxt}</div>
+          <div class="verdict-sub">${t.subCheaperFromDay1(horizonTxt)}</div>
         </div>
       </div>`;
   } else {
     winner = 'esq';
-    let subTxt;
-    if (!initialTermoHigher && parityYear > 0 && parityYear <= anos) {
-      subTxt = t.subPaidBack(horizonTxt, parityYear < 1 ? '< 1' : parityYear.toFixed(1));
-    } else if (initialTermoHigher) {
-      subTxt = t.subCheaperFromDay1(horizonTxt);
-    } else {
-      subTxt = t.subNeverParity(horizonTxt);
-    }
     verdictHtml = `
       <div class="verdict esq-wins">
         <div class="verdict-badge">
@@ -1096,7 +1081,7 @@ function calc() {
         <div class="verdict-text">
           <div class="verdict-title">${t.verdictTitleEsq}</div>
           <div class="verdict-main">${t.verdict.esq(eur0(-diff))}</div>
-          <div class="verdict-sub">${subTxt}</div>
+          <div class="verdict-sub">${t.subCheaperFromDay1(horizonTxt)}</div>
         </div>
       </div>`;
   }
@@ -1359,14 +1344,13 @@ function renderQuick() {
       });
     });
   };
-  const intStr = v => v.toString();
-  const decComma = v => v.toString().replace('.', ',');
-  mk('quick-litros',  t.quickLitros,  'litros-num', intStr);
-  mk('quick-tfria',   t.quickTfria,   'tfria-num',  intStr);
-  mk('quick-tquente', t.quickTquente, 'tquente-num',intStr);
-  mk('quick-anos',    t.quickAnos,    'anos-num',   intStr);
-  mk('quick-cheia',   t.quickCheia,   'kwh-num',    decComma);
-  mk('quick-gas',     t.quickGas,     'gas-num',    decComma);
+  const numStr = v => v.toString(); // always period — valid for type="number" inputs
+  mk('quick-litros',  t.quickLitros,  'litros-num', numStr);
+  mk('quick-tfria',   t.quickTfria,   'tfria-num',  numStr);
+  mk('quick-tquente', t.quickTquente, 'tquente-num',numStr);
+  mk('quick-anos',    t.quickAnos,    'anos-num',   numStr);
+  mk('quick-cheia',   t.quickCheia,   'kwh-num',    numStr);
+  mk('quick-gas',     t.quickGas,     'gas-num',    numStr);
 }
 
 // ── EVENTS ──

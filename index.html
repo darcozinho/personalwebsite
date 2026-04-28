@@ -58,7 +58,7 @@
     .nav a:hover { color: var(--text); }
     .lang-toggle { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); }
     .lang-btn { font-size: 12px; font-weight: 500; padding: 7px 13px; background: transparent; border: none; cursor: pointer; color: var(--muted); font-family: 'Instrument Sans', sans-serif; letter-spacing: .04em; transition: background .15s, color .15s; }
-    .lang-btn.active { background: var(--text); color: var(--bg); }
+    .lang-btn.active { background: var(--gold); color: var(--bg); }
     .lang-btn:not(.active):hover { color: var(--text); }
     .theme-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: border-color .2s, color .2s; }
     .theme-btn:hover { border-color: var(--border2); color: var(--text); }
@@ -66,6 +66,24 @@
     .i-sun, .i-moon { display: none; }
     [data-theme="light"] .i-sun  { display: block; }
     [data-theme="dark"]  .i-moon { display: block; }
+    /* ── SIGNATURE CARD ── */
+    .sig-card {
+      display: inline-flex; align-items: center; gap: 18px;
+      background: #0d0c0a;
+      border: 1px solid rgba(212,168,58,.22);
+      border-radius: 14px; padding: 13px 22px;
+      margin-bottom: 36px;
+      opacity: 0; animation: hFadeUp .6s ease forwards .05s;
+    }
+    .sig-divider { width: 1px; height: 34px; background: var(--gold); opacity: .35; flex-shrink: 0; }
+    .sig-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 24px; font-style: italic; font-weight: 400;
+      color: #e8dfc8; letter-spacing: -.02em; white-space: nowrap; line-height: 1;
+    }
+    .sig-name em { font-style: italic; color: var(--gold); }
+    @media (max-width: 480px) { .sig-card { padding: 11px 18px; gap: 14px; } .sig-name { font-size: 20px; } }
+
     .sec { padding: 64px 0; border-bottom: 1px solid var(--border); }
     .sec:last-of-type { border-bottom: none; }
     .sec-label { font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--hint); margin-bottom: 32px; }
@@ -275,7 +293,43 @@
       </g>
     </svg>
     <div class="hero-content">
-      <p class="hero-kicker">andreaguiar.org</p>
+      <div class="sig-card">
+        <svg width="40" height="40" viewBox="0 0 44 44" fill="none" color="var(--gold)" aria-hidden="true">
+          <circle cx="22" cy="22" r="19.5" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="22" cy="22" r="12" stroke="currentColor" stroke-width="0.85" opacity=".5"/>
+          <circle cx="22" cy="22" r="2.4" fill="currentColor" opacity=".7"/>
+          <!-- Cardinal diamonds -->
+          <polygon points="22,0.5 23.5,4 22,2.8 20.5,4" fill="currentColor"/>
+          <polygon points="22,43.5 20.5,40 22,41.2 23.5,40" fill="currentColor"/>
+          <polygon points="43.5,22 40,20.5 41.2,22 40,23.5" fill="currentColor"/>
+          <polygon points="0.5,22 4,23.5 2.8,22 4,20.5" fill="currentColor"/>
+          <!-- Tick marks (every 15°, skip 0/90/180/270) -->
+          <g stroke="currentColor" opacity=".72">
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(15 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(30 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(45 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(60 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(75 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(105 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(120 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(135 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(150 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(165 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(195 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(210 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(225 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(240 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(255 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(285 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(300 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(315 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(330 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(345 22 22)"/>
+          </g>
+        </svg>
+        <div class="sig-divider"></div>
+        <span class="sig-name">André <em>Aguiar</em></span>
+      </div>
       <h1>
         <span lang="pt">Projetista FTTH.<br><em>Criador</em> de coisas úteis.</span>
         <span lang="en">FTTH Designer.<br><em>Builder</em> of useful things.</span>
@@ -450,11 +504,7 @@
 
 <div class="wrap">
   <footer>
-    <div class="f-left">
-      <div class="dot"></div>
-      <p lang="pt">online · Ilha da Madeira, Portugal</p>
-      <p lang="en">online · Madeira Island, Portugal</p>
-    </div>
+    <div class="f-left"></div>
     <p><a href="mailto:me@andreaguiar.org">me@andreaguiar.org</a> · <a href="cv.html">CV</a> · <a href="https://www.behance.net/andreaguiar007" target="_blank" rel="noopener">Behance</a></p>
   </footer>
 </div>

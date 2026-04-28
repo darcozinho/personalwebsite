@@ -161,6 +161,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
   letter-spacing:.02em;
 }
 .quick-chip:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.quick-chip.active{border-color:var(--c-accent);background:var(--c-accent);color:var(--c-bg)}
 
 /* ── CARROS (CARD 2 — 2-col side-by-side) ── */
 .cars-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -555,6 +556,11 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
           <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
           <span class="mini-val"><input type="text" id="ice-preco" inputmode="decimal" value="28.000"><span class="mini-unit">€</span></span>
         </label>
+        <div class="quick-row" style="margin:4px 0 6px">
+          <button class="quick-chip" id="chip-ja-tenho" onclick="setIceOwned()">
+            <span lang="pt">Já tenho · €0</span><span lang="en">I own it · €0</span>
+          </button>
+        </div>
         <label class="mini-input" for="ice-cons">
           <span class="mini-lbl"><span lang="pt">Consumo</span><span lang="en">Consumption</span></span>
           <span class="mini-val"><input type="number" id="ice-cons" min="2" max="30" step="any" value="6"><span class="mini-unit">L/100</span></span>
@@ -710,6 +716,7 @@ const T = {
       '<strong>Paridade:</strong> ano em que as curvas TCO se cruzam. A partir desse ano, o eléctrico fica acumuladamente mais barato.',
       '<strong>CO₂ evitado:</strong> emissões da gasolina queimada (2,31 kg/L) menos as emissões da electricidade gerada (0,16 kg/kWh — mix português 2024 com ~75% renovável).',
       '<strong>Equivalente em árvores:</strong> uma árvore adulta absorve cerca de 21 kg de CO₂ por ano. Indica quantas árvores em pleno crescimento durante 1 ano seriam necessárias para absorver o mesmo CO₂ evitado.',
+      '<strong>Já tenho um carro:</strong> se já possuis um carro a combustão e queres comparar apenas os custos correntes de mudar para eléctrico, coloca o preço do ICE a 0 com o botão "Já tenho". O TCO do ICE passa a considerar só energia, IUC, manutenção e seguro.',
     ],
     fcells: [
       {l:'Premissas EV', v:'Mix elétrico PT: 0,16 kg CO₂/kWh<br>Isento de IUC (CIUC art. 5.º)<br>Manutenção baixa (sem óleo, travões duram mais)'},
@@ -767,6 +774,7 @@ const T = {
       '<strong>Parity:</strong> year when the TCO curves cross. From that year onwards, the EV is cumulatively cheaper.',
       '<strong>CO₂ avoided:</strong> emissions from burning petrol (2.31 kg/L) minus emissions from electricity generation (0.16 kg/kWh — Portuguese 2024 mix, ~75% renewable).',
       '<strong>Tree equivalent:</strong> a mature tree absorbs ~21 kg of CO₂ per year. Shows how many trees growing for one year would absorb the same CO₂.',
+      '<strong>I already own a car:</strong> if you already have a combustion car and want to compare only running costs, set the ICE price to 0 using the "I own it" button. The ICE TCO will only include energy, road tax, maintenance and insurance.',
     ],
     fcells: [
       {l:'EV assumptions', v:'PT grid: 0.16 kg CO₂/kWh<br>Exempt from road tax (PT law)<br>Low maintenance (no oil, brakes last longer)'},
@@ -906,6 +914,13 @@ function calc() {
     return;
   }
 
+  // "Já tenho" chip active state
+  const chipJaTenho = $('chip-ja-tenho');
+  if (chipJaTenho) {
+    const iceRaw = $('ice-preco').value.toString().replace(/\./g,'').replace(',','.');
+    chipJaTenho.classList.toggle('active', parseFloat(iceRaw) === 0);
+  }
+
   // Usage
   const km   = readMoney('km-num', 15000, 100, 1000000);
   const anos = Math.round(readNum('anos-num', 8, 1, 25));
@@ -919,7 +934,7 @@ function calc() {
   const evSeguro = readNum('ev-seguro', 450, 0, 10000);
 
   // ICE
-  const icePreco  = readMoney('ice-preco', 28000, 1000, 500000);
+  const icePreco  = readMoney('ice-preco', 28000, 0, 500000);
   const iceCons   = readNum('ice-cons', 6, 0.5, 50);
   const iceIuc    = readNum('ice-iuc', 220, 0, 5000);
   const iceManut  = readNum('ice-manut', 600, 0, 10000);
@@ -1245,6 +1260,12 @@ function showChartInfo(y) {
     <div class="ci-block"><div class="ci-lbl">${t.chartCi[1]}</div><div class="ci-val ev">${eur0(ev)}</div></div>
     <div class="ci-block"><div class="ci-lbl">${t.chartCi[2]}</div><div class="ci-val ice">${eur0(ice)}</div></div>
     <div class="ci-block"><div class="ci-lbl">${t.chartCi[3]}</div><div class="ci-val delta">${d >= 0 ? '+' : '−'}${eur0(Math.abs(d))}</div></div>`;
+}
+
+// ── "JÁ TENHO" CHIP ──
+function setIceOwned() {
+  $('ice-preco').value = '0';
+  calc();
 }
 
 // ── ACCORDION ──

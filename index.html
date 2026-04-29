@@ -66,23 +66,11 @@
     .i-sun, .i-moon { display: none; }
     [data-theme="light"] .i-sun  { display: block; }
     [data-theme="dark"]  .i-moon { display: block; }
-    /* ── SIGNATURE CARD ── */
-    .sig-card {
-      display: inline-flex; align-items: center; gap: 18px;
-      background: #0d0c0a;
-      border: 1px solid rgba(212,168,58,.22);
-      border-radius: 14px; padding: 13px 22px;
-      margin-bottom: 36px;
-      opacity: 0; animation: hFadeUp .6s ease forwards .05s;
-    }
-    .sig-divider { width: 1px; height: 34px; background: var(--gold); opacity: .35; flex-shrink: 0; }
-    .sig-name {
-      font-family: 'Instrument Serif', serif;
-      font-size: 24px; font-style: italic; font-weight: 400;
-      color: #e8dfc8; letter-spacing: -.02em; white-space: nowrap; line-height: 1;
-    }
-    .sig-name em { font-style: italic; color: var(--gold); }
-    @media (max-width: 480px) { .sig-card { padding: 11px 18px; gap: 14px; } .sig-name { font-size: 20px; } }
+    /* ── LOGO (navbar) ── */
+    .logo { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; color: var(--text); flex-shrink: 0; }
+    .logo-divider { width: 1px; height: 20px; background: var(--gold); opacity: .4; flex-shrink: 0; }
+    .logo-name { font-family: 'Instrument Serif', serif; font-size: 19px; font-style: italic; font-weight: 400; letter-spacing: -.015em; white-space: nowrap; line-height: 1; }
+    .logo-name em { font-style: italic; color: var(--gold); }
 
     .sec { padding: 64px 0; border-bottom: 1px solid var(--border); }
     .sec:last-of-type { border-bottom: none; }
@@ -226,7 +214,41 @@
 <header>
   <div class="wrap">
     <nav class="topbar">
-      <a class="logo" href="#">André <em>Aguiar</em></a>
+      <a class="logo" href="#">
+        <svg width="26" height="26" viewBox="0 0 44 44" fill="none" color="var(--gold)" aria-hidden="true">
+          <circle cx="22" cy="22" r="19.5" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="22" cy="22" r="12" stroke="currentColor" stroke-width="0.85" opacity=".5"/>
+          <circle cx="22" cy="22" r="2.4" fill="currentColor" opacity=".7"/>
+          <polygon points="22,0.5 23.5,4 22,2.8 20.5,4" fill="currentColor"/>
+          <polygon points="22,43.5 20.5,40 22,41.2 23.5,40" fill="currentColor"/>
+          <polygon points="43.5,22 40,20.5 41.2,22 40,23.5" fill="currentColor"/>
+          <polygon points="0.5,22 4,23.5 2.8,22 4,20.5" fill="currentColor"/>
+          <g stroke="currentColor" opacity=".7">
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(15 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(30 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(45 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(60 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(75 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(105 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(120 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(135 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(150 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(165 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(195 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(210 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(225 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(240 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(255 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(285 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(300 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(315 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(330 22 22)"/>
+            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(345 22 22)"/>
+          </g>
+        </svg>
+        <div class="logo-divider"></div>
+        <span class="logo-name">André <em>Aguiar</em></span>
+      </a>
       <div class="nav">
         <a lang="pt" href="#sobre">Sobre</a>
         <a lang="en" href="#sobre">About</a>
@@ -293,43 +315,7 @@
       </g>
     </svg>
     <div class="hero-content">
-      <div class="sig-card">
-        <svg width="40" height="40" viewBox="0 0 44 44" fill="none" color="var(--gold)" aria-hidden="true">
-          <circle cx="22" cy="22" r="19.5" stroke="currentColor" stroke-width="1.4"/>
-          <circle cx="22" cy="22" r="12" stroke="currentColor" stroke-width="0.85" opacity=".5"/>
-          <circle cx="22" cy="22" r="2.4" fill="currentColor" opacity=".7"/>
-          <!-- Cardinal diamonds -->
-          <polygon points="22,0.5 23.5,4 22,2.8 20.5,4" fill="currentColor"/>
-          <polygon points="22,43.5 20.5,40 22,41.2 23.5,40" fill="currentColor"/>
-          <polygon points="43.5,22 40,20.5 41.2,22 40,23.5" fill="currentColor"/>
-          <polygon points="0.5,22 4,23.5 2.8,22 4,20.5" fill="currentColor"/>
-          <!-- Tick marks (every 15°, skip 0/90/180/270) -->
-          <g stroke="currentColor" opacity=".72">
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(15 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(30 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(45 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(60 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(75 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(105 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(120 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(135 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(150 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(165 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(195 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(210 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(225 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(240 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(255 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(285 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(300 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="6.2" stroke-width="1.1"  transform="rotate(315 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(330 22 22)"/>
-            <line x1="22" y1="2.5" x2="22" y2="5.2" stroke-width="0.85" transform="rotate(345 22 22)"/>
-          </g>
-        </svg>
-        <div class="sig-divider"></div>
-        <span class="sig-name">André <em>Aguiar</em></span>
-      </div>
+      <p class="hero-kicker">andreaguiar.org</p>
       <h1>
         <span lang="pt">Projetista FTTH.<br><em>Criador</em> de coisas úteis.</span>
         <span lang="en">FTTH Designer.<br><em>Builder</em> of useful things.</span>

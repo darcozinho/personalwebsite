@@ -474,6 +474,43 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
   text-decoration:none;letter-spacing:.01em;transition:color .2s;
 }
 .back-link:hover{color:var(--c-accent)}
+
+/* ── GAS SOURCE TABS ── */
+.gas-tabs{display:flex;border:1px solid var(--c-border);border-radius:var(--r-sm);overflow:hidden;background:var(--c-surface);margin-bottom:1rem}
+.gas-tab{flex:1;padding:7px 4px;border:none;background:transparent;font-family:'Instrument Sans',sans-serif;font-size:11px;font-weight:500;color:var(--c-text2);cursor:pointer;transition:all .15s;letter-spacing:.02em;text-align:center}
+.gas-tab.active{background:var(--c-accent);color:var(--c-bg)}
+.gas-tab:not(.active):hover{color:var(--c-text);background:var(--c-surface2)}
+.gas-tab+.gas-tab{border-left:1px solid var(--c-border)}
+.gas-panel{display:none}
+.gas-panel.active{display:block}
+
+/* ── EEM kVA CHIPS ── */
+.kva-chip{padding:4px 11px;border-radius:12px;border:1px solid var(--c-border);background:transparent;font-family:'Instrument Sans',sans-serif;font-size:10.5px;font-weight:500;color:var(--c-text3);cursor:pointer;transition:all .12s;letter-spacing:.02em}
+.kva-chip:hover{border-color:var(--c-blue);color:var(--c-blue)}
+.kva-chip.active{border-color:var(--c-blue);background:var(--c-blue);color:var(--c-bg)}
+.eem-info-badge{font-size:11px;color:var(--c-text3);padding:.45rem .85rem;background:var(--c-surface2);border:1px dashed var(--c-border);border-radius:var(--r-sm);margin-top:6px;font-variant-numeric:tabular-nums;display:none}
+.escalao-badge{font-size:11px;color:var(--c-text3);padding:.45rem .85rem;background:var(--c-surface2);border:1px dashed var(--c-border);border-radius:var(--r-sm);margin-top:6px;font-variant-numeric:tabular-nums}
+.escalao-badge:empty{display:none}
+
+/* ── EQUIPMENT COST ── */
+.equip-section{margin-top:1.1rem;padding-top:1.1rem;border-top:1px solid var(--c-border)}
+.equip-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem}
+.equip-system-lbl{font-size:11px;font-weight:600;letter-spacing:-.01em}
+.equip-system-lbl.termo{color:var(--c-blue)}
+.equip-system-lbl.esq{color:var(--c-orange)}
+.equip-toggle-btns{display:flex;border:1px solid var(--c-border);border-radius:6px;overflow:hidden}
+.equip-btn{padding:4px 11px;border:none;background:transparent;font-family:'Instrument Sans',sans-serif;font-size:11px;font-weight:500;color:var(--c-text2);cursor:pointer;transition:all .15s}
+.equip-btn.active{background:var(--c-accent);color:var(--c-bg)}
+.equip-btn+.equip-btn{border-left:1px solid var(--c-border)}
+.prest-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:6px}
+@media(max-width:460px){.prest-grid{grid-template-columns:1fr}}
+.prest-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+@media(max-width:540px){.prest-grid-3{grid-template-columns:repeat(2,1fr)}}
+.monthly-display{display:flex;align-items:baseline;gap:4px;padding:.55rem .7rem;border:1px solid var(--c-border);border-radius:var(--r-sm);background:var(--c-accent-pale);margin-top:6px}
+.monthly-lbl{flex:1;font-size:11px;color:var(--c-text2);font-weight:500}
+.monthly-val{font-family:'Instrument Serif',serif;font-size:14.5px;color:var(--c-accent);font-variant-numeric:tabular-nums}
+.monthly-unit{font-size:10.5px;color:var(--c-text3);font-weight:500;flex-shrink:0}
+.quick-chip.active{border-color:var(--c-accent);background:var(--c-accent);color:var(--c-bg)}
 </style>
 </head>
 <body>
@@ -546,7 +583,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
       <label class="big-input" for="anos-num">
         <span class="big-input-lbl"><span lang="pt">Horizonte</span><span lang="en">Horizon</span></span>
         <div class="big-input-row">
-          <input type="number" id="anos-num" inputmode="numeric" min="1" max="25" step="1" value="10">
+          <input type="number" id="anos-num" inputmode="numeric" min="1" max="30" step="1" value="10">
           <span class="big-input-unit"><span lang="pt">anos</span><span lang="en">years</span></span>
         </div>
       </label>
@@ -620,6 +657,97 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <span><span lang="pt">Aquece on-demand · inspecção obrigatória de 2 em 2 anos (~130 €)</span><span lang="en">On-demand heating · mandatory inspection every 2 years (~130 €)</span></span>
         </div>
+      <!-- EQUIPMENT COST SECTION -->
+      <div class="equip-section">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-text3);margin-bottom:.75rem">
+          <span lang="pt">Custo de aquisição</span><span lang="en">Equipment cost</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <!-- TERMO equip -->
+          <div>
+            <div class="equip-row">
+              <span class="equip-system-lbl termo"><span lang="pt">Termoacumulador</span><span lang="en">Tank heater</span></span>
+              <div class="equip-toggle-btns">
+                <button class="equip-btn active" id="termo-equip-pronto-btn" onclick="setEquipMode('termo','pronto')"><span lang="pt">A pronto</span><span lang="en">Upfront</span></button>
+                <button class="equip-btn" id="termo-equip-prest-btn" onclick="setEquipMode('termo','prest')"><span lang="pt">Prestações</span><span lang="en">Financed</span></button>
+              </div>
+            </div>
+            <div id="termo-pronto-panel">
+              <label class="mini-input" for="termo-preco">
+                <span class="mini-lbl"><span lang="pt">Preço total</span><span lang="en">Total price</span></span>
+                <span class="mini-val"><input type="number" id="termo-preco" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
+              </label>
+            </div>
+            <div id="termo-prest-panel" style="display:none">
+              <div class="prest-grid">
+                <label class="mini-input" for="termo-prest-total">
+                  <span class="mini-lbl"><span lang="pt">Valor total</span><span lang="en">Total value</span></span>
+                  <span class="mini-val"><input type="number" id="termo-prest-total" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
+                </label>
+                <label class="mini-input" for="termo-prest-entrada">
+                  <span class="mini-lbl"><span lang="pt">Entrada</span><span lang="en">Down payment</span></span>
+                  <span class="mini-val"><input type="number" id="termo-prest-entrada" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
+                </label>
+              </div>
+              <div class="prest-grid">
+                <label class="mini-input" for="termo-prest-n">
+                  <span class="mini-lbl"><span lang="pt">Nº prestações</span><span lang="en">Instalments</span></span>
+                  <span class="mini-val"><input type="number" id="termo-prest-n" inputmode="numeric" min="1" max="360" step="1" value="24"><span class="mini-unit"><span lang="pt">meses</span><span lang="en">mo</span></span></span>
+                </label>
+                <label class="mini-input" for="termo-prest-taxa">
+                  <span class="mini-lbl"><span lang="pt">Taxa juro / ano</span><span lang="en">Interest / yr</span></span>
+                  <span class="mini-val"><input type="number" id="termo-prest-taxa" inputmode="decimal" min="0" max="50" step="any" value="0"><span class="mini-unit">%</span></span>
+                </label>
+              </div>
+              <div class="monthly-display">
+                <span class="monthly-lbl"><span lang="pt">Prestação mensal</span><span lang="en">Monthly payment</span></span>
+                <span class="monthly-val" id="termo-prest-monthly">0,00 €</span>
+              </div>
+            </div>
+          </div>
+          <!-- ESQ equip -->
+          <div>
+            <div class="equip-row">
+              <span class="equip-system-lbl esq"><span lang="pt">Esquentador</span><span lang="en">Gas heater</span></span>
+              <div class="equip-toggle-btns">
+                <button class="equip-btn active" id="esq-equip-pronto-btn" onclick="setEquipMode('esq','pronto')"><span lang="pt">A pronto</span><span lang="en">Upfront</span></button>
+                <button class="equip-btn" id="esq-equip-prest-btn" onclick="setEquipMode('esq','prest')"><span lang="pt">Prestações</span><span lang="en">Financed</span></button>
+              </div>
+            </div>
+            <div id="esq-pronto-panel">
+              <label class="mini-input" for="esq-preco">
+                <span class="mini-lbl"><span lang="pt">Preço total</span><span lang="en">Total price</span></span>
+                <span class="mini-val"><input type="number" id="esq-preco" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
+              </label>
+            </div>
+            <div id="esq-prest-panel" style="display:none">
+              <div class="prest-grid">
+                <label class="mini-input" for="esq-prest-total">
+                  <span class="mini-lbl"><span lang="pt">Valor total</span><span lang="en">Total value</span></span>
+                  <span class="mini-val"><input type="number" id="esq-prest-total" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
+                </label>
+                <label class="mini-input" for="esq-prest-entrada">
+                  <span class="mini-lbl"><span lang="pt">Entrada</span><span lang="en">Down payment</span></span>
+                  <span class="mini-val"><input type="number" id="esq-prest-entrada" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
+                </label>
+              </div>
+              <div class="prest-grid">
+                <label class="mini-input" for="esq-prest-n">
+                  <span class="mini-lbl"><span lang="pt">Nº prestações</span><span lang="en">Instalments</span></span>
+                  <span class="mini-val"><input type="number" id="esq-prest-n" inputmode="numeric" min="1" max="360" step="1" value="24"><span class="mini-unit"><span lang="pt">meses</span><span lang="en">mo</span></span></span>
+                </label>
+                <label class="mini-input" for="esq-prest-taxa">
+                  <span class="mini-lbl"><span lang="pt">Taxa juro / ano</span><span lang="en">Interest / yr</span></span>
+                  <span class="mini-val"><input type="number" id="esq-prest-taxa" inputmode="decimal" min="0" max="50" step="any" value="0"><span class="mini-unit">%</span></span>
+                </label>
+              </div>
+              <div class="monthly-display">
+                <span class="monthly-lbl"><span lang="pt">Prestação mensal</span><span lang="en">Monthly payment</span></span>
+                <span class="monthly-val" id="esq-prest-monthly">0,00 €</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -628,34 +756,85 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
   <div class="card">
     <div class="sec-head"><div class="sec-num">3</div><span class="sec-title"><span lang="pt">Preços de energia</span><span lang="en">Energy prices</span></span></div>
 
-    <label class="big-input" for="kwh-num">
-      <span class="big-input-lbl"><span lang="pt">Electricidade</span><span lang="en">Electricity</span></span>
-      <div class="big-input-row">
-        <input type="number" id="kwh-num" inputmode="decimal" min="0.01" max="2" step="any" value="0.15">
-        <span class="big-input-unit">€/kWh</span>
+    <!-- ELECTRICIDADE (termoacumulador) -->
+    <div style="margin-bottom:.5rem">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-blue);margin-bottom:.65rem;display:flex;align-items:center;gap:6px">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--c-blue);flex-shrink:0"></span>
+        <span lang="pt">Termoacumulador — Electricidade</span><span lang="en">Tank heater — Electricity</span>
       </div>
-    </label>
-
-    <div class="quick-section">
-      <span class="quick-section-lbl"><span lang="pt">Tarifa</span><span lang="en">Rate</span></span>
-      <div class="quick-row" id="quick-cheia"></div>
+      <div style="margin-bottom:.65rem">
+        <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-text3);margin-bottom:.4rem">
+          <span lang="pt">EEM BTN Madeira — potência contratada</span><span lang="en">EEM BTN Madeira — contracted power</span>
+        </div>
+        <div class="quick-row" id="quick-eem-kva"></div>
+        <div class="eem-info-badge" id="eem-info-badge"></div>
+      </div>
+      <label class="big-input" for="kwh-num">
+        <span class="big-input-lbl"><span lang="pt">Electricidade (preço base s/ IVA)</span><span lang="en">Electricity (base price excl. VAT)</span></span>
+        <div class="big-input-row">
+          <input type="number" id="kwh-num" inputmode="decimal" min="0.001" max="2" step="any" value="0.1673">
+          <span class="big-input-unit">€/kWh</span>
+        </div>
+      </label>
+      <div class="quick-section">
+        <span class="quick-section-lbl"><span lang="pt">Outros tarifários</span><span lang="en">Other rates</span></span>
+        <div class="quick-row" id="quick-cheia"></div>
+      </div>
     </div>
 
-    <!-- GÁS -->
+    <!-- GÁS (esquentador) -->
     <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--c-border)">
-    <label class="big-input" for="gas-num">
-      <span class="big-input-lbl"><span lang="pt">Gás natural</span><span lang="en">Natural gas</span></span>
-      <div class="big-input-row">
-        <input type="number" id="gas-num" inputmode="decimal" min="0.01" max="20" step="any" value="0.95">
-        <span class="big-input-unit">€/m³</span>
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-orange);margin-bottom:.65rem;display:flex;align-items:center;gap:6px">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--c-orange);flex-shrink:0"></span>
+        <span lang="pt">Esquentador — Fonte de energia</span><span lang="en">Gas heater — Energy source</span>
       </div>
-    </label>
-    <div class="gas-equiv" id="gas-equiv"></div>
-    <div class="quick-section">
-      <span class="quick-section-lbl"><span lang="pt">Preço típico PT</span><span lang="en">Typical PT price</span></span>
-      <div class="quick-row" id="quick-gas"></div>
+      <div class="gas-tabs">
+        <button class="gas-tab" id="gas-tab-butano" onclick="setGasMode('butano')"><span lang="pt">🟡 Butano (garrafa)</span><span lang="en">🟡 Butane (bottle)</span></button>
+        <button class="gas-tab" id="gas-tab-propano" onclick="setGasMode('propano')"><span lang="pt">🔵 Propano canalizado</span><span lang="en">🔵 Piped propane</span></button>
+        <button class="gas-tab active" id="gas-tab-gasnat" onclick="setGasMode('gasnat')"><span lang="pt">⚪ Gás natural</span><span lang="en">⚪ Natural gas</span></button>
+      </div>
+
+      <!-- BUTANO PANEL -->
+      <div class="gas-panel" id="gas-panel-butano">
+        <label class="big-input" for="gas-butano-price">
+          <span class="big-input-lbl"><span lang="pt">Preço por garrafa (13 kg)</span><span lang="en">Price per bottle (13 kg)</span></span>
+          <div class="big-input-row">
+            <input type="number" id="gas-butano-price" inputmode="decimal" min="1" max="200" step="any" value="32">
+            <span class="big-input-unit">€</span>
+          </div>
+        </label>
+        <div class="gas-equiv" id="butano-badge"></div>
+        <div class="quick-section">
+          <span class="quick-section-lbl"><span lang="pt">Preço típico Madeira</span><span lang="en">Typical Madeira price</span></span>
+          <div class="quick-row" id="quick-butano"></div>
+        </div>
+      </div>
+
+      <!-- PROPANO PANEL -->
+      <div class="gas-panel" id="gas-panel-propano">
+        <div class="car-info" style="margin-bottom:.85rem">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span><span lang="pt">Spelta Madeira · 39 mbar (doméstico) · Termo fixo: 0,15 €/dia</span><span lang="en">Spelta Madeira · 39 mbar (domestic) · Fixed charge: 0.15 €/day</span></span>
+        </div>
+        <div class="escalao-badge" id="propano-escalao-badge"></div>
+      </div>
+
+      <!-- GÁS NATURAL PANEL -->
+      <div class="gas-panel active" id="gas-panel-gasnat">
+        <label class="big-input" for="gas-num">
+          <span class="big-input-lbl"><span lang="pt">Gás natural</span><span lang="en">Natural gas</span></span>
+          <div class="big-input-row">
+            <input type="number" id="gas-num" inputmode="decimal" min="0.01" max="20" step="any" value="0.95">
+            <span class="big-input-unit">€/m³</span>
+          </div>
+        </label>
+        <div class="gas-equiv" id="gas-equiv"></div>
+        <div class="quick-section">
+          <span class="quick-section-lbl"><span lang="pt">Preço típico PT</span><span lang="en">Typical PT price</span></span>
+          <div class="quick-row" id="quick-gas"></div>
+        </div>
+      </div>
     </div>
-    </div><!-- /gas wrapper -->
   </div>
 
   <!-- CARD 4: VEREDICTO -->
@@ -706,30 +885,198 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 <script>
 let lang = 'pt';
 let chartState = null;
+let gasMode = 'gasnat';       // 'butano' | 'propano' | 'gasnat'
+let termoEquipMode = 'pronto';
+let esqEquipMode   = 'pronto';
+let eemKvaIdx = null;         // null = manual; 0-5 = EEM kVA index
 
-// Constants
-const KJ_KG_C = 4.186;            // kJ / (kg · °C) — calor específico da água
-const CO2_GRID_PT = 0.16;         // kg CO2 / kWh (mix elétrico PT 2024)
-const CO2_GAS_NAT = 0.20;         // kg CO2 / kWh de gás natural queimado
-const TREE_KG_YR = 21;            // kg CO2 absorvido por árvore adulta / ano
-const KWH_PER_M3_GAS = 10.55;     // 1 m³ gás natural ≈ 10,55 kWh (PCS PT)
+// ── CONSTANTS ──
+const KJ_KG_C           = 4.186;
+const CO2_GRID_PT       = 0.16;
+const CO2_GAS_NAT       = 0.20;
+const TREE_KG_YR        = 21;
+const KWH_PER_M3_GAS    = 10.55;   // gás natural PT (PCS)
+const KWH_PER_M3_BUTANO = 32.4;    // butano (PCI ≈ 116.5 MJ/m³)
+const M3_PER_GARRAFA    = 5.1;     // m³ por garrafa 13 kg
+const KWH_PER_KG_PROPANO= 12.87;   // propano (PCI = 46.35 MJ/kg)
+const PROPANO_FIXO_DIA  = 0.15;    // €/dia termo fixo Spelta Madeira
 
-function getGasPriceKwh() {
+// EEM BTN Madeira — preços base s/ IVA
+const EEM_BTN = [
+  {kva:1.15,  kwh:0.1646, dia:0.0720},
+  {kva:2.3,   kwh:0.1673, dia:0.1286},
+  {kva:3.45,  kwh:0.1673, dia:0.1788},
+  {kva:4.6,   kwh:0.1673, dia:0.2330},
+  {kva:5.75,  kwh:0.1673, dia:0.2850},
+  {kva:6.9,   kwh:0.1673, dia:0.3386},
+];
+
+// Spelta Madeira propano canalizado — escalões por kg/ano (39 mbar, aprox.)
+const SPELTA = [
+  {label:'E1', maxKg:75,        priceKg:3.65},
+  {label:'E2', maxKg:200,       priceKg:3.45},
+  {label:'E3', maxKg:500,       priceKg:3.20},
+  {label:'E4', maxKg:1000,      priceKg:3.00},
+  {label:'E5', maxKg:Infinity,  priceKg:2.80},
+];
+
+// ── GAS MODE ──
+function setGasMode(mode) {
+  gasMode = mode;
+  ['butano','propano','gasnat'].forEach(m => {
+    const btn = $('gas-tab-'+m), panel = $('gas-panel-'+m);
+    if (btn)   btn.classList.toggle('active', m === mode);
+    if (panel) panel.classList.toggle('active', m === mode);
+  });
+  updateDynamicBadges();
+  calc();
+}
+
+// ── EQUIPMENT MODE ──
+function setEquipMode(who, mode) {
+  if (who === 'termo') termoEquipMode = mode; else esqEquipMode = mode;
+  $(`${who}-equip-pronto-btn`).classList.toggle('active', mode === 'pronto');
+  $(`${who}-equip-prest-btn`).classList.toggle('active', mode === 'prest');
+  $(`${who}-pronto-panel`).style.display = mode === 'pronto' ? '' : 'none';
+  $(`${who}-prest-panel`).style.display  = mode === 'prest'  ? '' : 'none';
+  updateMonthlyDisplay(who);
+  calc();
+}
+
+// ── EEM kVA SELECTOR ──
+function selectEemKva(idx) {
+  eemKvaIdx = (eemKvaIdx === idx) ? null : idx;
+  document.querySelectorAll('.kva-chip').forEach((c,i) => c.classList.toggle('active', i === eemKvaIdx));
+  if (eemKvaIdx !== null) {
+    $('kwh-num').value = EEM_BTN[eemKvaIdx].kwh.toString();
+  }
+  updateEemBadge();
+  calc();
+}
+
+function updateEemBadge() {
+  const el = $('eem-info-badge');
+  if (!el) return;
+  if (eemKvaIdx === null) { el.style.display = 'none'; return; }
+  const t = EEM_BTN[eemKvaIdx];
+  const L = lang === 'pt';
+  el.style.display = '';
+  el.innerHTML = L
+    ? `${t.kva} kVA · Termo fixo: <strong>${t.dia.toFixed(4).replace('.',',')} €/dia</strong> (+22% IVA) · IVA energia: 4% nos primeiros 200 kWh/mês, 22% acima`
+    : `${t.kva} kVA · Fixed charge: <strong>${t.dia.toFixed(4)} €/day</strong> (+22% VAT) · Energy VAT: 4% on first 200 kWh/month, 22% above`;
+}
+
+// ── PROPANO ESCALÃO ──
+function getPropanoEscalao(kgAno) {
+  return SPELTA.find(e => kgAno <= e.maxKg) || SPELTA[SPELTA.length-1];
+}
+
+function updatePropanoBadge(energiaUtilDia) {
+  const el = $('propano-escalao-badge');
+  if (!el) return;
+  const kgAno = (energiaUtilDia * 365) / KWH_PER_KG_PROPANO;
+  const esc = getPropanoEscalao(kgAno);
+  const L = lang === 'pt';
+  el.innerHTML = L
+    ? `Estimativa: <strong>${Math.round(kgAno)} kg/ano</strong> → Escalão <strong>${esc.label}</strong> · ${esc.priceKg.toFixed(2).replace('.',',')} €/kg · ≈ ${(esc.priceKg/KWH_PER_KG_PROPANO).toFixed(4).replace('.',',')} €/kWh`
+    : `Estimate: <strong>${Math.round(kgAno)} kg/yr</strong> → Tier <strong>${esc.label}</strong> · ${esc.priceKg.toFixed(2)} €/kg · ≈ ${(esc.priceKg/KWH_PER_KG_PROPANO).toFixed(4)} €/kWh`;
+}
+
+// ── BUTANO BADGE ──
+function updateButanoBadge() {
+  const el = $('butano-badge');
+  if (!el) return;
+  const price = readNum('gas-butano-price', 32, 1, 500);
+  const m3p = price / M3_PER_GARRAFA;
+  const kwhp = m3p / KWH_PER_M3_BUTANO;
+  const L = lang === 'pt';
+  const sep = L ? ',' : '.';
+  el.innerHTML = `${price.toFixed(2).replace('.',sep)} € / 13 kg → <strong>${m3p.toFixed(2).replace('.',sep)} €/m³</strong>&nbsp;·&nbsp;≈ ${kwhp.toFixed(4).replace('.',sep)} €/kWh &nbsp;·&nbsp; 1 m³ ≈ ${L?'32,4':'32.4'} kWh (PCI butano)`;
+}
+
+// ── GAS PRICE kWh ──
+function getGasPriceKwh(energiaUtilDia) {
+  if (gasMode === 'butano') {
+    const bottlePrice = readNum('gas-butano-price', 32, 1, 500);
+    return (bottlePrice / M3_PER_GARRAFA) / KWH_PER_M3_BUTANO;
+  }
+  if (gasMode === 'propano') {
+    const kgAno = (energiaUtilDia * 365) / KWH_PER_KG_PROPANO;
+    const esc = getPropanoEscalao(kgAno);
+    return esc.priceKg / KWH_PER_KG_PROPANO;
+  }
+  // gasnat
   const raw = $('gas-num').value.toString().replace(',', '.');
   const v = parseFloat(raw);
   return isNaN(v) ? 0 : v / KWH_PER_M3_GAS;
 }
 
+function getGasFixedAnnual() {
+  return gasMode === 'propano' ? PROPANO_FIXO_DIA * 365 : 0;
+}
+
+// ── ELECTRICITY EFFECTIVE PRICE (with tiered IVA if EEM selected) ──
+function getElecEffectivePrice(monthlyKwh) {
+  const base = readNum('kwh-num', 0.1673, 0.001, 5);
+  if (eemKvaIdx === null) return base; // manual — use as-is (assume already inc. taxes)
+  // EEM: IVA 4% first 200 kWh/month, 22% above
+  if (monthlyKwh <= 0) return base * 1.04;
+  const first = Math.min(200, monthlyKwh);
+  const above = Math.max(0, monthlyKwh - 200);
+  return (first * base * 1.04 + above * base * 1.22) / monthlyKwh;
+}
+
+function getElecFixedAnnual() {
+  if (eemKvaIdx === null) return 0;
+  return EEM_BTN[eemKvaIdx].dia * 365 * 1.22; // potência + 22% IVA
+}
+
+// ── INSTALLMENT CALC ──
+function calcInstallment(total, entrada, n, taxaAnual) {
+  const principal = Math.max(0, total - entrada);
+  if (principal <= 0 || n <= 0) return {monthly:0, totalPaid:total};
+  const r = taxaAnual / 100 / 12;
+  const monthly = r < 0.00001 ? principal / n : principal * r / (1 - Math.pow(1+r, -n));
+  return {monthly, totalPaid: entrada + monthly * n};
+}
+
+function getEquipCost(who) {
+  const mode = who === 'termo' ? termoEquipMode : esqEquipMode;
+  if (mode === 'pronto') {
+    return readNum(who+'-preco', 0, 0, 999999);
+  }
+  const total   = readNum(who+'-prest-total',   0, 0, 999999);
+  const entrada = readNum(who+'-prest-entrada',  0, 0, 999999);
+  const n       = readNum(who+'-prest-n',       24, 1, 360);
+  const taxa    = readNum(who+'-prest-taxa',      0, 0, 99);
+  return calcInstallment(total, entrada, n, taxa).totalPaid;
+}
+
+function updateMonthlyDisplay(who) {
+  const el = $(`${who}-prest-monthly`);
+  if (!el) return;
+  const total   = readNum(who+'-prest-total',   0, 0, 999999);
+  const entrada = readNum(who+'-prest-entrada',  0, 0, 999999);
+  const n       = readNum(who+'-prest-n',       24, 1, 360);
+  const taxa    = readNum(who+'-prest-taxa',      0, 0, 99);
+  el.textContent = eur(calcInstallment(total, entrada, n, taxa).monthly);
+}
+
+// ── GAS NATURAL BADGE ──
 function updateGasEquiv() {
   const raw = $('gas-num').value.toString().replace(',', '.');
   const v = parseFloat(raw);
   const L = lang === 'pt';
   if (isNaN(v)) { $('gas-equiv').innerHTML = ''; return; }
   const kwh = v / KWH_PER_M3_GAS;
-  const tail = L
-    ? `&nbsp;·&nbsp; 1 m³ ≈ 10,55 kWh (PCS gás natural PT)`
-    : `&nbsp;·&nbsp; 1 m³ ≈ 10.55 kWh (PT natural gas)`;
+  const tail = L ? `&nbsp;·&nbsp; 1 m³ ≈ 10,55 kWh (PCS gás natural PT)` : `&nbsp;·&nbsp; 1 m³ ≈ 10.55 kWh (PT natural gas)`;
   $('gas-equiv').innerHTML = `≈ ${kwh.toFixed(4).replace('.', ',')} €/kWh${tail}`;
+}
+
+function updateDynamicBadges() {
+  updateButanoBadge();
+  updateEemBadge();
+  updateGasEquiv();
 }
 
 const T = {
@@ -762,6 +1109,8 @@ const T = {
     barEnergia: 'Electricidade',
     barGas: 'Gás',
     barManut: 'Manutenção',
+    barEquip: 'Equipamento',
+    barFixo: 'Encargos fixos',
 
     co2Lbl: 'CO₂ evitado',
     co2Lbl2: 'CO₂ acrescido',
@@ -780,11 +1129,11 @@ const T = {
       '<strong>CO₂:</strong> 0,16 kg/kWh para electricidade do mix PT (2024, ~75% renovável); 0,20 kg/kWh para gás natural (combustão).',
     ],
     fcells: [
-      {l:'Termoacumulador', v:'Resistência eléctrica<br>Compatível com solar PV e bi-horário<br>Custo do equipamento não considerado'},
-      {l:'Esquentador a gás', v:'Aquecimento on-demand<br>Inspecção obrigatória de 2/2 anos<br>Custo do equipamento não considerado'},
+      {l:'Termoacumulador', v:'Resistência eléctrica<br>Compatível com solar PV e bi-horário<br>Custo do equipamento incluído se preenchido'},
+      {l:'Esquentador a gás', v:'Aquecimento on-demand<br>Inspecção obrigatória de 2/2 anos<br>Custo do equipamento incluído se preenchido'},
       {l:'Sobre', v:'Ferramenta indicativa independente<br>Não considera variações futuras de preços'},
     ],
-    fNote: 'Valores meramente indicativos. A comparação é feita com base no custo de energia (kWh útil) — não inclui custo de aquisição dos equipamentos. Não considera subsídios, variações futuras de preços de energia ou custos de instalação.',
+    fNote: 'Valores meramente indicativos. A comparação inclui o custo de aquisição se preenchido. Escalões propano Spelta Madeira são aproximados — confirma na tua fatura. EEM BTN Madeira: IVA 4% nos primeiros 200 kWh/mês (≤6,9 kVA), 22% acima.',
 
     quickLitros: [
       {l:'1 pessoa · 60', v:60},
@@ -795,16 +1144,20 @@ const T = {
     ],
     quickTfria: [{l:'Inverno · 12', v:12},{l:'Média anual · 14', v:14},{l:'Verão · 18', v:18}],
     quickTquente: [{l:'Duche · 40', v:40},{l:'Confortável · 42', v:42},{l:'Lava-loiça · 50', v:50},{l:'Anti-Legionella · 60', v:60}],
-    quickAnos: [{l:'5 anos', v:5},{l:'8 anos', v:8},{l:'10 anos', v:10},{l:'15 anos', v:15}],
+    quickAnos: [{l:'5 anos', v:5},{l:'8 anos', v:8},{l:'10 anos', v:10},{l:'15 anos', v:15},{l:'20 anos', v:20}],
     quickCheia: [
-      {l:'Tarifa social · 0,12', v:0.12},
+      {l:'EDP social · 0,12', v:0.12},
       {l:'Simples · 0,15', v:0.15},
-      {l:'Indexada alta · 0,22', v:0.22},
+      {l:'Indexada · 0,22', v:0.22},
     ],
     quickGas: [
-      {l:'Tarifa social · 0,75', v:0.75},
+      {l:'Social · 0,75', v:0.75},
       {l:'Típico · 0,95', v:0.95},
       {l:'Mais caro · 1,15', v:1.15},
+    ],
+    quickButano: [
+      {l:'32 €', v:32},
+      {l:'35 €', v:35},
     ],
     yearsTxt: (n) => n === 1 ? '1 ano' : `${n} anos`,
   },
@@ -837,6 +1190,8 @@ const T = {
     barEnergia: 'Electricity',
     barGas: 'Gas',
     barManut: 'Maintenance',
+    barEquip: 'Equipment',
+    barFixo: 'Fixed charges',
 
     co2Lbl: 'CO₂ avoided',
     co2Lbl2: 'CO₂ added',
@@ -855,11 +1210,11 @@ const T = {
       '<strong>CO₂:</strong> 0.16 kg/kWh for PT grid electricity (2024, ~75% renewable); 0.20 kg/kWh for natural gas combustion.',
     ],
     fcells: [
-      {l:'Tank heater', v:'Electric resistance<br>Compatible with solar PV and off-peak<br>Equipment cost not considered'},
-      {l:'Gas heater', v:'On-demand heating<br>Mandatory inspection every 2 yrs (PT)<br>Equipment cost not considered'},
+      {l:'Tank heater', v:'Electric resistance<br>Compatible with solar PV and off-peak<br>Equipment cost included if filled in'},
+      {l:'Gas heater', v:'On-demand heating<br>Mandatory inspection every 2 yrs (PT)<br>Equipment cost included if filled in'},
       {l:'About', v:'Independent indicative tool<br>Does not consider future price variations'},
     ],
-    fNote: 'Indicative values only. Comparison is based on energy cost (useful kWh) — does not include equipment purchase price. Does not consider incentives, future energy price changes or installation costs.',
+    fNote: 'Indicative values only. Equipment cost included if provided. Spelta Madeira propane tiers are approximate — verify on your bill. EEM BTN Madeira: 4% VAT on first 200 kWh/month (≤6.9 kVA), 22% above.',
 
     quickLitros: [
       {l:'1 person · 60', v:60},
@@ -870,16 +1225,20 @@ const T = {
     ],
     quickTfria: [{l:'Winter · 12', v:12},{l:'Annual avg · 14', v:14},{l:'Summer · 18', v:18}],
     quickTquente: [{l:'Shower · 40', v:40},{l:'Comfort · 42', v:42},{l:'Dishes · 50', v:50},{l:'Anti-Legionella · 60', v:60}],
-    quickAnos: [{l:'5 years', v:5},{l:'8 years', v:8},{l:'10 years', v:10},{l:'15 years', v:15}],
+    quickAnos: [{l:'5 years', v:5},{l:'8 years', v:8},{l:'10 years', v:10},{l:'15 years', v:15},{l:'20 years', v:20}],
     quickCheia: [
-      {l:'Social rate · 0.12', v:0.12},
+      {l:'Social · 0.12', v:0.12},
       {l:'Standard · 0.15', v:0.15},
-      {l:'Peak indexed · 0.22', v:0.22},
+      {l:'Indexed · 0.22', v:0.22},
     ],
     quickGas: [
-      {l:'Social rate · 0.75', v:0.75},
+      {l:'Social · 0.75', v:0.75},
       {l:'Typical · 0.95', v:0.95},
       {l:'High · 1.15', v:1.15},
+    ],
+    quickButano: [
+      {l:'32 €', v:32},
+      {l:'35 €', v:35},
     ],
     yearsTxt: (n) => n === 1 ? '1 year' : `${n} years`,
   }
@@ -915,7 +1274,8 @@ function validate() {
     {id:'termo-manut', lbl: L?'Manutenção termoacumulador':'Tank maintenance'},
     {id:'esq-manut',   lbl: L?'Manutenção esquentador':'Gas maintenance'},
     {id:'kwh-num',     lbl: L?'Preço electricidade':'Electricity price'},
-    {id:'gas-num',     lbl: L?'Preço do gás':'Gas price'},
+    ...(gasMode === 'gasnat' ? [{id:'gas-num', lbl: L?'Preço do gás':'Gas price'}] : []),
+    ...(gasMode === 'butano' ? [{id:'gas-butano-price', lbl: L?'Preço da garrafa':'Bottle price'}] : []),
   ];
 
   const missing = fields.filter(f => isEmpty(f.id));
@@ -996,7 +1356,7 @@ function computeScenario(litros, dT, manut, anos, pElec, gasPrice, esqManut) {
 // ── CALC ──
 function calc() {
   const t = T[lang];
-  updateGasEquiv();
+  updateDynamicBadges();
 
   const { missing, crossError } = validate();
   if (missing.length > 0 || crossError) {
@@ -1008,23 +1368,46 @@ function calc() {
   const litros     = readNum('litros-num', 120, 1, 5000);
   const tFria      = readNum('tfria-num', 14, 0, 50);
   const tQu        = readNum('tquente-num', 40, 1, 90);
-  const anos       = Math.round(readNum('anos-num', 10, 1, 25));
+  const anos       = Math.round(readNum('anos-num', 10, 1, 30));
   const termoManut = readNum('termo-manut', 30, 0, 5000);
   const esqManut   = readNum('esq-manut', 80, 0, 5000);
-  const pElec      = readNum('kwh-num', 0.15, 0.001, 5);
-  const pGas       = getGasPriceKwh();
 
   const dT = tQu - tFria;
+  const energiaUtilDia = litros * dT * KJ_KG_C / 3600; // kWh/dia
+
+  // Electricity effective price (IVA tiered if EEM selected)
+  const monthlyKwh = energiaUtilDia * 30;
+  const pElec = getElecEffectivePrice(monthlyKwh);
+  const elecFixedAnual = getElecFixedAnnual();
+
+  // Gas price and fixed costs
+  const pGas = getGasPriceKwh(energiaUtilDia);
+  const gasFixedAnual = getGasFixedAnnual();
+
+  // Update propano badge
+  if (gasMode === 'propano') updatePropanoBadge(energiaUtilDia);
+
+  // Equipment costs
+  const termoEquip = getEquipCost('termo');
+  const esqEquip   = getEquipCost('esq');
 
   const r = computeScenario(litros, dT, termoManut, anos, pElec, pGas, esqManut);
 
-  const diff = r.esqTco - r.termoTco; // positive => termo wins
+  // Full annual totals including fixed charges
+  const termoAnualFull = r.termoAnualTot + elecFixedAnual;
+  const esqAnualFull   = r.esqAnualTot   + gasFixedAnual;
 
-  // Cumulative
+  // Full TCO including equipment
+  const termoTcoFull = termoEquip + termoAnualFull * anos;
+  const esqTcoFull   = esqEquip   + esqAnualFull   * anos;
+
+  const diff = esqTcoFull - termoTcoFull; // positive => termo wins
+
+  // Cumulative (equipment at year 0)
   const termoCum = [], esqCum = [];
   for (let y = 0; y <= anos; y++) {
-    termoCum.push(r.termoAnualTot * y);
-    esqCum.push(r.esqAnualTot * y);
+    termoCum.push(termoEquip + termoAnualFull * y);
+    esqCum.push(esqEquip   + esqAnualFull   * y);
   }
 
   // Parity year
@@ -1043,7 +1426,7 @@ function calc() {
 
   // ── VERDICT ──
   const horizonTxt = t.yearsTxt(anos);
-  const tieEps = Math.max(40, r.termoTco * 0.005);
+  const tieEps = Math.max(40, termoTcoFull * 0.005);
   let verdictHtml = '';
   let winner = '';
   if (Math.abs(diff) < tieEps) {
@@ -1106,22 +1489,26 @@ function calc() {
     </div>`;
 
   // ── METRICS ──
-  const termoMes = r.termoAnualTot / 12;
-  const esqMes = r.esqAnualTot / 12;
+  const termoMes = termoAnualFull / 12;
+  const esqMes   = esqAnualFull   / 12;
   $('metrics').innerHTML = `
-    <div class="met"><div class="met-lbl">${t.mTcoTermo}</div><div class="met-val termo">${eur0(r.termoTco)}</div><div class="met-sub">${t.mTcoTermoSub}</div></div>
-    <div class="met"><div class="met-lbl">${t.mTcoEsq}</div><div class="met-val esq">${eur0(r.esqTco)}</div><div class="met-sub">${t.mTcoEsqSub}</div></div>
+    <div class="met"><div class="met-lbl">${t.mTcoTermo}</div><div class="met-val termo">${eur0(termoTcoFull)}</div><div class="met-sub">${t.mTcoTermoSub}</div></div>
+    <div class="met"><div class="met-lbl">${t.mTcoEsq}</div><div class="met-val esq">${eur0(esqTcoFull)}</div><div class="met-sub">${t.mTcoEsqSub}</div></div>
     <div class="met"><div class="met-lbl">${t.mMesTermo}</div><div class="met-val termo">${eur0(termoMes)}</div><div class="met-sub">${t.mMesTermoSub}</div></div>
     <div class="met"><div class="met-lbl">${t.mMesEsq}</div><div class="met-val esq">${eur0(esqMes)}</div><div class="met-sub">${t.mMesEsqSub}</div></div>`;
 
   // ── BARS ──
   const termoParts = [
-    {lbl: t.barEnergia, val: r.termoEnergiaAno*anos, cls: 'fill-termo-1'},
-    {lbl: t.barManut,   val: termoManut*anos,         cls: 'fill-termo-3'},
+    {lbl: t.barEquip,   val: termoEquip,                         cls: 'fill-termo-2'},
+    {lbl: t.barEnergia, val: r.termoEnergiaAno*anos,             cls: 'fill-termo-1'},
+    {lbl: t.barFixo,    val: elecFixedAnual*anos,                cls: 'fill-termo-3'},
+    {lbl: t.barManut,   val: termoManut*anos,                    cls: 'fill-termo-3'},
   ];
   const esqParts = [
-    {lbl: t.barGas,   val: r.esqEnergiaAno*anos, cls: 'fill-esq-1'},
-    {lbl: t.barManut, val: esqManut*anos,         cls: 'fill-esq-3'},
+    {lbl: t.barEquip,  val: esqEquip,                            cls: 'fill-esq-2'},
+    {lbl: t.barGas,    val: r.esqEnergiaAno*anos,                cls: 'fill-esq-1'},
+    {lbl: t.barFixo,   val: gasFixedAnual*anos,                  cls: 'fill-esq-3'},
+    {lbl: t.barManut,  val: esqManut*anos,                       cls: 'fill-esq-3'},
   ];
   const renderBars = (parts, total, head) => {
     return `<div class="bars-block">
@@ -1135,7 +1522,7 @@ function calc() {
       }).join('')}
     </div>`;
   };
-  $('bars').innerHTML = renderBars(termoParts, r.termoTco, t.barsTermo) + renderBars(esqParts, r.esqTco, t.barsEsq);
+  $('bars').innerHTML = renderBars(termoParts, termoTcoFull, t.barsTermo) + renderBars(esqParts, esqTcoFull, t.barsEsq);
 
   // ── CO2 ──
   const co2Termo = r.energiaUtilDia * 365 * anos * CO2_GRID_PT;
@@ -1335,32 +1722,61 @@ function toggleAcc() {
 function renderQuick() {
   const t = T[lang];
   const mk = (id, items, target, formatter, chipCls) => {
+    const el = $(id); if (!el) return;
     const cls = chipCls || 'quick-chip';
-    $(id).innerHTML = items.map(q => `<button class="${cls}" data-v="${q.v}">${q.l}</button>`).join('');
+    el.innerHTML = items.map(q => `<button class="${cls}" data-v="${q.v}">${q.l}</button>`).join('');
     document.querySelectorAll(`#${id} .${cls}`).forEach(b => {
       b.addEventListener('click', () => {
-        const el = $(target);
-        el.value = formatter(parseFloat(b.dataset.v));
+        $(target).value = formatter(parseFloat(b.dataset.v));
         calc();
       });
     });
   };
-  const numStr = v => v.toString(); // always period — valid for type="number" inputs
-  mk('quick-litros',  t.quickLitros,  'litros-num', numStr);
-  mk('quick-tfria',   t.quickTfria,   'tfria-num',  numStr);
-  mk('quick-tquente', t.quickTquente, 'tquente-num',numStr);
-  mk('quick-anos',    t.quickAnos,    'anos-num',   numStr);
-  mk('quick-cheia',   t.quickCheia,   'kwh-num',    numStr);
-  mk('quick-gas',     t.quickGas,     'gas-num',    numStr);
+  const numStr = v => v.toString();
+  mk('quick-litros',  t.quickLitros,  'litros-num',       numStr);
+  mk('quick-tfria',   t.quickTfria,   'tfria-num',         numStr);
+  mk('quick-tquente', t.quickTquente, 'tquente-num',       numStr);
+  mk('quick-anos',    t.quickAnos,    'anos-num',          numStr);
+  mk('quick-cheia',   t.quickCheia,   'kwh-num',           numStr);
+  mk('quick-gas',     t.quickGas,     'gas-num',           numStr);
+  mk('quick-butano',  t.quickButano,  'gas-butano-price',  numStr);
+
+  // EEM kVA chips
+  const eemRow = $('quick-eem-kva');
+  if (eemRow) {
+    eemRow.innerHTML = EEM_BTN.map((e,i) =>
+      `<button class="kva-chip${eemKvaIdx===i?' active':''}" onclick="selectEemKva(${i})">${e.kva} kVA</button>`
+    ).join('');
+  }
+
+  updateEemBadge();
+  updateDynamicBadges();
 }
 
 // ── EVENTS ──
 [
   'litros-num','tfria-num','tquente-num','anos-num',
   'termo-manut','esq-manut',
-  'kwh-num','gas-num',
+  'kwh-num','gas-num','gas-butano-price',
+  'termo-preco','esq-preco',
 ].forEach(id => {
-  $(id).addEventListener('input', calc);
+  const el = $(id); if (el) el.addEventListener('input', calc);
+});
+
+// Gas equiv badge on gas-num
+const gasNumEl = $('gas-num');
+if (gasNumEl) gasNumEl.addEventListener('input', updateGasEquiv);
+
+// Butano badge
+const butanoEl = $('gas-butano-price');
+if (butanoEl) butanoEl.addEventListener('input', updateButanoBadge);
+
+// Equipment installment inputs — update monthly display and calc
+['termo','esq'].forEach(who => {
+  ['prest-total','prest-entrada','prest-n','prest-taxa'].forEach(field => {
+    const el = $(`${who}-${field}`);
+    if (el) el.addEventListener('input', () => { updateMonthlyDisplay(who); calc(); });
+  });
 });
 
 // ── LANG ──
@@ -1374,7 +1790,7 @@ function setLang(l) {
   btnEN.classList.toggle('active', l === 'en');
   localStorage.setItem('aa-lang', l);
   renderQuick();
-  updateGasEquiv();
+  updateDynamicBadges();
   calc();
 }
 btnPT.addEventListener('click', () => setLang('pt'));

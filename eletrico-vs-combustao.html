@@ -532,10 +532,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
           </div>
         </div>
 
-        <label class="mini-input" for="ev-preco">
-          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
-          <span class="mini-val"><input type="text" id="ev-preco" inputmode="decimal" value="35.000"><span class="mini-unit">€</span></span>
-        </label>
         <div class="equip-toggle-row">
           <span class="equip-toggle-lbl"><span lang="pt">Pagamento</span><span lang="en">Payment</span></span>
           <div class="equip-toggle-btns">
@@ -543,8 +539,15 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
             <button class="equip-btn" id="ev-equip-prest-btn" onclick="setCarEquipMode('ev','prest')"><span lang="pt">Prestações</span><span lang="en">Financed</span></button>
           </div>
         </div>
+        <label class="mini-input" for="ev-preco" style="margin-top:4px">
+          <span class="mini-lbl" id="ev-preco-lbl">
+            <span class="lbl-pronto"><span lang="pt">Preço</span><span lang="en">Price</span></span>
+            <span class="lbl-prest" style="display:none"><span lang="pt">Valor do carro</span><span lang="en">Car value</span></span>
+          </span>
+          <span class="mini-val"><input type="text" id="ev-preco" inputmode="decimal" value="35.000"><span class="mini-unit">€</span></span>
+        </label>
         <div class="prest-panel" id="ev-prest-panel" style="display:none">
-          <label class="mini-input" for="ev-prest-entrada">
+          <label class="mini-input" for="ev-prest-entrada" style="margin-top:4px">
             <span class="mini-lbl"><span lang="pt">Entrada inicial</span><span lang="en">Down payment</span></span>
             <span class="mini-val"><input type="number" id="ev-prest-entrada" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
           </label>
@@ -591,24 +594,27 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
           </div>
         </div>
 
-        <label class="mini-input" for="ice-preco">
-          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
-          <span class="mini-val"><input type="text" id="ice-preco" inputmode="decimal" value="28.000"><span class="mini-unit">€</span></span>
-        </label>
-        <div class="quick-row" style="margin:4px 0 4px">
-          <button class="quick-chip" id="chip-ja-tenho" onclick="setIceOwned()">
-            <span lang="pt">Já tenho · €0</span><span lang="en">I own it · €0</span>
-          </button>
-        </div>
-        <div class="equip-toggle-row" style="margin-top:2px">
+        <div class="equip-toggle-row">
           <span class="equip-toggle-lbl"><span lang="pt">Pagamento</span><span lang="en">Payment</span></span>
           <div class="equip-toggle-btns">
             <button class="equip-btn active" id="ice-equip-pronto-btn" onclick="setCarEquipMode('ice','pronto')"><span lang="pt">A pronto</span><span lang="en">Upfront</span></button>
             <button class="equip-btn" id="ice-equip-prest-btn" onclick="setCarEquipMode('ice','prest')"><span lang="pt">Prestações</span><span lang="en">Financed</span></button>
           </div>
         </div>
+        <label class="mini-input" for="ice-preco" style="margin-top:4px">
+          <span class="mini-lbl" id="ice-preco-lbl">
+            <span class="lbl-pronto"><span lang="pt">Preço</span><span lang="en">Price</span></span>
+            <span class="lbl-prest" style="display:none"><span lang="pt">Valor do carro</span><span lang="en">Car value</span></span>
+          </span>
+          <span class="mini-val"><input type="text" id="ice-preco" inputmode="decimal" value="28.000"><span class="mini-unit">€</span></span>
+        </label>
+        <div id="ice-pronto-chips" style="margin:4px 0 4px">
+          <button class="quick-chip" id="chip-ja-tenho" onclick="setIceOwned()">
+            <span lang="pt">Já tenho · €0</span><span lang="en">I own it · €0</span>
+          </button>
+        </div>
         <div class="prest-panel" id="ice-prest-panel" style="display:none">
-          <label class="mini-input" for="ice-prest-entrada">
+          <label class="mini-input" for="ice-prest-entrada" style="margin-top:4px">
             <span class="mini-lbl"><span lang="pt">Entrada inicial</span><span lang="en">Down payment</span></span>
             <span class="mini-val"><input type="number" id="ice-prest-entrada" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
           </label>
@@ -742,6 +748,17 @@ function setCarEquipMode(who, mode) {
   $(`${who}-equip-pronto-btn`).classList.toggle('active', mode === 'pronto');
   $(`${who}-equip-prest-btn`).classList.toggle('active', mode === 'prest');
   $(`${who}-prest-panel`).style.display = mode === 'prest' ? '' : 'none';
+  // Toggle label
+  const lbl = $(`${who}-preco-lbl`);
+  if (lbl) {
+    lbl.querySelector('.lbl-pronto').style.display = mode === 'pronto' ? '' : 'none';
+    lbl.querySelector('.lbl-prest').style.display  = mode === 'prest'  ? '' : 'none';
+  }
+  // ICE: hide "Já tenho" chip in prestações mode
+  if (who === 'ice') {
+    const chips = $('ice-pronto-chips');
+    if (chips) chips.style.display = mode === 'pronto' ? '' : 'none';
+  }
   updateCarMonthly(who);
   calc();
 }

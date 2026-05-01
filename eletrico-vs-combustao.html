@@ -452,10 +452,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
     </div>
   </nav>
   <div class="hero-body">
-    <div class="hero-kicker">
-      <span lang="pt">Gratuito · Sem registos · Privado</span>
-      <span lang="en">Free · No sign-up · Private</span>
-    </div>
     <h1>
       <span lang="pt">Eléctrico ou <em>combustão</em>?</span>
       <span lang="en">Electric or <em>combustion</em>?</span>
@@ -539,30 +535,19 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
             <button class="equip-btn" id="ev-equip-prest-btn" onclick="setCarEquipMode('ev','prest')"><span lang="pt">Prestações</span><span lang="en">Financed</span></button>
           </div>
         </div>
-        <label class="mini-input" for="ev-preco" style="margin-top:4px">
-          <span class="mini-lbl" id="ev-preco-lbl">
-            <span class="lbl-pronto"><span lang="pt">Preço</span><span lang="en">Price</span></span>
-            <span class="lbl-prest" style="display:none"><span lang="pt">Valor do carro</span><span lang="en">Car value</span></span>
-          </span>
+        <label class="mini-input" id="ev-preco-row" for="ev-preco" style="margin-top:4px">
+          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
           <span class="mini-val"><input type="text" id="ev-preco" inputmode="decimal" value="35.000"><span class="mini-unit">€</span></span>
         </label>
         <div class="prest-panel" id="ev-prest-panel" style="display:none">
-          <label class="mini-input" for="ev-prest-entrada" style="margin-top:4px">
-            <span class="mini-lbl"><span lang="pt">Entrada inicial</span><span lang="en">Down payment</span></span>
-            <span class="mini-val"><input type="number" id="ev-prest-entrada" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
+          <label class="mini-input" for="ev-prest-monthly" style="margin-top:4px">
+            <span class="mini-lbl"><span lang="pt">Prestação mensal</span><span lang="en">Monthly payment</span></span>
+            <span class="mini-val"><input type="number" id="ev-prest-monthly" inputmode="decimal" min="0" max="99999" step="any" value="500"><span class="mini-unit">€/mês</span></span>
           </label>
           <label class="mini-input" for="ev-prest-n" style="margin-top:4px">
             <span class="mini-lbl"><span lang="pt">Nº prestações</span><span lang="en">No. of instalments</span></span>
             <span class="mini-val"><input type="number" id="ev-prest-n" inputmode="numeric" min="1" max="360" step="1" value="48"><span class="mini-unit"><span lang="pt">meses</span><span lang="en">mo</span></span></span>
           </label>
-          <label class="mini-input" for="ev-prest-taxa" style="margin-top:4px">
-            <span class="mini-lbl"><span lang="pt">Taxa juro / ano</span><span lang="en">Interest rate / yr</span></span>
-            <span class="mini-val"><input type="number" id="ev-prest-taxa" inputmode="decimal" min="0" max="50" step="any" value="0"><span class="mini-unit">%</span></span>
-          </label>
-          <div class="monthly-display" style="margin-top:4px">
-            <span class="monthly-lbl"><span lang="pt">Prestação mensal</span><span lang="en">Monthly payment</span></span>
-            <span class="monthly-val" id="ev-prest-monthly">0,00 €</span>
-          </div>
         </div>
         <label class="mini-input" for="ev-cons" style="margin-top:6px">
           <span class="mini-lbl"><span lang="pt">Consumo</span><span lang="en">Consumption</span></span>
@@ -601,11 +586,8 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
             <button class="equip-btn" id="ice-equip-prest-btn" onclick="setCarEquipMode('ice','prest')"><span lang="pt">Prestações</span><span lang="en">Financed</span></button>
           </div>
         </div>
-        <label class="mini-input" for="ice-preco" style="margin-top:4px">
-          <span class="mini-lbl" id="ice-preco-lbl">
-            <span class="lbl-pronto"><span lang="pt">Preço</span><span lang="en">Price</span></span>
-            <span class="lbl-prest" style="display:none"><span lang="pt">Valor do carro</span><span lang="en">Car value</span></span>
-          </span>
+        <label class="mini-input" id="ice-preco-row" for="ice-preco" style="margin-top:4px">
+          <span class="mini-lbl"><span lang="pt">Preço</span><span lang="en">Price</span></span>
           <span class="mini-val"><input type="text" id="ice-preco" inputmode="decimal" value="28.000"><span class="mini-unit">€</span></span>
         </label>
         <div id="ice-pronto-chips" style="margin:4px 0 4px">
@@ -614,22 +596,14 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
           </button>
         </div>
         <div class="prest-panel" id="ice-prest-panel" style="display:none">
-          <label class="mini-input" for="ice-prest-entrada" style="margin-top:4px">
-            <span class="mini-lbl"><span lang="pt">Entrada inicial</span><span lang="en">Down payment</span></span>
-            <span class="mini-val"><input type="number" id="ice-prest-entrada" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
+          <label class="mini-input" for="ice-prest-monthly" style="margin-top:4px">
+            <span class="mini-lbl"><span lang="pt">Prestação mensal</span><span lang="en">Monthly payment</span></span>
+            <span class="mini-val"><input type="number" id="ice-prest-monthly" inputmode="decimal" min="0" max="99999" step="any" value="400"><span class="mini-unit">€/mês</span></span>
           </label>
           <label class="mini-input" for="ice-prest-n" style="margin-top:4px">
             <span class="mini-lbl"><span lang="pt">Nº prestações</span><span lang="en">No. of instalments</span></span>
             <span class="mini-val"><input type="number" id="ice-prest-n" inputmode="numeric" min="1" max="360" step="1" value="48"><span class="mini-unit"><span lang="pt">meses</span><span lang="en">mo</span></span></span>
           </label>
-          <label class="mini-input" for="ice-prest-taxa" style="margin-top:4px">
-            <span class="mini-lbl"><span lang="pt">Taxa juro / ano</span><span lang="en">Interest rate / yr</span></span>
-            <span class="mini-val"><input type="number" id="ice-prest-taxa" inputmode="decimal" min="0" max="50" step="any" value="0"><span class="mini-unit">%</span></span>
-          </label>
-          <div class="monthly-display" style="margin-top:4px">
-            <span class="monthly-lbl"><span lang="pt">Prestação mensal</span><span lang="en">Monthly payment</span></span>
-            <span class="monthly-val" id="ice-prest-monthly">0,00 €</span>
-          </div>
         </div>
         <label class="mini-input" for="ice-cons" style="margin-top:6px">
           <span class="mini-lbl"><span lang="pt">Consumo</span><span lang="en">Consumption</span></span>
@@ -748,49 +722,26 @@ function setCarEquipMode(who, mode) {
   $(`${who}-equip-pronto-btn`).classList.toggle('active', mode === 'pronto');
   $(`${who}-equip-prest-btn`).classList.toggle('active', mode === 'prest');
   $(`${who}-prest-panel`).style.display = mode === 'prest' ? '' : 'none';
-  // Toggle label
-  const lbl = $(`${who}-preco-lbl`);
-  if (lbl) {
-    lbl.querySelector('.lbl-pronto').style.display = mode === 'pronto' ? '' : 'none';
-    lbl.querySelector('.lbl-prest').style.display  = mode === 'prest'  ? '' : 'none';
-  }
+  // In prestações mode hide price row (total = monthly × n)
+  const precoRow = $(`${who}-preco-row`);
+  if (precoRow) precoRow.style.display = mode === 'prest' ? 'none' : '';
   // ICE: hide "Já tenho" chip in prestações mode
   if (who === 'ice') {
     const chips = $('ice-pronto-chips');
     if (chips) chips.style.display = mode === 'pronto' ? '' : 'none';
   }
-  updateCarMonthly(who);
   calc();
-}
-
-function calcInstallment(total, entrada, n, taxaAnual) {
-  const principal = Math.max(0, total - entrada);
-  if (principal <= 0 || n <= 0) return { monthly: 0, totalPaid: Math.max(0, total) };
-  const r = taxaAnual / 100 / 12;
-  const monthly = r < 0.00001 ? principal / n : principal * r / (1 - Math.pow(1 + r, -n));
-  return { monthly, totalPaid: entrada + monthly * n };
-}
-
-function updateCarMonthly(who) {
-  const el = $(`${who}-prest-monthly`);
-  if (!el) return;
-  const precoStr  = $(who === 'ev' ? 'ev-preco' : 'ice-preco').value;
-  const total     = parseFloat(precoStr.replace(/\./g,'').replace(',','.')) || 0;
-  const entrada   = readNum(`${who}-prest-entrada`, 0, 0, 999999);
-  const n         = readNum(`${who}-prest-n`, 48, 1, 360);
-  const taxa      = readNum(`${who}-prest-taxa`, 0, 0, 99);
-  el.textContent  = eur(calcInstallment(total, entrada, n, taxa).monthly);
 }
 
 function getCarPrice(who) {
   const mode = who === 'ev' ? evEquipMode : iceEquipMode;
-  const raw  = $(who === 'ev' ? 'ev-preco' : 'ice-preco').value;
-  const total = parseFloat(raw.replace(/\./g,'').replace(',','.')) || 0;
-  if (mode === 'pronto') return total;
-  const entrada = readNum(`${who}-prest-entrada`, 0, 0, 999999);
+  if (mode === 'pronto') {
+    const raw = $(who === 'ev' ? 'ev-preco' : 'ice-preco').value;
+    return parseFloat(raw.replace(/\./g,'').replace(',','.')) || 0;
+  }
+  const monthly = readNum(`${who}-prest-monthly`, 0, 0, 99999);
   const n       = readNum(`${who}-prest-n`, 48, 1, 360);
-  const taxa    = readNum(`${who}-prest-taxa`, 0, 0, 99);
-  return calcInstallment(total, entrada, n, taxa).totalPaid;
+  return monthly * n;
 }
 
 // CO2 factors
@@ -1424,12 +1375,7 @@ function renderQuick() {
     const v = readMoney(id, 0, 0, 1e9);
     el.value = v || '';
   });
-  el.addEventListener('input', () => {
-    // also update monthly display for whichever car this price belongs to
-    if (id === 'ev-preco')  updateCarMonthly('ev');
-    if (id === 'ice-preco') updateCarMonthly('ice');
-    calc();
-  });
+  el.addEventListener('input', () => { calc(); });
   el.addEventListener('blur', () => {
     const v = readMoney(id, 0, 0, 1e9);
     el.value = fmtMoney(v);
@@ -1439,9 +1385,9 @@ function renderQuick() {
 
 // Installment fields
 ['ev','ice'].forEach(who => {
-  ['prest-entrada','prest-n','prest-taxa'].forEach(field => {
+  ['prest-monthly','prest-n'].forEach(field => {
     const el = $(`${who}-${field}`);
-    if (el) el.addEventListener('input', () => { updateCarMonthly(who); calc(); });
+    if (el) el.addEventListener('input', calc);
   });
 });
 [

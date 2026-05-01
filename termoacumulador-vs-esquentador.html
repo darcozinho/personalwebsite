@@ -657,97 +657,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <span><span lang="pt">Aquece on-demand · inspecção obrigatória de 2 em 2 anos (~130 €)</span><span lang="en">On-demand heating · mandatory inspection every 2 years (~130 €)</span></span>
         </div>
-      <!-- EQUIPMENT COST SECTION -->
-      <div class="equip-section">
-        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--c-text3);margin-bottom:.75rem">
-          <span lang="pt">Custo de aquisição</span><span lang="en">Equipment cost</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <!-- TERMO equip -->
-          <div>
-            <div class="equip-row">
-              <span class="equip-system-lbl termo"><span lang="pt">Termoacumulador</span><span lang="en">Tank heater</span></span>
-              <div class="equip-toggle-btns">
-                <button class="equip-btn active" id="termo-equip-pronto-btn" onclick="setEquipMode('termo','pronto')"><span lang="pt">A pronto</span><span lang="en">Upfront</span></button>
-                <button class="equip-btn" id="termo-equip-prest-btn" onclick="setEquipMode('termo','prest')"><span lang="pt">Prestações</span><span lang="en">Financed</span></button>
-              </div>
-            </div>
-            <div id="termo-pronto-panel">
-              <label class="mini-input" for="termo-preco">
-                <span class="mini-lbl"><span lang="pt">Preço total</span><span lang="en">Total price</span></span>
-                <span class="mini-val"><input type="number" id="termo-preco" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
-              </label>
-            </div>
-            <div id="termo-prest-panel" style="display:none">
-              <div class="prest-grid">
-                <label class="mini-input" for="termo-prest-total">
-                  <span class="mini-lbl"><span lang="pt">Valor total</span><span lang="en">Total value</span></span>
-                  <span class="mini-val"><input type="number" id="termo-prest-total" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
-                </label>
-                <label class="mini-input" for="termo-prest-entrada">
-                  <span class="mini-lbl"><span lang="pt">Entrada</span><span lang="en">Down payment</span></span>
-                  <span class="mini-val"><input type="number" id="termo-prest-entrada" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
-                </label>
-              </div>
-              <div class="prest-grid">
-                <label class="mini-input" for="termo-prest-n">
-                  <span class="mini-lbl"><span lang="pt">Nº prestações</span><span lang="en">Instalments</span></span>
-                  <span class="mini-val"><input type="number" id="termo-prest-n" inputmode="numeric" min="1" max="360" step="1" value="24"><span class="mini-unit"><span lang="pt">meses</span><span lang="en">mo</span></span></span>
-                </label>
-                <label class="mini-input" for="termo-prest-taxa">
-                  <span class="mini-lbl"><span lang="pt">Taxa juro / ano</span><span lang="en">Interest / yr</span></span>
-                  <span class="mini-val"><input type="number" id="termo-prest-taxa" inputmode="decimal" min="0" max="50" step="any" value="0"><span class="mini-unit">%</span></span>
-                </label>
-              </div>
-              <div class="monthly-display">
-                <span class="monthly-lbl"><span lang="pt">Prestação mensal</span><span lang="en">Monthly payment</span></span>
-                <span class="monthly-val" id="termo-prest-monthly">0,00 €</span>
-              </div>
-            </div>
-          </div>
-          <!-- ESQ equip -->
-          <div>
-            <div class="equip-row">
-              <span class="equip-system-lbl esq"><span lang="pt">Esquentador</span><span lang="en">Gas heater</span></span>
-              <div class="equip-toggle-btns">
-                <button class="equip-btn active" id="esq-equip-pronto-btn" onclick="setEquipMode('esq','pronto')"><span lang="pt">A pronto</span><span lang="en">Upfront</span></button>
-                <button class="equip-btn" id="esq-equip-prest-btn" onclick="setEquipMode('esq','prest')"><span lang="pt">Prestações</span><span lang="en">Financed</span></button>
-              </div>
-            </div>
-            <div id="esq-pronto-panel">
-              <label class="mini-input" for="esq-preco">
-                <span class="mini-lbl"><span lang="pt">Preço total</span><span lang="en">Total price</span></span>
-                <span class="mini-val"><input type="number" id="esq-preco" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
-              </label>
-            </div>
-            <div id="esq-prest-panel" style="display:none">
-              <div class="prest-grid">
-                <label class="mini-input" for="esq-prest-total">
-                  <span class="mini-lbl"><span lang="pt">Valor total</span><span lang="en">Total value</span></span>
-                  <span class="mini-val"><input type="number" id="esq-prest-total" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
-                </label>
-                <label class="mini-input" for="esq-prest-entrada">
-                  <span class="mini-lbl"><span lang="pt">Entrada</span><span lang="en">Down payment</span></span>
-                  <span class="mini-val"><input type="number" id="esq-prest-entrada" inputmode="decimal" min="0" max="999999" step="any" value="0"><span class="mini-unit">€</span></span>
-                </label>
-              </div>
-              <div class="prest-grid">
-                <label class="mini-input" for="esq-prest-n">
-                  <span class="mini-lbl"><span lang="pt">Nº prestações</span><span lang="en">Instalments</span></span>
-                  <span class="mini-val"><input type="number" id="esq-prest-n" inputmode="numeric" min="1" max="360" step="1" value="24"><span class="mini-unit"><span lang="pt">meses</span><span lang="en">mo</span></span></span>
-                </label>
-                <label class="mini-input" for="esq-prest-taxa">
-                  <span class="mini-lbl"><span lang="pt">Taxa juro / ano</span><span lang="en">Interest / yr</span></span>
-                  <span class="mini-val"><input type="number" id="esq-prest-taxa" inputmode="decimal" min="0" max="50" step="any" value="0"><span class="mini-unit">%</span></span>
-                </label>
-              </div>
-              <div class="monthly-display">
-                <span class="monthly-lbl"><span lang="pt">Prestação mensal</span><span lang="en">Monthly payment</span></span>
-                <span class="monthly-val" id="esq-prest-monthly">0,00 €</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -885,10 +794,8 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 <script>
 let lang = 'pt';
 let chartState = null;
-let gasMode = 'gasnat';       // 'butano' | 'propano' | 'gasnat'
-let termoEquipMode = 'pronto';
-let esqEquipMode   = 'pronto';
-let eemKvaIdx = null;         // null = manual; 0-5 = EEM kVA index
+let gasMode = 'gasnat';   // 'butano' | 'propano' | 'gasnat'
+let eemKvaIdx = null;     // null = manual; 0-5 = EEM kVA index
 
 // ── CONSTANTS ──
 const KJ_KG_C           = 4.186;
@@ -929,17 +836,6 @@ function setGasMode(mode) {
     if (panel) panel.classList.toggle('active', m === mode);
   });
   updateDynamicBadges();
-  calc();
-}
-
-// ── EQUIPMENT MODE ──
-function setEquipMode(who, mode) {
-  if (who === 'termo') termoEquipMode = mode; else esqEquipMode = mode;
-  $(`${who}-equip-pronto-btn`).classList.toggle('active', mode === 'pronto');
-  $(`${who}-equip-prest-btn`).classList.toggle('active', mode === 'prest');
-  $(`${who}-pronto-panel`).style.display = mode === 'pronto' ? '' : 'none';
-  $(`${who}-prest-panel`).style.display  = mode === 'prest'  ? '' : 'none';
-  updateMonthlyDisplay(who);
   calc();
 }
 
@@ -1031,37 +927,6 @@ function getElecFixedAnnual() {
   return EEM_BTN[eemKvaIdx].dia * 365 * 1.22; // potência + 22% IVA
 }
 
-// ── INSTALLMENT CALC ──
-function calcInstallment(total, entrada, n, taxaAnual) {
-  const principal = Math.max(0, total - entrada);
-  if (principal <= 0 || n <= 0) return {monthly:0, totalPaid:total};
-  const r = taxaAnual / 100 / 12;
-  const monthly = r < 0.00001 ? principal / n : principal * r / (1 - Math.pow(1+r, -n));
-  return {monthly, totalPaid: entrada + monthly * n};
-}
-
-function getEquipCost(who) {
-  const mode = who === 'termo' ? termoEquipMode : esqEquipMode;
-  if (mode === 'pronto') {
-    return readNum(who+'-preco', 0, 0, 999999);
-  }
-  const total   = readNum(who+'-prest-total',   0, 0, 999999);
-  const entrada = readNum(who+'-prest-entrada',  0, 0, 999999);
-  const n       = readNum(who+'-prest-n',       24, 1, 360);
-  const taxa    = readNum(who+'-prest-taxa',      0, 0, 99);
-  return calcInstallment(total, entrada, n, taxa).totalPaid;
-}
-
-function updateMonthlyDisplay(who) {
-  const el = $(`${who}-prest-monthly`);
-  if (!el) return;
-  const total   = readNum(who+'-prest-total',   0, 0, 999999);
-  const entrada = readNum(who+'-prest-entrada',  0, 0, 999999);
-  const n       = readNum(who+'-prest-n',       24, 1, 360);
-  const taxa    = readNum(who+'-prest-taxa',      0, 0, 99);
-  el.textContent = eur(calcInstallment(total, entrada, n, taxa).monthly);
-}
-
 // ── GAS NATURAL BADGE ──
 function updateGasEquiv() {
   const raw = $('gas-num').value.toString().replace(',', '.');
@@ -1129,11 +994,11 @@ const T = {
       '<strong>CO₂:</strong> 0,16 kg/kWh para electricidade do mix PT (2024, ~75% renovável); 0,20 kg/kWh para gás natural (combustão).',
     ],
     fcells: [
-      {l:'Termoacumulador', v:'Resistência eléctrica<br>Compatível com solar PV e bi-horário<br>Custo do equipamento incluído se preenchido'},
-      {l:'Esquentador a gás', v:'Aquecimento on-demand<br>Inspecção obrigatória de 2/2 anos<br>Custo do equipamento incluído se preenchido'},
+      {l:'Termoacumulador', v:'Resistência eléctrica<br>Compatível com solar PV e bi-horário<br>Custo de aquisição não incluído'},
+      {l:'Esquentador a gás', v:'Aquecimento on-demand<br>Inspecção obrigatória de 2/2 anos<br>Custo de aquisição não incluído'},
       {l:'Sobre', v:'Ferramenta indicativa independente<br>Não considera variações futuras de preços'},
     ],
-    fNote: 'Valores meramente indicativos. A comparação inclui o custo de aquisição se preenchido. Escalões propano Spelta Madeira são aproximados — confirma na tua fatura. EEM BTN Madeira: IVA 4% nos primeiros 200 kWh/mês (≤6,9 kVA), 22% acima.',
+    fNote: 'Valores meramente indicativos. Não inclui custo de aquisição dos equipamentos. Escalões propano Spelta Madeira são aproximados — confirma na tua fatura. EEM BTN Madeira: IVA 4% nos primeiros 200 kWh/mês (≤6,9 kVA), 22% acima.',
 
     quickLitros: [
       {l:'1 pessoa · 60', v:60},
@@ -1210,11 +1075,11 @@ const T = {
       '<strong>CO₂:</strong> 0.16 kg/kWh for PT grid electricity (2024, ~75% renewable); 0.20 kg/kWh for natural gas combustion.',
     ],
     fcells: [
-      {l:'Tank heater', v:'Electric resistance<br>Compatible with solar PV and off-peak<br>Equipment cost included if filled in'},
-      {l:'Gas heater', v:'On-demand heating<br>Mandatory inspection every 2 yrs (PT)<br>Equipment cost included if filled in'},
+      {l:'Tank heater', v:'Electric resistance<br>Compatible with solar PV and off-peak<br>Equipment purchase cost not included'},
+      {l:'Gas heater', v:'On-demand heating<br>Mandatory inspection every 2 yrs (PT)<br>Equipment purchase cost not included'},
       {l:'About', v:'Independent indicative tool<br>Does not consider future price variations'},
     ],
-    fNote: 'Indicative values only. Equipment cost included if provided. Spelta Madeira propane tiers are approximate — verify on your bill. EEM BTN Madeira: 4% VAT on first 200 kWh/month (≤6.9 kVA), 22% above.',
+    fNote: 'Indicative values only. Does not include equipment purchase cost. Spelta Madeira propane tiers are approximate — verify on your bill. EEM BTN Madeira: 4% VAT on first 200 kWh/month (≤6.9 kVA), 22% above.',
 
     quickLitros: [
       {l:'1 person · 60', v:60},
@@ -1387,27 +1252,23 @@ function calc() {
   // Update propano badge
   if (gasMode === 'propano') updatePropanoBadge(energiaUtilDia);
 
-  // Equipment costs
-  const termoEquip = getEquipCost('termo');
-  const esqEquip   = getEquipCost('esq');
-
   const r = computeScenario(litros, dT, termoManut, anos, pElec, pGas, esqManut);
 
   // Full annual totals including fixed charges
   const termoAnualFull = r.termoAnualTot + elecFixedAnual;
   const esqAnualFull   = r.esqAnualTot   + gasFixedAnual;
 
-  // Full TCO including equipment
-  const termoTcoFull = termoEquip + termoAnualFull * anos;
-  const esqTcoFull   = esqEquip   + esqAnualFull   * anos;
+  // Full TCO
+  const termoTcoFull = termoAnualFull * anos;
+  const esqTcoFull   = esqAnualFull   * anos;
 
   const diff = esqTcoFull - termoTcoFull; // positive => termo wins
 
-  // Cumulative (equipment at year 0)
+  // Cumulative
   const termoCum = [], esqCum = [];
   for (let y = 0; y <= anos; y++) {
-    termoCum.push(termoEquip + termoAnualFull * y);
-    esqCum.push(esqEquip   + esqAnualFull   * y);
+    termoCum.push(termoAnualFull * y);
+    esqCum.push(esqAnualFull   * y);
   }
 
   // Parity year
@@ -1499,16 +1360,14 @@ function calc() {
 
   // ── BARS ──
   const termoParts = [
-    {lbl: t.barEquip,   val: termoEquip,                         cls: 'fill-termo-2'},
-    {lbl: t.barEnergia, val: r.termoEnergiaAno*anos,             cls: 'fill-termo-1'},
-    {lbl: t.barFixo,    val: elecFixedAnual*anos,                cls: 'fill-termo-3'},
-    {lbl: t.barManut,   val: termoManut*anos,                    cls: 'fill-termo-3'},
+    {lbl: t.barEnergia, val: r.termoEnergiaAno*anos,  cls: 'fill-termo-1'},
+    {lbl: t.barFixo,    val: elecFixedAnual*anos,      cls: 'fill-termo-3'},
+    {lbl: t.barManut,   val: termoManut*anos,          cls: 'fill-termo-3'},
   ];
   const esqParts = [
-    {lbl: t.barEquip,  val: esqEquip,                            cls: 'fill-esq-2'},
-    {lbl: t.barGas,    val: r.esqEnergiaAno*anos,                cls: 'fill-esq-1'},
-    {lbl: t.barFixo,   val: gasFixedAnual*anos,                  cls: 'fill-esq-3'},
-    {lbl: t.barManut,  val: esqManut*anos,                       cls: 'fill-esq-3'},
+    {lbl: t.barGas,   val: r.esqEnergiaAno*anos,      cls: 'fill-esq-1'},
+    {lbl: t.barFixo,  val: gasFixedAnual*anos,         cls: 'fill-esq-3'},
+    {lbl: t.barManut, val: esqManut*anos,              cls: 'fill-esq-3'},
   ];
   const renderBars = (parts, total, head) => {
     return `<div class="bars-block">
@@ -1758,26 +1617,17 @@ function renderQuick() {
   'litros-num','tfria-num','tquente-num','anos-num',
   'termo-manut','esq-manut',
   'kwh-num','gas-num','gas-butano-price',
-  'termo-preco','esq-preco',
 ].forEach(id => {
   const el = $(id); if (el) el.addEventListener('input', calc);
 });
 
-// Gas equiv badge on gas-num
+// Gas natural equiv badge
 const gasNumEl = $('gas-num');
 if (gasNumEl) gasNumEl.addEventListener('input', updateGasEquiv);
 
 // Butano badge
 const butanoEl = $('gas-butano-price');
 if (butanoEl) butanoEl.addEventListener('input', updateButanoBadge);
-
-// Equipment installment inputs — update monthly display and calc
-['termo','esq'].forEach(who => {
-  ['prest-total','prest-entrada','prest-n','prest-taxa'].forEach(field => {
-    const el = $(`${who}-${field}`);
-    if (el) el.addEventListener('input', () => { updateMonthlyDisplay(who); calc(); });
-  });
-});
 
 // ── LANG ──
 const root = document.documentElement;

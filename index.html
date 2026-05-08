@@ -168,6 +168,42 @@
     .design-card:hover .design-arrow { transform: translate(2px,-2px); color: var(--gold); }
     .behance-link { display: flex; align-items: center; gap: 8px; margin-top: 24px; font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; }
     .behance-link:hover { color: var(--gold); }
+    /* ── NAV DROPDOWN ── */
+    .nav-has-drop { position: relative; display: flex; align-items: center; }
+    .nav-drop-trigger { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; letter-spacing: .02em; transition: color .2s; display: inline-flex; align-items: center; gap: 3px; cursor: default; background: none; border: none; padding: 0; font-family: inherit; }
+    .nav-drop-trigger::after { content: ''; display: inline-block; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 3.5px solid currentColor; opacity: .5; transition: transform .2s, opacity .2s; margin-top: 1px; }
+    .nav-has-drop:hover .nav-drop-trigger, .nav-drop-trigger.is-open { color: var(--text); }
+    .nav-drop-trigger.is-open::after { transform: rotate(180deg); opacity: 1; }
+
+    .nav-drop {
+      position: fixed;
+      width: 376px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.18), 0 2px 10px rgba(0,0,0,.08);
+      padding: 7px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(-6px);
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 999;
+    }
+    .nav-drop.open { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+    .nd-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 9px; text-decoration: none; transition: background .15s; }
+    .nd-item:not(.nd-maint):hover { background: var(--surface2); }
+    .nd-icon { width: 30px; height: 30px; flex-shrink: 0; border-radius: 7px; border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; transition: border-color .15s; }
+    .nd-item:hover .nd-icon { border-color: var(--gold); }
+    .nd-icon svg { width: 13px; height: 13px; stroke: var(--gold); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .nd-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .nd-name { font-size: 12px; font-weight: 500; color: var(--text); line-height: 1.3; display: block; }
+    .nd-tag { font-size: 10px; color: var(--hint); letter-spacing: .05em; text-transform: uppercase; display: block; }
+    .nd-maint { opacity: .42; cursor: default; }
+    .nd-maint .nd-tag { border: 1px dashed var(--hint); border-radius: 20px; padding: 1px 6px; display: inline-block; margin-top: 1px; }
+
     .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 12px; }
     .t-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; text-decoration: none; transition: border-color .2s, background .2s, transform .2s; }
     .t-card:hover { border-color: var(--gold); background: var(--surface2); transform: translateY(-3px); }
@@ -259,8 +295,10 @@
         <a lang="en" href="#sobre">About</a>
         <a href="#notion">Notion</a>
         <a href="#design">Design</a>
-        <a lang="pt" href="#ferramentas">Ferramentas</a>
-        <a lang="en" href="#ferramentas">Tools</a>
+        <div class="nav-has-drop" id="navHasDrop">
+          <button class="nav-drop-trigger" lang="pt" id="ndTriggerPT">Ferramentas</button>
+          <button class="nav-drop-trigger" lang="en" id="ndTriggerEN">Tools</button>
+        </div>
         <a href="cv.html">CV</a>
         <div class="lang-toggle">
           <button class="lang-btn active" id="btnPT">PT</button>
@@ -503,6 +541,71 @@
   </footer>
 </div>
 
+<!-- NAV DROPDOWN PANEL -->
+<div class="nav-drop" id="navDrop" role="menu">
+
+  <a class="nd-item" href="solar.html">
+    <span class="nd-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg></span>
+    <span class="nd-body">
+      <span class="nd-name" lang="pt">Energia solar</span>
+      <span class="nd-name" lang="en">Solar energy</span>
+      <span class="nd-tag" lang="pt">energia</span>
+      <span class="nd-tag" lang="en">energy</span>
+    </span>
+  </a>
+
+  <a class="nd-item" href="emprestimos.html">
+    <span class="nd-icon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span>
+    <span class="nd-body">
+      <span class="nd-name" lang="pt">Empréstimos</span>
+      <span class="nd-name" lang="en">Loan calculator</span>
+      <span class="nd-tag" lang="pt">finanças</span>
+      <span class="nd-tag" lang="en">finance</span>
+    </span>
+  </a>
+
+  <a class="nd-item" href="juros-compostos.html">
+    <span class="nd-icon"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+    <span class="nd-body">
+      <span class="nd-name" lang="pt">Juros compostos</span>
+      <span class="nd-name" lang="en">Compound interest</span>
+      <span class="nd-tag" lang="pt">investimento</span>
+      <span class="nd-tag" lang="en">investment</span>
+    </span>
+  </a>
+
+  <a class="nd-item" href="amortizacao.html">
+    <span class="nd-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg></span>
+    <span class="nd-body">
+      <span class="nd-name" lang="pt">Amortização antecipada</span>
+      <span class="nd-name" lang="en">Early repayment</span>
+      <span class="nd-tag" lang="pt">crédito</span>
+      <span class="nd-tag" lang="en">credit</span>
+    </span>
+  </a>
+
+  <a class="nd-item" href="eletrico-vs-combustao.html">
+    <span class="nd-icon"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11l4 4 1 4H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M17 11V7"/></svg></span>
+    <span class="nd-body">
+      <span class="nd-name" lang="pt">Eléctrico vs Combustão</span>
+      <span class="nd-name" lang="en">EV vs Combustion</span>
+      <span class="nd-tag" lang="pt">mobilidade</span>
+      <span class="nd-tag" lang="en">mobility</span>
+    </span>
+  </a>
+
+  <span class="nd-item nd-maint">
+    <span class="nd-icon"><svg viewBox="0 0 24 24"><path d="M12 2C9 6 6 9 6 13a6 6 0 0 0 12 0c0-4-3-7-6-11z"/></svg></span>
+    <span class="nd-body">
+      <span class="nd-name" lang="pt">Termoacumulador</span>
+      <span class="nd-name" lang="en">Tank heater</span>
+      <span class="nd-tag" lang="pt">em manutenção</span>
+      <span class="nd-tag" lang="en">maintenance</span>
+    </span>
+  </span>
+
+</div>
+
 <script>
   const root = document.documentElement;
   root.setAttribute('data-theme', localStorage.getItem('aa-theme') || 'dark');
@@ -524,6 +627,39 @@
   setLang(savedLang);
   btnPT.addEventListener('click', () => setLang('pt'));
   btnEN.addEventListener('click', () => setLang('en'));
+
+  // ── NAV DROPDOWN ──
+  const navHas  = document.getElementById('navHasDrop');
+  const navDrop = document.getElementById('navDrop');
+  const triggers = navHas.querySelectorAll('.nav-drop-trigger');
+  let leaveTimer;
+
+  function openDrop() {
+    clearTimeout(leaveTimer);
+    const hdr  = document.querySelector('header');
+    const rect = navHas.getBoundingClientRect();
+    const hdrB = hdr.getBoundingClientRect().bottom;
+    navDrop.style.top  = (hdrB + 8) + 'px';
+    navDrop.style.left = (rect.left + rect.width / 2) + 'px';
+    navDrop.classList.add('open');
+    triggers.forEach(t => t.classList.add('is-open'));
+  }
+  function closeDrop() {
+    leaveTimer = setTimeout(() => {
+      navDrop.classList.remove('open');
+      triggers.forEach(t => t.classList.remove('is-open'));
+    }, 160);
+  }
+
+  navHas .addEventListener('mouseenter', openDrop);
+  navHas .addEventListener('mouseleave', closeDrop);
+  navDrop.addEventListener('mouseenter', () => clearTimeout(leaveTimer));
+  navDrop.addEventListener('mouseleave', closeDrop);
+
+  // close on outside click
+  document.addEventListener('click', e => {
+    if (!navHas.contains(e.target) && !navDrop.contains(e.target)) closeDrop();
+  });
 </script>
 </body>
 </html>

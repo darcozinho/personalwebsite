@@ -45,22 +45,23 @@ html{scroll-behavior:smooth;font-size:15px}
 body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;line-height:1.5;transition:background .2s,color .2s;-webkit-font-smoothing:antialiased}
 
 /* ── HERO ── */
-.hero{background:var(--c-bg);padding:0 1.5rem;border-bottom:1px solid var(--c-border)}
+.hero{background:var(--c-bg);padding:0;border-bottom:1px solid var(--c-border)}
 .hero-nav{
-  max-width:840px;margin:0 auto;
+  max-width:960px;margin:0 auto;
   display:flex;justify-content:space-between;align-items:center;
-  padding:1.1rem 0;border-bottom:1px solid var(--c-border);
+  padding:17px 32px;border-bottom:1px solid var(--c-border);
 }
+@media(max-width:600px){.hero-nav{padding:14px 20px}}
 .nav-actions{display:flex;gap:6px;align-items:center}
 .nav-btn{
-  padding:5px 13px;border-radius:0;border:none;background:transparent;
+  padding:7px 13px;border-radius:0;border:none;background:transparent;
   font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;
   color:var(--c-text2);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.04em;
 }
 .nav-btn.active{background:var(--c-accent);color:var(--c-bg)}
 .nav-btn:hover:not(.active){color:var(--c-text)}
 .nav-icon-btn{
-  width:30px;height:30px;border-radius:50%;border:1px solid var(--c-border);
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--c-border);
   background:var(--c-surface);cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   color:var(--c-text2);transition:border-color .2s,color .2s;

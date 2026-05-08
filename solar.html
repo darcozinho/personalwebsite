@@ -45,20 +45,21 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 /* ── HERO ── */
 .hero{
   background:var(--c-bg);
-  padding:0 1.5rem;
+  padding:0;
   border-bottom:1px solid var(--c-border);
 }
 .hero-nav{
-  max-width:840px;margin:0 auto;
+  max-width:960px;margin:0 auto;
   display:flex;justify-content:space-between;align-items:center;
-  padding:1.1rem 0;
+  padding:17px 32px;
   border-bottom:1px solid var(--c-border);
 }
+@media(max-width:600px){.hero-nav{padding:14px 20px}}
 .hero-wordmark{font-family:'Instrument Serif',serif;font-size:17px;color:var(--c-text);letter-spacing:-.01em;text-decoration:none}
 .hero-wordmark em{font-style:italic;color:var(--c-accent)}
 .nav-actions{display:flex;gap:6px;align-items:center}
 .nav-btn{
-  padding:5px 13px;border-radius:0;
+  padding:7px 13px;border-radius:0;
   border:none;
   background:transparent;
   font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;
@@ -68,7 +69,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(-
 .nav-btn.active{background:var(--c-accent);color:var(--c-bg)}
 .nav-btn:hover:not(.active){color:var(--c-text)}
 .nav-icon-btn{
-  width:30px;height:30px;border-radius:50%;
+  width:34px;height:34px;border-radius:50%;
   border:1px solid var(--c-border);
   background:var(--c-surface);cursor:pointer;
   display:flex;align-items:center;justify-content:center;

@@ -107,14 +107,59 @@
     .cv-ftr a{color:var(--hint);text-decoration:none;transition:color .2s}
     .cv-ftr a:hover{color:var(--muted)}
 
-    /* LANG */
-    [data-lang="en"] .pt{display:none}
-    [data-lang="pt"] .en{display:none}
+    /* LANG — scoped to html[lang] so works inside and outside #cvDoc */
+    html[lang="en"] .pt{display:none}
+    html[lang="pt"] .en{display:none}
 
     @media(max-width:580px){
       .cv{padding:40px 20px 60px}
       .topbar{padding:17px 20px}
       .cv-item-top,.cv-edu-item{flex-direction:column;gap:4px}
+    }
+
+    /* ── PRINT ── */
+    @media print{
+      @page{size:A4 portrait;margin:2cm 2.5cm}
+
+      /* sempre tema claro — override dark vars */
+      :root,html,body,[data-theme],[data-theme="dark"]{
+        --bg:#ffffff;--surface:#f5f2eb;--surface2:#ece6d8;
+        --border:#d0c8bc;--border2:#bfb8ac;
+        --text:#1c2238;--muted:#4a5060;--hint:#8090a8;--gold:#b8912a;
+      }
+      html,body{background:#fff!important;color:#1c2238!important}
+      body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+      /* oculta UI */
+      header,.cv-ftr,.print-btn{display:none!important}
+
+      /* layout */
+      .cv{padding:0;max-width:none;margin:0}
+
+      /* tipografia impressão */
+      .cv-name{font-size:30px}
+      .cv-role{font-size:13px;margin-bottom:14px}
+      .cv-contacts{gap:4px 16px}
+      .cv-ct{font-size:12px}
+      .cv-hdr{padding-bottom:24px;margin-bottom:32px}
+      .cv-sec{margin-bottom:28px}
+      .cv-sec-title{font-size:10px;padding-bottom:8px;margin-bottom:18px}
+      .cv-item{margin-bottom:20px}
+      .cv-item-name{font-size:17px}
+      .cv-item-org{font-size:12px;margin-bottom:8px}
+      .cv-bullets li{font-size:12px;line-height:1.55;gap:5px}
+      .cv-edu-name{font-size:15px}
+      .cv-edu-sub{font-size:12px}
+      .cv-tag{font-size:11px;padding:3px 10px}
+
+      /* controlo de quebra de página */
+      .cv-item,.cv-edu-item{break-inside:avoid;page-break-inside:avoid}
+      .cv-sec-title{break-after:avoid;page-break-after:avoid}
+      .cv-hdr{break-after:avoid;page-break-after:avoid}
+
+      /* links limpos */
+      *{transition:none!important}
+      a{text-decoration:none;color:inherit}
     }
   </style>
 </head>
@@ -126,7 +171,7 @@
     <div class="topbar-r">
       <button class="print-btn" onclick="window.print()" aria-label="Imprimir CV">
         <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V2h8v4"/><rect x="1" y="6" width="14" height="7" rx="1.5"/><path d="M4 10h8M4 13h5"/><circle cx="12.5" cy="9" r=".75" fill="currentColor" stroke="none"/></svg>
-        <span lang="pt">Imprimir</span><span lang="en">Print</span>
+        <span class="pt">Imprimir</span><span class="en">Print</span>
       </button>
       <div class="lang-toggle">
         <button class="lang-btn on" id="bPT" onclick="setLang('pt')">PT</button>

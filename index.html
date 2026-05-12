@@ -224,6 +224,20 @@
     .t-badge-manut { font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: var(--bg); color: var(--hint); text-transform: uppercase; letter-spacing: .07em; border: 1px dashed var(--hint); display: flex; align-items: center; gap: 5px; }
     .t-badge-manut::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--hint); animation: blink 1.4s ease-in-out infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .t-badge-ram { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 20px; background: var(--gold); color: var(--bg); text-transform: uppercase; letter-spacing: .07em; flex-shrink: 0; }
+    .t-num-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    /* ── SUGGEST BOX ── */
+    .suggest-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 36px 32px; }
+    .suggest-card h3 { font-family: 'Instrument Serif', serif; font-size: 24px; font-weight: 400; color: var(--text); margin-bottom: 8px; letter-spacing: -.015em; }
+    .suggest-card > p { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.65; }
+    .suggest-textarea { width: 100%; min-height: 110px; padding: 14px 16px; font-family: 'Instrument Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); border: 1px solid var(--border2); border-radius: 10px; resize: vertical; outline: none; transition: border-color .2s; line-height: 1.6; }
+    .suggest-textarea:focus { border-color: var(--gold); }
+    .suggest-textarea::placeholder { color: var(--hint); }
+    .suggest-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; flex-wrap: wrap; gap: 10px; }
+    .suggest-note { font-size: 12px; color: var(--hint); }
+    .suggest-btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 22px; background: var(--gold); color: var(--bg); border: none; border-radius: 8px; font-family: 'Instrument Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity .2s; }
+    .suggest-btn:hover { opacity: .82; }
+    .suggest-btn:disabled { opacity: .45; cursor: default; }
     .t-soon {
       display: inline-flex; align-items: center; gap: 5px;
       font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
@@ -455,10 +469,13 @@
         </div>
       </a>
     </div>
-    <a class="behance-link" href="https://www.behance.net/andreaguiar007" target="_blank" rel="noopener">
-      <span lang="pt">Ver portfólio completo no Behance ↗</span>
-      <span lang="en">View full portfolio on Behance ↗</span>
-    </a>
+    <div style="margin-top:32px;">
+      <a class="btn-solid" href="https://www.behance.net/andreaguiar007" target="_blank" rel="noopener" style="font-size:14px;padding:13px 28px;border-radius:10px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6m0 0H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h7"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span lang="pt">Ver portfólio completo no Behance</span>
+        <span lang="en">View full portfolio on Behance</span>
+      </a>
+    </div>
   </section>
   <section class="sec" id="ferramentas">
     <p class="sec-label" lang="pt">ferramentas &amp; calculadoras</p>
@@ -467,7 +484,7 @@
 
       <a class="t-card" href="solar.html">
         <div class="t-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg></div>
-        <span class="t-num">01</span>
+        <div class="t-num-row"><span class="t-num">01</span><span class="t-badge-ram">Madeira</span></div>
         <h3 lang="pt">Calculadora de energia solar</h3>
         <h3 lang="en">Solar energy calculator</h3>
         <p lang="pt">Estima a produção anual de painéis fotovoltaicos, poupança na fatura elétrica e retorno do investimento.</p>
@@ -517,14 +534,32 @@
 
       <a class="t-card" href="pre-reforma.html">
         <div class="t-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></div>
-        <span class="t-num">06</span>
+        <div class="t-num-row"><span class="t-num">06</span><span class="t-badge-ram">Madeira</span></div>
         <h3 lang="pt">Simulador de Pré-Reforma</h3>
         <h3 lang="en">Pre-Retirement Simulator</h3>
         <p lang="pt">Calcule a prestação máxima de pré-reforma para trabalhadores da administração pública da RAM.</p>
         <p lang="en">Calculate the maximum pre-retirement allowance for RAM public administration workers.</p>
-        <div class="t-foot"><span class="t-tag" lang="pt">madeira · ram</span><span class="t-tag" lang="en">madeira · ram</span><span class="t-arrow">↗</span></div>
+        <div class="t-foot"><span class="t-tag" lang="pt">funcionário público</span><span class="t-tag" lang="en">public sector</span><span class="t-arrow">↗</span></div>
       </a>
 
+    </div>
+  </section>
+
+  <section class="sec" id="sugestoes" style="margin-top:16px;">
+    <div class="suggest-card">
+      <h3 lang="pt">Falta alguma calculadora?</h3>
+      <h3 lang="en">Missing a calculator?</h3>
+      <p lang="pt">Se tiveres uma ideia para um simulador ou calculadora que te fosse útil, conta-me. Leio tudo e ponho nas próximas a construir.</p>
+      <p lang="en">If you have an idea for a simulator or calculator that would be useful to you, let me know. I read everything and add it to the build queue.</p>
+      <textarea class="suggest-textarea" id="suggestText" lang="pt" placeholder="Ex: &quot;Uma calculadora de IRS para trabalhadores independentes na Madeira&quot;..."></textarea>
+      <div class="suggest-footer">
+        <span class="suggest-note">me@andreaguiar.org</span>
+        <button class="suggest-btn" id="suggestBtn" onclick="enviarSugestao()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span lang="pt">Enviar sugestão</span>
+          <span lang="en">Send suggestion</span>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -656,6 +691,21 @@
   // close on outside click
   document.addEventListener('click', e => {
     if (!navHas.contains(e.target) && !navDrop.contains(e.target)) closeDrop();
+  });
+
+  // ── SUGGEST BOX ──
+  function enviarSugestao() {
+    const text = document.getElementById('suggestText').value.trim();
+    if (!text) return;
+    const lang = root.getAttribute('lang') || 'pt';
+    const subject = lang === 'en'
+      ? 'Calculator suggestion'
+      : 'Sugestão de calculadora';
+    const body = text;
+    window.location.href = 'mailto:me@andreaguiar.org?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  }
+  document.getElementById('suggestText').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) enviarSugestao();
   });
 </script>
 </body>

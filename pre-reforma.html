@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="favicon.png" type="image/png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Pré-Reforma — RAM · André Aguiar</title>
+<meta name="description" content="Calcule a prestação máxima teórica de pré-reforma para trabalhadores da administração pública da Região Autónoma da Madeira.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS ── */
+:root{
+  --c-bg:#f4efe6; --c-surface:#ece6d8; --c-surface2:#e2dace;
+  --c-border:#d6cfc2; --c-border2:#c5bdb0;
+  --c-text:#1c2238; --c-text2:#5c6070; --c-text3:#9ca2b2;
+  --c-accent:#b8912a; --c-accent2:#9a7820; --c-accent-pale:#f7f0e0;
+  --c-green:#2a6e3f; --c-green-pale:#e8f5ed; --c-green-border:#a8d5bc;
+  --c-red:#b83232; --c-red-pale:#fdecea; --c-red-border:#f5c6c2;
+  --c-amber:#7a5000; --c-amber-pale:#fef9ec; --c-amber-border:#e8c870;
+  --c-purple:#5b21b6; --c-purple-pale:#f5f3ff; --c-purple-border:#ddd6fe;
+  --r:10px; --r-sm:6px; --r-lg:14px;
+  --shadow: 0 1px 3px rgba(28,34,56,.06), 0 1px 2px rgba(28,34,56,.04);
+  --shadow-lg: 0 8px 30px rgba(28,34,56,.10);
+}
+html[data-theme="dark"]{
+  --c-bg:#131210; --c-surface:#1b1916; --c-surface2:#23211d;
+  --c-border:#2c2924; --c-border2:#3b3730;
+  --c-text:#f0e9d8; --c-text2:#98908a; --c-text3:#585450;
+  --c-accent:#d4a83a; --c-accent2:#b8912a; --c-accent-pale:#2a2010;
+  --c-green:#4caf82; --c-green-pale:#0d2a1a; --c-green-border:#1d5535;
+  --c-red:#e57373; --c-red-pale:#2a0d0d; --c-red-border:#5c2020;
+  --c-amber:#f5c842; --c-amber-pale:#2a1f00; --c-amber-border:#5a4000;
+  --c-purple:#a78bfa; --c-purple-pale:#1e1640; --c-purple-border:#4c3a8c;
+  --shadow: 0 1px 3px rgba(0,0,0,.3);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,.35);
+}
+[data-lang="pt"] [lang="en"] { display: none; }
+[data-lang="en"] [lang="pt"] { display: none; }
+
+/* ── BASE ── */
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;line-height:1.5;transition:background .2s,color .2s;-webkit-font-smoothing:antialiased}
+
+/* ── HERO / NAV ── */
+.hero{background:var(--c-bg);padding:0;border-bottom:1px solid var(--c-border)}
+.hero-nav{
+  max-width:960px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:17px 32px;border-bottom:1px solid var(--c-border);
+}
+@media(max-width:600px){.hero-nav{padding:14px 20px}}
+.nav-actions{display:flex;gap:20px;align-items:center}
+.nav-btn{
+  padding:7px 14px;border-radius:0;border:none;background:transparent;
+  font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;
+  color:var(--c-text2);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.04em;
+}
+.nav-btn.active{background:var(--c-accent);color:var(--c-bg)}
+.nav-btn:hover:not(.active){color:var(--c-text)}
+.nav-icon-btn{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--c-border);
+  background:var(--c-surface);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text2);transition:border-color .2s,color .2s;
+}
+.nav-icon-btn:hover{border-color:var(--c-border2);color:var(--c-text)}
+.i-sun,.i-moon{display:none}
+[data-theme="light"] .i-sun{display:block}
+[data-theme="dark"]  .i-moon{display:block}
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:500;color:var(--c-text2);
+  text-decoration:none;letter-spacing:.01em;transition:color .2s;
+}
+.back-link:hover{color:var(--c-accent)}
+.hero-body{max-width:620px;margin:0 auto;padding:3rem 1.5rem 3.5rem;text-align:center}
+.hero h1{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(1.9rem,5vw,2.9rem);
+  font-weight:400;line-height:1.12;
+  color:var(--c-text);letter-spacing:-.025em;margin-bottom:.75rem;
+}
+.hero h1 em{font-style:italic;color:var(--c-accent)}
+.hero-sub{font-size:15px;color:var(--c-text2);max-width:500px;margin:0 auto;line-height:1.65}
+
+/* ── MAIN ── */
+.page{max-width:640px;margin:0 auto;padding:2rem 1.5rem 5rem}
+
+/* ── CARD ── */
+.card{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem;
+  box-shadow:var(--shadow);transition:background .2s,border-color .2s;
+}
+
+/* ── STEP HEADER ── */
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.step-num{
+  display:flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:50%;
+  background:var(--c-accent);color:var(--c-bg);
+  font-size:11px;font-weight:600;flex-shrink:0;
+}
+.card-title{font-family:'Instrument Serif',serif;font-size:18px;font-weight:400;color:var(--c-text)}
+.card-desc{font-size:12.5px;color:var(--c-text3);margin-bottom:1.25rem;padding-left:34px}
+
+/* ── FIELDS ── */
+.field{margin-bottom:1rem}
+.field:last-child{margin-bottom:0}
+label{
+  display:block;font-size:11px;font-weight:500;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--c-text3);margin-bottom:.45rem;
+}
+label .unit{font-weight:400;text-transform:none;letter-spacing:0;color:var(--c-text3);font-size:11px}
+input[type="number"],select{
+  width:100%;padding:10px 12px;
+  font-family:'Instrument Sans',sans-serif;
+  font-size:15px;font-weight:400;color:var(--c-text);
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  border-radius:var(--r);outline:none;
+  transition:border-color .15s,background .15s;
+}
+input[type="number"]:focus,select:focus{
+  border-color:var(--c-accent);
+  background:var(--c-surface);
+}
+select{
+  appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='%239ca2b2'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:30px;
+}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.row2{grid-template-columns:1fr}}
+
+/* ── INFO / AMBER BOX ── */
+.info-box{
+  display:flex;gap:8px;background:var(--c-amber-pale);
+  border:1px solid var(--c-amber-border);
+  border-radius:var(--r-sm);padding:10px 12px;
+  margin-top:12px;font-size:12.5px;color:var(--c-amber);line-height:1.5;
+}
+.info-box::before{content:'ℹ';font-size:13px;font-weight:600;flex-shrink:0;margin-top:1px}
+
+/* ── ANTIQUITY BADGES ── */
+.antiguidade-info{
+  margin-top:12px;padding:14px 16px;
+  background:var(--c-surface2);border-radius:var(--r-sm);border:1px solid var(--c-border);
+}
+.ant-label{display:block;font-size:11.5px;color:var(--c-text3);margin-bottom:10px}
+.ant-badges{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ant-badge{
+  display:flex;flex-direction:column;align-items:center;
+  padding:9px 14px;border-radius:8px;
+  background:var(--c-surface);border:1px solid var(--c-border);
+  flex:1;min-width:80px;
+}
+.ant-badge-mid{background:var(--c-green-pale);border-color:var(--c-green-border)}
+.ant-badge-max{background:var(--c-accent-pale);border-color:var(--c-amber-border)}
+.ant-val{
+  font-family:'Instrument Serif',serif;font-size:19px;font-weight:400;
+  color:var(--c-text);line-height:1.2;
+}
+.ant-badge-mid .ant-val{color:var(--c-green)}
+.ant-badge-max .ant-val{color:var(--c-accent)}
+.ant-desc{font-size:10.5px;color:var(--c-text3);text-align:center;margin-top:3px;line-height:1.3}
+.ant-arrow{font-size:14px;color:var(--c-text3);flex-shrink:0}
+@media(max-width:480px){.ant-arrow{display:none}.ant-badge{min-width:68px}}
+
+/* ── FORMULA BOX ── */
+.formula-box{
+  background:var(--c-surface2);border-radius:var(--r-sm);
+  padding:12px 14px;font-size:12.5px;
+  color:var(--c-text2);line-height:1.7;font-family:monospace;
+  text-align:center;letter-spacing:.3px;border:1px dashed var(--c-border2);
+}
+
+/* ── CALC BUTTON ── */
+.btn-wrap{margin-top:1.25rem}
+.btn{
+  display:block;width:100%;padding:14px;
+  font-family:'Instrument Sans',sans-serif;
+  font-size:15px;font-weight:600;color:var(--c-bg);
+  background:var(--c-accent);border:none;
+  border-radius:var(--r-lg);cursor:pointer;
+  transition:background .2s,transform .1s;
+}
+.btn:hover{background:var(--c-accent2)}
+.btn:active{transform:scale(.99)}
+
+/* ── ERROR ── */
+.error-msg{display:none;margin-top:.75rem}
+.error-msg.show{display:block}
+
+/* ── RESULTS ── */
+.result{display:none;margin-top:1rem;animation:fadeUp .45s cubic-bezier(.22,1,.36,1)}
+.result.show{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── RESULT MAIN CARD (dark) ── */
+.result-main{
+  background:var(--c-text);
+  border-radius:var(--r-lg);
+  padding:2rem 1.5rem 1.5rem;
+  color:var(--c-bg);
+  text-align:center;
+  box-shadow:var(--shadow-lg);
+  position:relative;overflow:hidden;
+}
+html[data-theme="dark"] .result-main{
+  background:var(--c-surface2);
+  color:var(--c-text);
+  border:1px solid var(--c-border2);
+}
+.result-main::before{
+  content:'';position:absolute;top:-50px;right:-50px;
+  width:140px;height:140px;background:rgba(255,255,255,.03);border-radius:50%;
+}
+.rm-context{
+  font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  opacity:.55;margin-bottom:10px;
+}
+.rm-label{font-size:11.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin-bottom:6px}
+.rm-value{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(46px,10vw,66px);
+  font-weight:400;line-height:1;
+  color:var(--c-accent);
+  margin-bottom:4px;
+}
+html[data-theme="dark"] .rm-value{color:var(--c-accent)}
+.rm-sub{font-size:13.5px;opacity:.6;margin-bottom:1.5rem}
+.rm-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:rgba(255,255,255,.1);
+  border-radius:var(--r-sm);overflow:hidden;
+}
+html[data-theme="dark"] .rm-grid{background:var(--c-border)}
+.rm-item{
+  background:rgba(0,0,0,.18);
+  padding:14px 10px;text-align:center;
+}
+html[data-theme="dark"] .rm-item{background:var(--c-surface)}
+.rm-item-full{grid-column:1/-1}
+.rmi-label{
+  font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  opacity:.5;margin-bottom:4px;
+}
+.rmi-val{
+  font-family:'Instrument Serif',serif;font-size:19px;font-weight:400;
+  font-variant-numeric:tabular-nums;
+}
+.rmi-note{font-size:10.5px;opacity:.4;margin-top:3px}
+
+/* ── CLAMP NOTICE ── */
+#clampNotice{
+  margin-top:10px;padding:10px 14px;
+  background:var(--c-amber-pale);color:var(--c-amber);
+  border:1px solid var(--c-amber-border);
+  border-radius:var(--r-sm);font-size:12.5px;line-height:1.5;
+}
+
+/* ── PROJECTION TABLE ── */
+.projection{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-lg);padding:1.5rem;margin-top:.75rem;box-shadow:var(--shadow);
+}
+.projection h3{
+  font-family:'Instrument Serif',serif;font-size:17px;font-weight:400;
+  margin-bottom:4px;color:var(--c-text);
+}
+.pj-desc{font-size:12.5px;color:var(--c-text3);margin-bottom:1.1rem;line-height:1.55}
+.pj-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.pj-table th{
+  text-align:left;padding:9px 6px;font-size:10px;
+  font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--c-text3);border-bottom:2px solid var(--c-border);
+}
+.pj-table th.num,.pj-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.pj-table td{padding:11px 6px;border-bottom:1px solid var(--c-border);color:var(--c-text)}
+.pj-table tr.current td{
+  background:var(--c-accent-pale);color:var(--c-accent);font-weight:500;
+}
+.pj-table tr.current td:first-child::before{content:'▸ ';color:var(--c-accent);font-weight:600}
+.pj-table tr.estimate td{color:var(--c-text2)}
+.pj-table tr.estimate td:first-child{font-style:italic}
+.pj-table tr.past td{color:var(--c-text3);text-decoration:line-through;text-decoration-color:var(--c-text3);text-decoration-thickness:1px}
+
+/* Reform row */
+.pj-table .badge-reforma{
+  display:inline-block;font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  background:var(--c-purple-pale);color:var(--c-purple);
+  padding:2px 5px;border-radius:4px;margin-left:5px;vertical-align:middle;
+}
+.pj-table tr.reforma-row td{
+  background:var(--c-purple-pale);
+  border-top:2px dashed var(--c-purple-border);
+  color:var(--c-purple);font-weight:500;
+}
+.pj-table .badge-est{
+  display:inline-block;font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  background:var(--c-amber-pale);color:var(--c-amber);
+  padding:2px 5px;border-radius:4px;margin-left:5px;vertical-align:middle;
+}
+.pj-table .badge-real{
+  display:inline-block;font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  background:var(--c-accent);color:var(--c-bg);
+  padding:2px 5px;border-radius:4px;margin-left:5px;vertical-align:middle;
+}
+.pj-table .badge-past{
+  display:inline-block;font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  background:var(--c-surface2);color:var(--c-text3);
+  padding:2px 5px;border-radius:4px;margin-left:5px;vertical-align:middle;
+}
+.pj-table .delta-pos{color:var(--c-green);font-weight:500}
+.pj-table .delta-neg{color:var(--c-red);font-weight:500}
+.pj-table .delta-zero{color:var(--c-text3)}
+
+/* Insights */
+.pj-insights{
+  margin-top:1.25rem;padding:14px 16px;
+  background:var(--c-accent-pale);border-radius:var(--r-sm);border-left:3px solid var(--c-accent);
+}
+.pj-insights .ins-title{
+  font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--c-accent);margin-bottom:8px;
+}
+.pj-insights .ins-item{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:5px 0;font-size:13px;
+}
+.pj-insights .ins-item .ins-label{color:var(--c-text2)}
+.pj-insights .ins-item .ins-val{font-weight:500;color:var(--c-text);font-variant-numeric:tabular-nums}
+
+/* ── BREAKDOWN (details/summary) ── */
+.breakdown{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-lg);padding:1.25rem 1.5rem;margin-top:.75rem;box-shadow:var(--shadow);
+}
+.breakdown summary{
+  cursor:pointer;
+  font-family:'Instrument Serif',serif;font-size:16px;font-weight:400;
+  padding:3px 0;list-style:none;
+  display:flex;justify-content:space-between;align-items:center;
+  color:var(--c-text);
+}
+.breakdown summary::-webkit-details-marker{display:none}
+.breakdown summary .toggle-hint{
+  font-size:12px;font-family:'Instrument Sans',sans-serif;
+  font-weight:400;color:var(--c-text3);
+}
+.bk-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:7px 0;font-size:13.5px;border-bottom:1px solid var(--c-border);
+}
+.bk-row:last-child{border-bottom:none}
+.bk-label{color:var(--c-text2)}
+.bk-val{font-weight:500;font-variant-numeric:tabular-nums;color:var(--c-text)}
+.bk-row-highlight{
+  background:var(--c-accent-pale);margin:0 -1.5rem;padding:7px 1.5rem;
+}
+.bk-row-highlight .bk-label{color:var(--c-accent);font-weight:500}
+.bk-row-highlight .bk-val{color:var(--c-accent)}
+
+/* ── RECOMMENDATION ── */
+.recommendation-card{
+  background:var(--c-surface);
+  border:1px solid var(--c-border);
+  border-radius:var(--r-lg);padding:1.25rem 1.5rem;margin-top:.75rem;box-shadow:var(--shadow);
+}
+.rec-title{
+  font-family:'Instrument Serif',serif;font-size:17px;font-weight:400;
+  margin-bottom:12px;color:var(--c-text);
+}
+.rec-item{
+  display:flex;gap:10px;padding:9px 11px;margin-bottom:6px;
+  border-radius:var(--r-sm);font-size:13px;line-height:1.55;
+  background:var(--c-surface2);
+}
+.rec-item:last-child{margin-bottom:0}
+.rec-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.rec-text{color:var(--c-text)}
+.rec-warning{border-left:3px solid var(--c-amber)}
+.rec-opportunity{border-left:3px solid var(--c-green)}
+.rec-good{border-left:3px solid var(--c-green)}
+.rec-info{border-left:3px solid var(--c-border2)}
+
+/* ── DISCLAIMER ── */
+.disclaimer{
+  margin-top:1.25rem;padding:14px 16px;
+  background:var(--c-surface2);
+  border-left:3px solid var(--c-border2);
+  font-size:12px;color:var(--c-text3);line-height:1.65;
+  border-radius:0 var(--r-sm) var(--r-sm) 0;
+}
+.disclaimer strong{color:var(--c-text2)}
+
+/* ── PRINT BUTTON ── */
+.btn-print{
+  display:none;width:100%;margin-top:1rem;padding:12px;
+  font-family:'Instrument Sans',sans-serif;font-size:14px;font-weight:500;
+  color:var(--c-text2);background:var(--c-surface);
+  border:1px solid var(--c-border);border-radius:var(--r-lg);
+  cursor:pointer;transition:background .15s,border-color .15s;text-align:center;
+}
+.btn-print:hover{background:var(--c-surface2);border-color:var(--c-border2)}
+.btn-print.visible{display:block}
+
+/* ── SOURCES FOOTER ── */
+.sources{
+  background:var(--c-text);color:var(--c-bg);
+  padding:3rem 1.5rem 2.5rem;margin-top:0;
+}
+html[data-theme="dark"] .sources{
+  background:var(--c-surface2);color:var(--c-text);
+  border-top:1px solid var(--c-border);
+}
+.sources-inner{max-width:640px;margin:0 auto}
+.sources-title{
+  font-family:'Instrument Serif',serif;font-size:19px;font-weight:400;
+  color:inherit;margin-bottom:1.25rem;
+}
+.sources-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;
+}
+@media(max-width:560px){.sources-grid{grid-template-columns:1fr}}
+.source-item{
+  display:flex;gap:8px;align-items:flex-start;
+  padding:10px 12px;border-radius:var(--r);
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+  text-decoration:none;color:inherit;
+  font-size:12.5px;line-height:1.4;transition:background .2s;
+}
+html[data-theme="dark"] .source-item{
+  border-color:var(--c-border);background:var(--c-surface);
+}
+.source-item:hover{background:rgba(255,255,255,.1)}
+html[data-theme="dark"] .source-item:hover{background:var(--c-surface2)}
+.source-item strong{display:block;margin-bottom:2px;font-weight:600}
+.source-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+.sources-note{
+  font-size:11.5px;opacity:.45;line-height:1.65;
+  border-top:1px solid rgba(255,255,255,.1);padding-top:1rem;
+}
+html[data-theme="dark"] .sources-note{border-top-color:var(--c-border)}
+
+/* ── VENCIMENTO WARNING ── */
+#vencimentoPairWarning{
+  margin-top:8px;padding:9px 12px;
+  background:var(--c-amber-pale);border-radius:var(--r-sm);
+  font-size:12.5px;color:var(--c-amber);line-height:1.5;
+}
+
+/* ── PRINT ── */
+@media print{
+  body{background:#fff}
+  .hero,.btn-wrap,.btn-print,.sources{display:none!important}
+  .page{padding:0;max-width:none;margin:0}
+  .result{display:block!important}
+  .result-main{background:#1c2238!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .projection,.breakdown,.recommendation-card,.disclaimer{box-shadow:none;border:1px solid #ddd}
+  .pj-table tr.reforma-row td{background:#f5f3ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .print-header{display:block!important}
+}
+.print-header{
+  display:none;font-family:'Instrument Sans',sans-serif;
+  font-size:12px;color:var(--c-text3);
+  margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--c-border);
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <nav class="hero-nav">
+    <a class="back-link" href="index.html#ferramentas">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 2.5L3.5 7l5 4.5"/></svg>
+      <span lang="pt">Voltar ao início</span>
+      <span lang="en">Back to home</span>
+    </a>
+    <div class="nav-actions">
+      <div style="display:flex;border:1px solid var(--c-border);border-radius:8px;overflow:hidden;background:var(--c-surface)">
+        <button class="nav-btn active" id="btnPT">PT</button>
+        <button class="nav-btn" id="btnEN">EN</button>
+      </div>
+      <button class="nav-icon-btn" id="themeBtn" aria-label="Alternar tema">
+        <svg class="i-sun" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><line x1="8" y1="1" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15"/><line x1="1" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15" y2="8"/><line x1="3.05" y1="3.05" x2="4.1" y2="4.1"/><line x1="11.9" y1="11.9" x2="12.95" y2="12.95"/><line x1="12.95" y1="3.05" x2="11.9" y2="4.1"/><line x1="4.1" y1="11.9" x2="3.05" y2="12.95"/></svg>
+        <svg class="i-moon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7z"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="hero-body">
+    <h1>Simulador de <em>Pré-Reforma</em></h1>
+    <p class="hero-sub">Prestação máxima teórica para trabalhadores da administração pública da Região Autónoma da Madeira, ao abrigo da Resolução n.º&nbsp;910/2020.</p>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- Step 1 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="step-num">1</span>
+      <span class="card-title">Dados Pessoais</span>
+    </div>
+    <p class="card-desc">Idade e tempo de serviço do trabalhador</p>
+    <div class="row2">
+      <div class="field">
+        <label for="idade">Idade <span class="unit">(≥55 anos)</span></label>
+        <input type="number" id="idade" min="55" max="70" step="1" placeholder="Ex: 60">
+      </div>
+      <div class="field">
+        <label for="descontos">Anos de descontos</label>
+        <input type="number" id="descontos" min="0" max="50" step="1" placeholder="Ex: 35">
+      </div>
+    </div>
+    <div class="info-box">
+      Por lei (artigos 284.º a 287.º da LTFP), apenas trabalhadores com 55 anos ou mais podem solicitar pré-reforma.
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="step-num">2</span>
+      <span class="card-title">Vencimento</span>
+    </div>
+    <p class="card-desc">Remuneração base ilíquida na carreira de origem, sem suplementos</p>
+    <div class="field">
+      <label for="vb">Vencimento bruto atual <span class="unit">(€/mês)</span></label>
+      <input type="number" id="vb" min="0" step="0.01" placeholder="Ex: 1200.00">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="vbFuturo">Vencimento esperado <span class="unit">(€/mês, opcional)</span></label>
+        <input type="number" id="vbFuturo" min="0" step="0.01" placeholder="Ex: 1280.00" oninput="checkVencimentoPair()">
+      </div>
+      <div class="field">
+        <label for="anosFuturo">...atingido daqui a <span class="unit">(anos)</span></label>
+        <input type="number" id="anosFuturo" min="1" max="15" step="1" placeholder="Ex: 3" oninput="checkVencimentoPair()">
+      </div>
+    </div>
+    <div id="vencimentoPairWarning" style="display:none;"></div>
+    <div class="info-box">
+      Se souber qual o vencimento esperado daqui a alguns anos (por progressão de carreira, mudança de escalão, etc.), introduza esse valor — a calculadora interpola entre os dois. O RMG (980&nbsp;€ em 2026) é usado automaticamente na fórmula e não precisa de ser introduzido.
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="step-num">3</span>
+      <span class="card-title">Fatores Especiais</span>
+    </div>
+    <p class="card-desc">Majoração por condição de saúde ou tipo de funções</p>
+    <div class="field">
+      <label for="majoracao">Fator de majoração (m)</label>
+      <select id="majoracao">
+        <option value="0">0 — Sem condição especial</option>
+        <option value="0.1">0,1 — Doença ≥60%, cuidador, funções de risco, docente dispensado</option>
+        <option value="0.2">0,2 — Doença incapacitante ≥80%</option>
+      </select>
+    </div>
+    <div class="antiguidade-info">
+      <span class="ant-label">Fator de antiguidade — calculado automaticamente:</span>
+      <div class="ant-badges">
+        <div class="ant-badge">
+          <span class="ant-val">0%</span>
+          <span class="ant-desc">menos de 40 anos de descontos</span>
+        </div>
+        <div class="ant-arrow">→</div>
+        <div class="ant-badge ant-badge-mid">
+          <span class="ant-val">+2,5%</span>
+          <span class="ant-desc">entre 40 e 43 anos</span>
+        </div>
+        <div class="ant-arrow">→</div>
+        <div class="ant-badge ant-badge-max">
+          <span class="ant-val">+5%</span>
+          <span class="ant-desc">mais de 43 anos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fórmula -->
+  <div class="card" style="padding:1rem 1.5rem">
+    <div class="formula-box">
+      x = [ Vb × (idade ÷ 120) × (1+m) × (1+a) + 120 × (RMG ÷ Vb) ] ÷ Vb
+    </div>
+  </div>
+
+  <div class="btn-wrap">
+    <button class="btn" onclick="calcular()">Calcular Prestação de Pré-Reforma</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <!-- Result -->
+  <div class="result" id="resultado">
+    <div class="print-header" id="printHeader"></div>
+
+    <!-- PRINCIPAL: quanto leva para casa -->
+    <div class="result-main">
+      <div class="rm-context" id="rmContext">— anos, — de descontos</div>
+      <div class="rm-label">Prestação mensal bruta</div>
+      <div class="rm-value" id="rmBruto">—</div>
+      <div class="rm-sub" id="rmPct">—% do vencimento</div>
+
+      <div class="rm-grid">
+        <div class="rm-item">
+          <div class="rmi-label">Líquido p/ mês</div>
+          <div class="rmi-val" id="rmLiq">—</div>
+          <div class="rmi-note">sem SS · IRS tabela pensões RAM</div>
+        </div>
+        <div class="rm-item">
+          <div class="rmi-label">IRS retido</div>
+          <div class="rmi-val" id="rmIrs">—</div>
+          <div class="rmi-note">tabela VIII pensões Madeira 2026</div>
+        </div>
+        <div class="rm-item rm-item-full">
+          <div class="rmi-label">Redução mensal face ao vencimento atual</div>
+          <div class="rmi-val" id="rmReducao">—</div>
+          <div class="rmi-note">bruto vs bruto</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="clampNotice" style="display:none;"></div>
+
+    <!-- Projeção por idades -->
+    <div class="projection">
+      <h3>📊 E se esperar mais tempo?</h3>
+      <p class="pj-desc">Quanto receberia por mês se entrar em diferentes idades nos próximos anos. <span style="color:var(--c-accent);font-weight:500;">Dourado = hoje</span> · <span style="color:var(--c-amber);font-weight:500;">+N anos = previsão</span> com progressão salarial e antiguidade dinâmica.</p>
+      <table class="pj-table">
+        <thead>
+          <tr>
+            <th>Idade de entrada</th>
+            <th class="num">Mensal bruto</th>
+            <th class="num">Mensal líquido</th>
+            <th class="num">Diferença vs hoje</th>
+          </tr>
+        </thead>
+        <tbody id="pjBody"></tbody>
+      </table>
+      <div class="pj-insights" id="pjInsights"></div>
+    </div>
+
+    <!-- Detalhe do cálculo -->
+    <details class="breakdown">
+      <summary>
+        Detalhe do cálculo
+        <span class="toggle-hint">expandir ▾</span>
+      </summary>
+      <div style="margin-top:14px;">
+        <div class="bk-row"><span class="bk-label">Vencimento base (Vb)</span><span class="bk-val" id="bkVb">—</span></div>
+        <div class="bk-row"><span class="bk-label">Idade (id)</span><span class="bk-val" id="bkIdade">—</span></div>
+        <div class="bk-row"><span class="bk-label">Fator ponderação (p)</span><span class="bk-val">120</span></div>
+        <div class="bk-row"><span class="bk-label">Majoração (m)</span><span class="bk-val" id="bkM">—</span></div>
+        <div class="bk-row"><span class="bk-label">Antiguidade (a)</span><span class="bk-val" id="bkA">—</span></div>
+        <div class="bk-row"><span class="bk-label">RMG</span><span class="bk-val" id="bkRmg">—</span></div>
+        <div class="bk-row"><span class="bk-label">Parcela base</span><span class="bk-val" id="bkParcela1">—</span></div>
+        <div class="bk-row"><span class="bk-label">Parcela RMG</span><span class="bk-val" id="bkParcela2">—</span></div>
+        <div class="bk-row"><span class="bk-label">Numerador total</span><span class="bk-val" id="bkNum">—</span></div>
+        <div class="bk-row bk-row-highlight">
+          <span class="bk-label">Percentagem final (x)</span>
+          <span class="bk-val" id="bkPct">—</span>
+        </div>
+      </div>
+    </details>
+
+    <!-- Recomendação personalizada -->
+    <div class="recommendation-card" id="recommendation"></div>
+
+    <div class="disclaimer">
+      <strong>Avisos importantes:</strong><br>
+      · <strong>Limites legais:</strong> A prestação não pode ser superior ao vencimento base nem inferior a 25% deste.<br>
+      · <strong>Pagamentos:</strong> A prestação é paga 14 vezes ao ano (incluindo subsídios de férias e Natal).<br>
+      · <strong>Descontos:</strong> Pré-reformados <strong>não pagam SS</strong> sobre a prestação. O IRS é calculado pela tabela VIII (Pensões) da Madeira 2026 — isenção até 980€/mês; acima disso aplica-se a taxa marginal progressiva. O valor líquido mostrado é a retenção na fonte mensal; o acerto final depende da declaração anual de IRS.<br>
+      · <strong>Atualização anual:</strong> A prestação atualiza-se anualmente pela mesma percentagem de aumento que teria a trabalhar.<br>
+      · <strong>Processo:</strong> Este simulador não dispensa o processo formal com o organismo empregador e Governo Regional.<br>
+      <em>Baseado na Resolução n.º 910/2020, artigos 284.º a 287.º da LTFP e Decreto Regulamentar n.º 2/2019.</em>
+    </div>
+
+    <button class="btn-print" id="btnPrint" onclick="window.print()">🖨️ Imprimir simulação</button>
+  </div>
+
+</div>
+
+<!-- Fontes -->
+<footer class="sources">
+  <div class="sources-inner">
+    <div class="sources-title">Fontes e legislação de referência</div>
+    <div class="sources-grid">
+      <a href="https://www.madeira.gov.pt/Portals/25/Regulamento_PreReforma_RAM.pdf" target="_blank" class="source-item">
+        <span class="source-icon">📄</span>
+        <span><strong>Resolução n.º 910/2020</strong>Regulamento da Pré-Reforma da RAM</span>
+      </a>
+      <a href="https://www.pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=2321&tabela=leis" target="_blank" class="source-item">
+        <span class="source-icon">⚖️</span>
+        <span><strong>LTFP — Arts. 284.º a 287.º</strong>Lei Geral do Trabalho em Funções Públicas</span>
+      </a>
+      <a href="https://www.cga.pt/pensao-de-aposentacao" target="_blank" class="source-item">
+        <span class="source-icon">🏛️</span>
+        <span><strong>CGA / Segurança Social</strong>Critérios de acesso à reforma normal</span>
+      </a>
+      <a href="https://www.madeira.gov.pt" target="_blank" class="source-item">
+        <span class="source-icon">🗺️</span>
+        <span><strong>Governo Regional da Madeira</strong>RMG 2026: 980 € · Tabela IRS Pensões RAM</span>
+      </a>
+      <a href="https://www.dgaep.gov.pt" target="_blank" class="source-item">
+        <span class="source-icon">📋</span>
+        <span><strong>DGAEP</strong>Direção-Geral da Administração e Emprego Público</span>
+      </a>
+      <a href="https://dre.pt/dre/detalhe/decreto-regulamentar/2-2019-118562628" target="_blank" class="source-item">
+        <span class="source-icon">📰</span>
+        <span><strong>Decreto Regulamentar n.º 2/2019</strong>Regulamentação da pré-reforma</span>
+      </a>
+    </div>
+    <div class="sources-note">
+      Simulador de uso informativo. Os valores apresentados são estimativas baseadas na legislação em vigor em 2026 e não constituem aconselhamento jurídico ou financeiro. Para confirmação dos valores, consulte o organismo empregador, a CGA (subscritores inscritos antes de 2006) ou a Segurança Social (inscritos a partir de 2006).
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── LANG / THEME ──
+  const root = document.documentElement;
+  const btnPT = document.getElementById('btnPT');
+  const btnEN = document.getElementById('btnEN');
+
+  function setLang(l) {
+    root.setAttribute('data-lang', l);
+    root.setAttribute('lang', l);
+    btnPT.classList.toggle('active', l === 'pt');
+    btnEN.classList.toggle('active', l === 'en');
+    localStorage.setItem('aa-lang', l);
+  }
+  btnPT.addEventListener('click', () => setLang('pt'));
+  btnEN.addEventListener('click', () => setLang('en'));
+
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('aa-theme', next);
+  });
+
+  const savedTheme = localStorage.getItem('aa-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  root.setAttribute('data-theme', savedTheme);
+  const savedLang = localStorage.getItem('aa-lang') || 'pt';
+  setLang(savedLang);
+
+  // ── CALCULATOR LOGIC ──
+
+  function calcIdadeReforma(descontos) {
+    const IDADE_NORMAL = 66 + 9/12;
+    if (descontos <= 40) return IDADE_NORMAL;
+    const reducaoMeses = (descontos - 40) * 4;
+    return Math.max(60, IDADE_NORMAL - reducaoMeses / 12);
+  }
+
+  function fmtIdadeReforma(descontos) {
+    const ir = calcIdadeReforma(descontos);
+    const anos = Math.floor(ir);
+    const meses = Math.round((ir - anos) * 12);
+    return meses > 0 ? `${anos} anos e ${meses} meses` : `${anos} anos`;
+  }
+
+  function checkVencimentoPair() {
+    const vbF = document.getElementById('vbFuturo').value;
+    const anosF = document.getElementById('anosFuturo').value;
+    const warn = document.getElementById('vencimentoPairWarning');
+    if ((vbF && !anosF) || (!vbF && anosF)) {
+      warn.textContent = vbF && !anosF
+        ? 'Falta indicar daqui a quantos anos espera atingir esse vencimento.'
+        : 'Falta indicar qual o vencimento esperado.';
+      warn.style.display = 'block';
+    } else {
+      warn.style.display = 'none';
+    }
+  }
+
+  // IRS 2026 Madeira — Tabela VIII (Pensões, não casado sem dependentes)
+  // Isenção até 980€ (RMG Madeira 2026)
+  // Fonte: JORAM, II Série, nº 13, 20-01-2026
+  const TABELA_PENSOES_MADEIRA = [
+    { max:  980.00, taxa: 0.0000, parcela:    0.00 },
+    { max: 1081.00, taxa: 0.1325, parcela:  129.85 },
+    { max: 1627.00, taxa: 0.1800, parcela:  181.21 },
+    { max: 2010.00, taxa: 0.2300, parcela:  262.56 },
+    { max: 2435.00, taxa: 0.2600, parcela:  322.86 },
+    { max: 3174.00, taxa: 0.3275, parcela:  487.27 },
+    { max: 4009.00, taxa: 0.3700, parcela:  622.22 },
+    { max: 5198.00, taxa: 0.4300, parcela:  862.76 },
+    { max: 6328.00, taxa: 0.4500, parcela:  966.72 },
+    { max: Infinity, taxa: 0.4800, parcela: 1156.56 },
+  ];
+
+  function calcLiquido(bruto) {
+    const row = TABELA_PENSOES_MADEIRA.find(r => bruto <= r.max);
+    const irs = Math.max(0, bruto * row.taxa - row.parcela);
+    return { liquido: bruto - irs, irs, ss: 0 };
+  }
+
+  function fatorAntiguidade(anosDescontos) {
+    if (anosDescontos > 43) return 0.05;
+    if (anosDescontos >= 40) return 0.025;
+    return 0;
+  }
+
+  function calcPrestacao(idade, vb, rmg, m, a) {
+    const p = 120;
+    const parcela1 = vb * (idade / p) * (1 + m) * (1 + a);
+    const parcela2 = p * (rmg / vb);
+    const numerator = parcela1 + parcela2;
+    const rawX = numerator / vb;
+    const x = Math.max(0.25, Math.min(rawX, 1.0));
+    return { pct: x * 100, bruto: x * vb, parcela1, parcela2, numerator, rawX, x };
+  }
+
+  function calcular() {
+    const errEl = document.getElementById('errorMsg');
+    const resEl = document.getElementById('resultado');
+    errEl.classList.remove('show');
+    resEl.classList.remove('show');
+
+    const idade = parseFloat(document.getElementById('idade').value);
+    const descontosAtuais = parseFloat(document.getElementById('descontos').value) || 0;
+    const vb = parseFloat(document.getElementById('vb').value);
+    const rmg = 980;
+    const m = parseFloat(document.getElementById('majoracao').value);
+    const a = fatorAntiguidade(descontosAtuais);
+    const idadeReforma = calcIdadeReforma(descontosAtuais);
+
+    const vbFuturo = parseFloat(document.getElementById('vbFuturo').value);
+    const anosFuturo = parseFloat(document.getElementById('anosFuturo').value);
+    const hasFuture = !isNaN(vbFuturo) && !isNaN(anosFuturo) && vbFuturo > 0 && anosFuturo > 0;
+    const incrementoAnual = hasFuture ? (vbFuturo - vb) / anosFuturo : 0;
+
+    if (isNaN(idade) || isNaN(vb)) {
+      errEl.innerHTML = '<div style="padding:10px 14px;background:var(--c-red-pale);border:1px solid var(--c-red-border);border-radius:var(--r-sm);font-size:13px;color:var(--c-red);">Por favor preencha todos os campos obrigatórios (idade e vencimento).</div>';
+      errEl.classList.add('show');
+      return;
+    }
+    if (idade < 55) {
+      errEl.innerHTML = '<div style="padding:10px 14px;background:var(--c-red-pale);border:1px solid var(--c-red-border);border-radius:var(--r-sm);font-size:13px;color:var(--c-red);">A idade mínima legal para pré-reforma é 55 anos (LTFP).</div>';
+      errEl.classList.add('show');
+      return;
+    }
+    if (vb <= 0) {
+      errEl.innerHTML = '<div style="padding:10px 14px;background:var(--c-red-pale);border:1px solid var(--c-red-border);border-radius:var(--r-sm);font-size:13px;color:var(--c-red);">O vencimento base deve ser superior a 0 €.</div>';
+      errEl.classList.add('show');
+      return;
+    }
+    if (idadeReforma <= idade) {
+      const labelIdadeReforma = fmtIdadeReforma(descontosAtuais);
+      errEl.innerHTML = `
+        <div style="background:var(--c-amber-pale);border:1px solid var(--c-amber-border);border-radius:var(--r-lg);padding:1.1rem 1.25rem;font-size:13.5px;line-height:1.65;color:var(--c-amber);">
+          <div style="font-size:15px;font-weight:600;margin-bottom:7px;">⚠️ Esta calculadora não se aplica ao seu caso</div>
+          <p>Com <strong>${idade} anos</strong> e <strong>${descontosAtuais} anos de descontos</strong>, já atingiu a idade de aposentação calculada (<strong>${labelIdadeReforma}</strong>) — é elegível para reforma normal.</p>
+          <p style="margin-top:7px;">A pré-reforma destina-se a quem <em>ainda não</em> tem acesso à reforma normal. Quem já é elegível terá uma pensão calculada de forma completamente diferente — tipicamente <strong>mais favorável</strong> do que a pré-reforma.</p>
+          <p style="margin-top:7px;font-size:12.5px;opacity:.75;">Pode simular na <a href="https://www.cga.pt" target="_blank" style="color:inherit;text-decoration:underline;">CGA Directa</a> (inscritos antes de 2006) ou no <a href="https://www.seg-social.pt" target="_blank" style="color:inherit;text-decoration:underline;">simulador da Segurança Social</a> (inscritos a partir de 2006).</p>
+        </div>`;
+      errEl.classList.add('show');
+      resEl.classList.remove('show');
+      return;
+    }
+
+    const r = calcPrestacao(idade, vb, rmg, m, a);
+    const wasClamped = r.rawX > 1.0 || r.rawX < 0.25;
+    const { liquido, irs } = calcLiquido(r.bruto);
+    const reducao = vb - r.bruto;
+
+    document.getElementById('rmContext').textContent = `${idade} anos · ${descontosAtuais > 0 ? descontosAtuais + ' anos de descontos · antiguidade ' + (a === 0.05 ? '5%' : a === 0.025 ? '2,5%' : '0%') : 'sem anos de descontos'}`;
+    document.getElementById('rmBruto').textContent = fmt(r.bruto) + ' €';
+    document.getElementById('rmPct').textContent = r.pct.toFixed(1) + '% do vencimento atual';
+    document.getElementById('rmLiq').textContent = fmt(liquido) + ' €';
+    document.getElementById('rmIrs').textContent = irs > 0 ? '-' + fmt(irs) + ' €' : 'Isento';
+    document.getElementById('rmReducao').textContent = '-' + fmt(reducao) + ' €';
+
+    const clampNotice = document.getElementById('clampNotice');
+    if (wasClamped) {
+      const rawPct = (r.rawX * 100).toFixed(2);
+      clampNotice.textContent = r.rawX > 1.0
+        ? `Cálculo bruto: ${rawPct}% — ajustado para 100% (limite máximo legal).`
+        : `Cálculo bruto: ${rawPct}% — ajustado para 25% (limite mínimo legal da LTFP).`;
+      clampNotice.style.display = 'block';
+    } else {
+      clampNotice.style.display = 'none';
+    }
+
+    document.getElementById('bkVb').textContent = fmt(vb) + ' €';
+    document.getElementById('bkIdade').textContent = idade + ' anos';
+    document.getElementById('bkM').textContent = m;
+    document.getElementById('bkA').textContent = a;
+    document.getElementById('bkRmg').textContent = fmt(rmg) + ' €';
+    document.getElementById('bkParcela1').textContent = fmt(r.parcela1) + ' €';
+    document.getElementById('bkParcela2').textContent = fmt(r.parcela2);
+    document.getElementById('bkNum').textContent = fmt(r.numerator);
+    document.getElementById('bkPct').textContent = r.pct.toFixed(4) + '%';
+
+    renderProjection(idade, descontosAtuais, vb, rmg, m, a, idadeReforma, incrementoAnual);
+    renderRecommendation(idade, descontosAtuais, vb, rmg, m, idadeReforma, incrementoAnual);
+
+    void resEl.offsetWidth;
+    resEl.classList.add('show');
+    document.getElementById('btnPrint').classList.add('visible');
+
+    const now = new Date().toLocaleDateString('pt-PT', { day:'2-digit', month:'long', year:'numeric' });
+    document.getElementById('printHeader').innerHTML =
+      `Simulação de Pré-Reforma RAM — gerada em ${now} · andreaguiar.org`;
+
+    setTimeout(() => resEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
+
+  function renderProjection(idadeAtual, descontosAtuais, vbBase, rmgBase, m, aAtual, idadeReforma, incrementoAnual) {
+    const tbody = document.getElementById('pjBody');
+    const insights = document.getElementById('pjInsights');
+    tbody.innerHTML = '';
+
+    const minAge = idadeAtual;
+    const maxAge = Math.min(idadeReforma - 1, idadeAtual + 5);
+    const refResult = calcPrestacao(idadeAtual, vbBase, rmgBase, m, aAtual);
+    const refMonthly = refResult.bruto;
+
+    for (let age = minAge; age <= maxAge; age++) {
+      const yearsDiff = age - idadeAtual;
+      const vbYear = Math.max(0, vbBase + incrementoAnual * yearsDiff);
+      const descontosYear = descontosAtuais + yearsDiff;
+      const aYear = fatorAntiguidade(descontosYear);
+
+      const result = calcPrestacao(age, vbYear, rmgBase, m, aYear);
+      const monthly = result.bruto;
+      const delta = monthly - refMonthly;
+
+      const tr = document.createElement('tr');
+      let badge = age === idadeAtual
+        ? '<span class="badge-real">Hoje</span>'
+        : `<span class="badge-est">+${yearsDiff} ${yearsDiff === 1 ? 'ano' : 'anos'}</span>`;
+      if (age === idadeAtual) tr.classList.add('current');
+      else tr.classList.add('estimate');
+
+      let deltaStr = '—', deltaClass = 'delta-zero';
+      if (age !== idadeAtual) {
+        if (delta > 0.5)       { deltaStr = '+' + fmt(delta) + ' €/mês'; deltaClass = 'delta-pos'; }
+        else if (delta < -0.5) { deltaStr = fmt(delta) + ' €/mês';       deltaClass = 'delta-neg'; }
+        else                   { deltaStr = '≈ igual'; }
+      }
+
+      let extras = [];
+      if (yearsDiff > 0 && incrementoAnual !== 0) extras.push(`venc. ${fmt(vbYear)}€`);
+      const prevA = fatorAntiguidade(descontosAtuais + Math.max(0, yearsDiff - 1));
+      if (age > idadeAtual && aYear > prevA) {
+        const label = aYear === 0.025 ? '🎯 atinge 40 anos descontos' : '🎯 atinge 43 anos descontos';
+        extras.push(`<span style="color:var(--c-green);font-weight:600;">${label}</span>`);
+      }
+      const extraInfo = extras.length ? ` <span style="font-size:11px;color:var(--c-text3);">(${extras.join(', ')})</span>` : '';
+
+      tr.innerHTML = `
+        <td>${age} anos${badge}${extraInfo}</td>
+        <td class="num">${fmt(monthly)} €</td>
+        <td class="num">${fmt(calcLiquido(monthly).liquido)} €</td>
+        <td class="num ${deltaClass}">${deltaStr}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    // Linha reforma normal
+    const trReforma = document.createElement('tr');
+    trReforma.classList.add('reforma-row');
+    const idadeReformaLabel = fmtIdadeReforma(descontosAtuais);
+    trReforma.innerHTML = `
+      <td>${idadeReformaLabel} <span class="badge-reforma">Reforma normal</span></td>
+      <td class="num" colspan="3" style="color:var(--c-text3);font-style:italic;text-align:center;">
+        Reforma normal — simulação disponível em breve
+      </td>
+    `;
+    tbody.appendChild(trReforma);
+
+    const plus1 = calcPrestacao(idadeAtual + 1, vbBase + incrementoAnual, rmgBase, m, fatorAntiguidade(descontosAtuais + 1));
+    const ganho1 = plus1.bruto - refMonthly;
+    const ganhoLiq1 = calcLiquido(plus1.bruto).liquido - calcLiquido(refMonthly).liquido;
+
+    let insightHtml = '<div class="ins-title">📌 Análise rápida</div>';
+    if (ganho1 > 0.5) {
+      insightHtml += `<div class="ins-item"><span class="ins-label">Adiar 1 ano (entrar com ${idadeAtual + 1}):</span><span class="ins-val delta-pos">+${fmt(ganho1)} € bruto · +${fmt(ganhoLiq1)} € líquido/mês</span></div>`;
+    } else {
+      insightHtml += `<div class="ins-item"><span class="ins-label">Adiar 1 ano:</span><span class="ins-val">Sem variação significativa</span></div>`;
+    }
+
+    const ate40 = 40 - descontosAtuais;
+    const ate43 = 44 - descontosAtuais;
+    if (ate40 > 0 && ate40 <= 6)
+      insightHtml += `<div class="ins-item" style="border-top:1px solid var(--c-border);margin-top:7px;padding-top:8px;"><span class="ins-label">⏳ Falta para 40 anos de descontos (+2,5%):</span><span class="ins-val">${ate40} ${ate40 === 1 ? 'ano' : 'anos'}</span></div>`;
+    if (ate43 > 0 && ate43 <= 6 && ate43 > ate40)
+      insightHtml += `<div class="ins-item"><span class="ins-label">⏳ Falta para 43 anos de descontos (+5%):</span><span class="ins-val">${ate43} ${ate43 === 1 ? 'ano' : 'anos'}</span></div>`;
+    if (incrementoAnual !== 0)
+      insightHtml += `<div class="ins-item" style="border-top:1px solid var(--c-border);margin-top:7px;padding-top:8px;"><span class="ins-label">Progressão salarial assumida:</span><span class="ins-val">${incrementoAnual > 0 ? '+' : ''}${fmt(incrementoAnual)} €/ano</span></div>`;
+
+    insights.innerHTML = insightHtml;
+  }
+
+  function renderRecommendation(idadeAtual, descontosAtuais, vbBase, rmgBase, m, idadeReforma, incrementoAnual) {
+    const el = document.getElementById('recommendation');
+    if (!el) return;
+
+    const points = [];
+    const aHoje = fatorAntiguidade(descontosAtuais);
+    const resultHoje = calcPrestacao(idadeAtual, vbBase, rmgBase, m, aHoje);
+    const pctHoje = resultHoje.pct;
+    const yearsToRetirement = idadeReforma - idadeAtual;
+
+    if (idadeAtual <= 56) {
+      points.push({ icon: '⏳', type: 'warning',
+        text: `Com ${idadeAtual} anos, está perto da idade mínima legal (55). Há ainda ${yearsToRetirement} anos até à aposentação — sair agora significa muitos anos com prestação reduzida.`
+      });
+    }
+
+    if (descontosAtuais > 0) {
+      const ate40 = 40 - descontosAtuais;
+      const ate43 = 44 - descontosAtuais;
+      if (ate40 > 0 && ate40 <= 2)
+        points.push({ icon: '🎯', type: 'opportunity',
+          text: `Está a ${ate40} ${ate40 === 1 ? 'ano' : 'anos'} de atingir 40 anos de descontos. Adiar a entrada pode aumentar a prestação em ~2,5% pela antiguidade.`
+        });
+      if (ate43 > 0 && ate43 <= 3 && ate43 > ate40)
+        points.push({ icon: '🎯', type: 'opportunity',
+          text: `Está a ${ate43} ${ate43 === 1 ? 'ano' : 'anos'} de atingir 43 anos de descontos. Adiar a entrada pode aumentar a prestação em até 5% pela antiguidade máxima.`
+        });
+    }
+
+    if (pctHoje >= 75)
+      points.push({ icon: '✅', type: 'good',
+        text: `A prestação representa ${pctHoje.toFixed(0)}% do vencimento — um valor relativamente generoso para pré-reforma.`
+      });
+    else if (pctHoje < 50)
+      points.push({ icon: '⚠️', type: 'warning',
+        text: `A prestação fica em apenas ${pctHoje.toFixed(0)}% do vencimento. Pode valer a pena adiar uns anos para melhorar este valor.`
+      });
+
+    let totalWorking = 0, totalPreReformaNow = 0;
+    for (let yr = 0; yr < yearsToRetirement; yr++) {
+      const vbYr = Math.max(0, vbBase + incrementoAnual * yr);
+      totalWorking += vbYr * 14;
+      totalPreReformaNow += resultHoje.x * vbYr * 14;
+    }
+    const perda = totalWorking - totalPreReformaNow;
+    const perdaMensalMedia = perda / (yearsToRetirement * 12);
+    points.push({ icon: '💰', type: 'info',
+      text: `Sair hoje vs trabalhar até aos ${Math.floor(idadeReforma)}: perde aproximadamente <strong>${fmt(perda)} €</strong> totais — o equivalente a ${fmt(perdaMensalMedia)} €/mês de "preço" pela liberdade de não trabalhar.`
+    });
+
+    let html = '<div class="rec-title">🧭 Análise personalizada</div>';
+    points.forEach(p => {
+      html += `<div class="rec-item rec-${p.type}"><span class="rec-icon">${p.icon}</span><span class="rec-text">${p.text}</span></div>`;
+    });
+    el.innerHTML = html;
+  }
+
+  function fmt(n) {
+    const fixed = Math.abs(n).toFixed(2);
+    const parts = fixed.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return (n < 0 ? '-' : '') + parts.join('.');
+  }
+</script>
+
+</body>
+</html>

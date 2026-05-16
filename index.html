@@ -722,17 +722,18 @@
     feedback.textContent = '…';
 
     try {
-      const res = await fetch('https://formsubmit.co/ajax/me@andreaguiar.org', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          _subject: 'Sugestão de calculadora — andreaguiar.org',
+          access_key: '9fe4c6f3-ffa5-4ebf-9cde-be958d85c129',
+          subject: 'Sugestão de calculadora — andreaguiar.org',
           mensagem: text,
-          _captcha: 'false'
+          from_name: 'andreaguiar.org'
         })
       });
       const data = await res.json();
-      if (data.success === 'true' || data.success === true) {
+      if (data.success) {
         feedback.className = 'suggest-feedback ok';
         feedback.textContent = '✓ Enviado, obrigado!';
         textarea.value = '';

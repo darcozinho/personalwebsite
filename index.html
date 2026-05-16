@@ -237,9 +237,12 @@
     .suggest-textarea:focus { border-color: var(--gold); }
     .suggest-textarea::placeholder { color: var(--hint); }
     .suggest-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; flex-wrap: wrap; gap: 8px; }
-    .suggest-note { font-size: 11.5px; color: var(--hint); }
+    .suggest-feedback { font-size: 12.5px; }
+    .suggest-feedback.ok  { color: #4caf7d; }
+    .suggest-feedback.err { color: var(--gold); }
     .suggest-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 20px; background: var(--gold); color: var(--bg); border: none; border-radius: 8px; font-family: 'Instrument Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity .2s; }
     .suggest-btn:hover { opacity: .82; }
+    .suggest-btn:disabled { opacity: .5; cursor: default; }
     .t-soon {
       display: inline-flex; align-items: center; gap: 5px;
       font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
@@ -558,8 +561,8 @@
       <div class="suggest-inner">
         <textarea class="suggest-textarea" id="suggestText" placeholder="Ex: &quot;Uma calculadora de IRS para trabalhadores independentes na Madeira&quot;..." rows="4"></textarea>
         <div class="suggest-footer">
-          <span class="suggest-note">me@andreaguiar.org</span>
-          <button class="suggest-btn" onclick="enviarSugestao()">
+          <span class="suggest-feedback" id="suggestFeedback"></span>
+          <button class="suggest-btn" id="suggestBtn" onclick="enviarSugestao()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             <span lang="pt">Enviar sugestão</span>
             <span lang="en">Send suggestion</span>
@@ -704,23 +707,50 @@
   function toggleSuggest() {
     const expand = document.getElementById('suggestExpand');
     const isOpen = expand.classList.toggle('open');
-    if (isOpen) {
-      setTimeout(() => document.getElementById('suggestText').focus(), 50);
+    if (isOpen) setTimeout(() => document.getElementById('suggestText').focus(), 50);
+  }
+
+  async function enviarSugestao() {
+    const textarea = document.getElementById('suggestText');
+    const btn      = document.getElementById('suggestBtn');
+    const feedback = document.getElementById('suggestFeedback');
+    const text = textarea.value.trim();
+    if (!text) return;
+
+    btn.disabled = true;
+    feedback.className = 'suggest-feedback';
+    feedback.textContent = '…';
+
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/me@andreaguiar.org', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          _subject: 'Sugestão de calculadora — andreaguiar.org',
+          mensagem: text,
+          _captcha: 'false'
+        })
+      });
+      const data = await res.json();
+      if (data.success === 'true' || data.success === true) {
+        feedback.className = 'suggest-feedback ok';
+        feedback.textContent = '✓ Enviado, obrigado!';
+        textarea.value = '';
+        setTimeout(() => {
+          feedback.textContent = '';
+          document.getElementById('suggestExpand').classList.remove('open');
+        }, 3000);
+      } else {
+        throw new Error();
+      }
+    } catch {
+      feedback.className = 'suggest-feedback err';
+      feedback.textContent = 'Erro ao enviar. Tenta mais tarde.';
+    } finally {
+      btn.disabled = false;
     }
   }
-  function enviarSugestao() {
-    const text = document.getElementById('suggestText').value.trim();
-    if (!text) return;
-    const lang = root.getAttribute('lang') || 'pt';
-    const subject = lang === 'en' ? 'Calculator suggestion' : 'Sugestão de calculadora';
-    const mailto = 'mailto:me@andreaguiar.org?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
-    const a = document.createElement('a');
-    a.href = mailto;
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
+
   document.getElementById('suggestText').addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) enviarSugestao();
   });

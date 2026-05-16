@@ -225,9 +225,9 @@
     .t-badge-manut::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--hint); animation: blink 1.4s ease-in-out infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
     .t-badge-ram { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 20px; background: var(--gold); color: var(--bg); text-transform: uppercase; letter-spacing: .07em; flex-shrink: 0; }
-    .t-num-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .t-foot-tags { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
     /* ── SUGGEST BOX ── */
-    .suggest-trigger-wrap { display: flex; justify-content: flex-start; margin-top: 10px; }
+    .suggest-trigger-wrap { margin-top: 10px; }
     .suggest-trigger { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 10px; border: 1px solid var(--border); border-radius: 20px; background: transparent; font-family: 'Instrument Sans', sans-serif; font-size: 11px; font-weight: 500; color: var(--hint); cursor: pointer; transition: border-color .2s, color .2s; letter-spacing: .02em; }
     .suggest-trigger:hover { border-color: var(--gold); color: var(--gold); }
     .suggest-expand { overflow: hidden; max-height: 0; transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s; opacity: 0; pointer-events: none; }
@@ -239,7 +239,7 @@
     .suggest-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; flex-wrap: wrap; gap: 8px; }
     .suggest-feedback { font-size: 12.5px; }
     .suggest-feedback.ok  { color: #4caf7d; }
-    .suggest-feedback.err { color: var(--gold); }
+    .suggest-feedback.err { color: #c0392b; }
     .suggest-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 20px; background: var(--gold); color: var(--bg); border: none; border-radius: 8px; font-family: 'Instrument Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity .2s; }
     .suggest-btn:hover { opacity: .82; }
     .suggest-btn:disabled { opacity: .5; cursor: default; }
@@ -494,7 +494,7 @@
         <h3 lang="en">Solar energy calculator</h3>
         <p lang="pt">Estima a produção anual de painéis fotovoltaicos, poupança na fatura elétrica e retorno do investimento.</p>
         <p lang="en">Estimates annual panel output, electricity bill savings and return on investment.</p>
-        <div class="t-foot"><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;"><span class="t-tag" lang="pt">energia</span><span class="t-tag" lang="en">energy</span><span class="t-badge-ram">Madeira</span></div><span class="t-arrow">↗</span></div>
+        <div class="t-foot"><div class="t-foot-tags"><span class="t-tag" lang="pt">energia</span><span class="t-tag" lang="en">energy</span><span class="t-badge-ram">Madeira</span></div><span class="t-arrow">↗</span></div>
       </a>
 
       <a class="t-card" href="emprestimos.html">
@@ -544,7 +544,7 @@
         <h3 lang="en">Pre-Retirement Simulator</h3>
         <p lang="pt">Calcule a prestação máxima de pré-reforma para trabalhadores da administração pública da RAM.</p>
         <p lang="en">Calculate the maximum pre-retirement allowance for RAM public administration workers.</p>
-        <div class="t-foot"><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;"><span class="t-tag" lang="pt">reforma</span><span class="t-tag" lang="en">retirement</span><span class="t-badge-ram">Madeira</span></div><span class="t-arrow">↗</span></div>
+        <div class="t-foot"><div class="t-foot-tags"><span class="t-tag" lang="pt">reforma</span><span class="t-tag" lang="en">retirement</span><span class="t-badge-ram">Madeira</span></div><span class="t-arrow">↗</span></div>
       </a>
 
     </div>
@@ -704,22 +704,23 @@
   });
 
   // ── SUGGEST BOX ──
+  const suggestExpand   = document.getElementById('suggestExpand');
+  const suggestText     = document.getElementById('suggestText');
+  const suggestBtn      = document.getElementById('suggestBtn');
+  const suggestFeedback = document.getElementById('suggestFeedback');
+
   function toggleSuggest() {
-    const expand = document.getElementById('suggestExpand');
-    const isOpen = expand.classList.toggle('open');
-    if (isOpen) setTimeout(() => document.getElementById('suggestText').focus(), 50);
+    const isOpen = suggestExpand.classList.toggle('open');
+    if (isOpen) setTimeout(() => suggestText.focus(), 50);
   }
 
   async function enviarSugestao() {
-    const textarea = document.getElementById('suggestText');
-    const btn      = document.getElementById('suggestBtn');
-    const feedback = document.getElementById('suggestFeedback');
-    const text = textarea.value.trim();
+    const text = suggestText.value.trim();
     if (!text) return;
 
-    btn.disabled = true;
-    feedback.className = 'suggest-feedback';
-    feedback.textContent = '…';
+    suggestBtn.disabled = true;
+    suggestFeedback.className = 'suggest-feedback';
+    suggestFeedback.textContent = '…';
 
     try {
       const res = await fetch('https://api.web3forms.com/submit', {
@@ -734,27 +735,29 @@
       });
       const data = await res.json();
       if (data.success) {
-        feedback.className = 'suggest-feedback ok';
-        feedback.textContent = '✓ Enviado, obrigado!';
-        textarea.value = '';
+        suggestFeedback.className = 'suggest-feedback ok';
+        suggestFeedback.textContent = '✓ Enviado, obrigado!';
+        suggestText.value = '';
         setTimeout(() => {
-          feedback.textContent = '';
-          document.getElementById('suggestExpand').classList.remove('open');
+          suggestFeedback.textContent = '';
+          if (suggestExpand.classList.contains('open')) suggestExpand.classList.remove('open');
         }, 3000);
       } else {
-        throw new Error();
+        throw new Error(data.message || 'Erro');
       }
     } catch {
-      feedback.className = 'suggest-feedback err';
-      feedback.textContent = 'Erro ao enviar. Tenta mais tarde.';
+      suggestFeedback.className = 'suggest-feedback err';
+      suggestFeedback.textContent = 'Erro ao enviar. Tenta mais tarde.';
     } finally {
-      btn.disabled = false;
+      suggestBtn.disabled = false;
     }
   }
 
-  document.getElementById('suggestText').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) enviarSugestao();
-  });
+  if (suggestText) {
+    suggestText.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) enviarSugestao();
+    });
+  }
 </script>
 </body>
 </html>

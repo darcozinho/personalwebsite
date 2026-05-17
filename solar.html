@@ -22,77 +22,11 @@
 <script>(function(){var d=document.documentElement;var t=localStorage.getItem('aa-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var l=localStorage.getItem('aa-lang')||'pt';d.setAttribute('data-theme',t);d.setAttribute('data-lang',l);d.setAttribute('lang',l)})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/calc.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-/* ── TOKENS ── */
-:root{
-  --c-bg:#f4efe6; --c-surface:#ece6d8; --c-surface2:#e2dace;
-  --c-border:#d6cfc2; --c-border2:#c5bdb0;
-  --c-text:#1c2238; --c-text2:#5c6070; --c-text3:#9ca2b2;
-  --c-accent:#b8912a; --c-accent2:#9a7820; --c-accent-pale:#f7f0e0;
-  --c-green:#2a6e3f; --c-green-pale:#e8f5ed; --c-green-border:#a8d5bc;
-  --c-red:#b83232; --c-red-pale:#fdecea; --c-red-border:#f5c6c2;
-  --c-amber:#7a5000; --c-amber-pale:#fef9ec; --c-amber-border:#e8c870;
-  --c-orange:#a05000;
-  --r:10px; --r-sm:6px; --r-lg:14px;
-  --shadow: 0 1px 3px rgba(28,34,56,.06), 0 1px 2px rgba(28,34,56,.04);
-}
-html[data-theme="dark"]{
-  --c-bg:#131210; --c-surface:#1b1916; --c-surface2:#23211d;
-  --c-border:#2c2924; --c-border2:#3b3730;
-  --c-text:#f0e9d8; --c-text2:#98908a; --c-text3:#585450;
-  --c-accent:#d4a83a; --c-accent2:#b8912a; --c-accent-pale:#2a2010;
-  --c-green:#4caf82; --c-green-pale:#0d2a1a; --c-green-border:#1d5535;
-  --c-red:#e57373; --c-red-pale:#2a0d0d; --c-red-border:#5c2020;
-  --c-amber:#f5c842; --c-amber-pale:#2a1f00; --c-amber-border:#5a4000;
-  --c-orange:#e8830a;
-  --shadow: 0 1px 3px rgba(0,0,0,.3);
-}
-[data-lang="pt"] [lang="en"] { display: none; }
-[data-lang="en"] [lang="pt"] { display: none; }
-
-/* ── BASE ── */
-html{scroll-behavior:smooth;font-size:15px}
-body{font-family:'Instrument Sans',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;line-height:1.5;transition:background .2s,color .2s;-webkit-font-smoothing:antialiased}
-
-/* ── HERO ── */
-.hero{
-  background:var(--c-bg);
-  padding:0;
-  border-bottom:1px solid var(--c-border);
-}
-.hero-nav{
-  max-width:960px;margin:0 auto;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:17px 32px;
-  border-bottom:1px solid var(--c-border);
-}
-@media(max-width:600px){.hero-nav{padding:14px 20px}}
+/* ── PAGE-SPECIFIC OVERRIDES & STYLES ── */
 .hero-wordmark{font-family:'Instrument Serif',serif;font-size:17px;color:var(--c-text);letter-spacing:-.01em;text-decoration:none}
 .hero-wordmark em{font-style:italic;color:var(--c-accent)}
-.nav-actions{display:flex;gap:20px;align-items:center}
-.nav-btn{
-  padding:7px 14px;border-radius:0;
-  border:none;
-  background:transparent;
-  font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;
-  color:var(--c-text2);cursor:pointer;transition:background .15s,color .15s;
-  letter-spacing:.04em;
-}
-.nav-btn.active{background:var(--c-accent);color:var(--c-bg)}
-.nav-btn:hover:not(.active){color:var(--c-text)}
-.nav-icon-btn{
-  width:34px;height:34px;border-radius:50%;
-  border:1px solid var(--c-border);
-  background:var(--c-surface);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--c-text2);transition:border-color .2s,color .2s;
-}
-.nav-icon-btn:hover{border-color:var(--c-border2);color:var(--c-text)}
-.i-sun, .i-moon { display: none; }
-[data-theme="light"] .i-sun  { display: block; }
-[data-theme="dark"]  .i-moon { display: block; }
 .dark-wrap{display:none}
 .hero-body{
   max-width:840px;margin:0 auto;
@@ -323,14 +257,6 @@ input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.15);box-shadow:0
 /* ── DIVIDER ── */
 hr{border:none;border-top:1px solid var(--c-border);margin:.9rem 0}
 
-/* ── BACK LINK ── */
-.back-link{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:13px;font-weight:500;color:var(--c-text2);
-  text-decoration:none;letter-spacing:.01em;
-  transition:color .2s;
-}
-.back-link:hover{color:var(--c-accent)}
 @keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .card{animation:up .35s ease both}
 .card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}

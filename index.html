@@ -6,6 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>André Aguiar</title>
   <meta name="description" content="Projetista FTTH, designer e criador de ferramentas digitais. Ilha da Madeira, Portugal.">
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="André Aguiar">
+  <meta property="og:url" content="https://andreaguiar.org/">
+  <meta property="og:title" content="André Aguiar — Projetista FTTH & Designer">
+  <meta property="og:description" content="Projetista FTTH, designer e criador de ferramentas digitais. Ilha da Madeira, Portugal.">
+  <meta property="og:image" content="https://andreaguiar.org/favicon.png">
+  <meta property="og:locale" content="pt_PT">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="André Aguiar — Projetista FTTH & Designer">
+  <meta name="twitter:description" content="Projetista FTTH, designer e criador de ferramentas digitais. Madeira, Portugal.">
+  <meta name="twitter:image" content="https://andreaguiar.org/favicon.png">
+  <!-- Theme/lang init (prevents flash of unstyled theme) -->
+  <script>(function(){var d=document.documentElement;var t=localStorage.getItem('aa-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var l=localStorage.getItem('aa-lang')||'pt';d.setAttribute('data-theme',t);d.setAttribute('data-lang',l);d.setAttribute('lang',l)})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -494,7 +508,7 @@
         <h3 lang="en">Solar energy calculator</h3>
         <p lang="pt">Estima a produção anual de painéis fotovoltaicos, poupança na fatura elétrica e retorno do investimento.</p>
         <p lang="en">Estimates annual panel output, electricity bill savings and return on investment.</p>
-        <div class="t-foot"><div class="t-foot-tags"><span class="t-tag" lang="pt">energia</span><span class="t-tag" lang="en">energy</span><span class="t-badge-ram">Madeira</span></div><span class="t-arrow">↗</span></div>
+        <div class="t-foot"><div class="t-foot-tags"><span class="t-tag" lang="pt">energia</span><span class="t-tag" lang="en">energy</span><span class="t-badge-ram" title="Específico para a Região Autónoma da Madeira">Madeira</span></div><span class="t-arrow">↗</span></div>
       </a>
 
       <a class="t-card" href="emprestimos.html">
@@ -544,14 +558,14 @@
         <h3 lang="en">Pre-Retirement Simulator</h3>
         <p lang="pt">Calcule a prestação máxima de pré-reforma para trabalhadores da administração pública da RAM.</p>
         <p lang="en">Calculate the maximum pre-retirement allowance for RAM public administration workers.</p>
-        <div class="t-foot"><div class="t-foot-tags"><span class="t-tag" lang="pt">reforma</span><span class="t-tag" lang="en">retirement</span><span class="t-badge-ram">Madeira</span></div><span class="t-arrow">↗</span></div>
+        <div class="t-foot"><div class="t-foot-tags"><span class="t-tag" lang="pt">reforma</span><span class="t-tag" lang="en">retirement</span><span class="t-badge-ram" title="Específico para a Região Autónoma da Madeira">Madeira</span></div><span class="t-arrow">↗</span></div>
       </a>
 
     </div>
 
     <div class="suggest-trigger-wrap">
-      <button class="suggest-trigger" onclick="toggleSuggest()" id="suggestTrigger">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <button class="suggest-trigger" onclick="toggleSuggest()" id="suggestTrigger" aria-expanded="false" aria-controls="suggestExpand">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         <span lang="pt">Sugerir calculadora</span>
         <span lang="en">Suggest a calculator</span>
       </button>
@@ -704,6 +718,7 @@
   });
 
   // ── SUGGEST BOX ──
+  const suggestTrigger  = document.getElementById('suggestTrigger');
   const suggestExpand   = document.getElementById('suggestExpand');
   const suggestText     = document.getElementById('suggestText');
   const suggestBtn      = document.getElementById('suggestBtn');
@@ -711,6 +726,7 @@
 
   function toggleSuggest() {
     const isOpen = suggestExpand.classList.toggle('open');
+    suggestTrigger.setAttribute('aria-expanded', String(isOpen));
     if (isOpen) setTimeout(() => suggestText.focus(), 50);
   }
 
@@ -740,7 +756,10 @@
         suggestText.value = '';
         setTimeout(() => {
           suggestFeedback.textContent = '';
-          if (suggestExpand.classList.contains('open')) suggestExpand.classList.remove('open');
+          if (suggestExpand.classList.contains('open')) {
+            suggestExpand.classList.remove('open');
+            suggestTrigger.setAttribute('aria-expanded', 'false');
+          }
         }, 3000);
       } else {
         throw new Error(data.message || 'Erro');

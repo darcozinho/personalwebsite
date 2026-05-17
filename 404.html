@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.png" type="image/png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Página não encontrada · André Aguiar</title>
+<meta name="robots" content="noindex">
+<script>(function(){var d=document.documentElement;var t=localStorage.getItem('aa-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var l=localStorage.getItem('aa-lang')||'pt';d.setAttribute('data-theme',t);d.setAttribute('data-lang',l);d.setAttribute('lang',l)})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f4efe6;--surface:#ece6d8;--text:#1c2238;--muted:#5c6070;--hint:#9ca2b2;--gold:#b8912a;--border:#d6cfc2}
+[data-theme="dark"]{--bg:#131210;--surface:#1b1916;--text:#f0e9d8;--muted:#98908a;--hint:#585450;--gold:#d4a83a;--border:#2c2924}
+[data-lang="pt"] [lang="en"]{display:none}
+[data-lang="en"] [lang="pt"]{display:none}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;-webkit-font-smoothing:antialiased}
+.box{max-width:480px;text-align:center}
+.code{font-family:'Instrument Serif',serif;font-size:clamp(80px,18vw,140px);font-weight:400;color:var(--gold);line-height:1;letter-spacing:-.04em;margin-bottom:16px}
+h1{font-family:'Instrument Serif',serif;font-size:clamp(24px,4vw,32px);font-weight:400;margin-bottom:12px;letter-spacing:-.02em}
+p{color:var(--muted);font-size:15px;line-height:1.6;margin-bottom:28px}
+a{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;border-radius:10px;background:var(--gold);color:var(--bg);font-size:14px;font-weight:500;text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.85}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="code">404</div>
+  <h1>
+    <span lang="pt">Esta página não existe</span>
+    <span lang="en">This page doesn't exist</span>
+  </h1>
+  <p>
+    <span lang="pt">O endereço que tentaste abrir não existe ou foi movido. Volta ao início e tenta a partir dali.</span>
+    <span lang="en">The address you tried to open doesn't exist or has moved. Head back home and try from there.</span>
+  </p>
+  <a href="/">
+    <span lang="pt">← Voltar ao início</span>
+    <span lang="en">← Back home</span>
+  </a>
+</div>
+</body>
+</html>
